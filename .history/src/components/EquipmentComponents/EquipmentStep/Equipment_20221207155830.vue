@@ -28,6 +28,7 @@
                 class="mr-2"
               ></v-text-field>
             </v-col>
+
             <v-col class="d-flex" cols="12" sm="6">
               <v-select
                 :items="brands"
@@ -52,6 +53,7 @@
                 class="mr-2"
               ></v-text-field>
             </v-col>
+
             <v-col class="d-flex" cols="12" sm="6">
               <v-text-field
                 label="Category of the equipment :"
@@ -59,6 +61,7 @@
                 v-model="EquipmentModel.categorie_of_equipment"
               ></v-text-field>
             </v-col>
+
             <v-col class="d-flex" cols="12" sm="6">
               <v-text-field
                 label="Equipement Registration"
@@ -105,6 +108,7 @@
                 v-model="EquipmentModel.cause_damage"
               ></v-text-field>
             </v-col>
+
             <v-col class="d-flex" cols="12" sm="6">
               <v-select
                 multiple
@@ -315,6 +319,7 @@ export default {
       });
       this.setDepartementsAction().then(() => {
         this.departments = [...this.getdepartements];
+       
       });
 
       if (this.geteditedOrSavedClaimEquipment.id > 0) {

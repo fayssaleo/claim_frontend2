@@ -159,7 +159,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New " : "Edit ";
     },
-    ...mapGetters(["getEquipmentclaims"]),
+    ...mapGetters(["getEquipmentclaims", "getequipments"]),
   },
   watch: {
     dialog(val) {
@@ -214,7 +214,7 @@ export default {
       this.editedIndex = this.claims.indexOf(item) + 1;
       this.editedItem = Object.assign({}, item);
       this.setAll_Attr_EQUIPMENT_CLAiMAction(item).then(() => {
-        console.log("item", item);
+        console.log('item', item)
         this.$router.push({ name: "Addclaim" });
       });
 

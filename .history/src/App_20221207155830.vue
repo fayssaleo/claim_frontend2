@@ -1,9 +1,12 @@
 <template>
+  
   <v-app class="home">
     <LoadingPage v-if="getModuleShow" />
     <Home v-if="logged" />
     <Login v-else />
+
   </v-app>
+
 </template>
 
 <script>
@@ -20,9 +23,11 @@ export default {
   data() {
     return {
       logged: false,
-
+     
       fonction: "",
       department: "",
+      getModuleShow:false,
+      
     };
   },
   mounted() {
@@ -35,7 +40,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getUsers", "getUserActive", "getModuleShow"]),
+    ...mapGetters(["getUsers", "getUserActive","getModuleShow"]),
   },
   watch: {},
   methods: {

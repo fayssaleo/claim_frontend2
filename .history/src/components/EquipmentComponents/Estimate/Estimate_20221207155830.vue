@@ -60,37 +60,44 @@
                       </v-card>
                     </v-col>
                     <v-col class="d-flex" cols="12" sm="4">
-                      <v-file-input
-                        v-if="editedItem.file_estimates == null"
-                        outlined
-                        v-model="file"
-                        label="File input"
-                        class="mt-2"
-                      ></v-file-input>
-                      <div
-                        v-if="editedItem.file_estimates != null"
-                        class="d-flex flex-column"
-                      >
-                        <v-btn class="white--text btnFile" color="teal">
-                          <a
-                            class="downloadpicture"
-                            :href="`${URL}/${editedItem.file_estimates.filename}`"
-                            download
-                            target="_blank"
+
+
+
+
+                        <v-file-input
+                          v-if="editedItem.file_estimates == null"
+                          outlined
+                          v-model="file"
+                          label="File input"
+                          class="mt-2"
+                        ></v-file-input>
+                        <div v-if="editedItem.file_estimates != null" class="d-flex flex-column">
+                          <v-btn
+                            
+                            class="white--text btnFile"
+                            color="teal"
                           >
-                            <v-icon medium>
-                              mdi-download-circle-outline
-                            </v-icon>
-                          </a>
-                        </v-btn>
-                        <v-btn
-                          class="btnFile white--text"
-                          color="red"
-                          @click="deleteFile()"
-                        >
-                          <v-icon medium> mdi-delete </v-icon>
-                        </v-btn>
-                      </div>
+                            <a
+                              class="downloadpicture"
+                              :href="`${URL}/${editedItem.file_estimates.filename}`"
+                              download
+                              target="_blank"
+                            >
+                              <v-icon medium >
+                                mdi-download-circle-outline
+                              </v-icon>
+                            </a>
+                          </v-btn>
+                          <v-btn
+                            class="btnFile white--text"
+                            color="red"
+                            @click="deleteFile()"
+                          >                         
+                              <v-icon medium >
+                                mdi-delete
+                              </v-icon>                          
+                          </v-btn>
+                        </div>
                     </v-col>
                     <v-col class="d-flex" cols="12" sm="4">
                       <v-card
@@ -244,11 +251,9 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import Inputs from "./Inputs.vue";
-import LoadingPage from "@/components/LoadingPage.vue";
 export default {
   components: {
     Inputs,
-    LoadingPage,
   },
 
   data: () => ({
@@ -373,9 +378,7 @@ export default {
   },
   methods: {
     initialize() {
-      this.setestimatesEquipmentAction(
-        this.geteditedOrSavedClaimEquipment.id
-      ).then(() => {
+      this.setestimatesEquipmentAction(this.geteditedOrSavedClaimEquipment.id).then(() => {
         this.estimates = [...this.getestimates];
       });
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
@@ -386,7 +389,7 @@ export default {
       "deleteestimateAction",
       "addestimateAction",
       "addFileAction",
-      "deleteFileAction",
+      "deleteFileAction"
     ]),
     TotalAmount() {
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
@@ -425,7 +428,7 @@ export default {
       this.editedItem.equipment_id = this.geteditedOrSavedClaimEquipment.id;
       this.TemporaryOrPermanent();
       this.addestimateAction(this.editedItem).then((resolve) => {
-        this.editedItem.id = resolve.estimate.id;
+        this.editedItem.id=resolve.estimate.id;
 
         if (this.file != null) {
           this.addFile();
@@ -453,7 +456,7 @@ export default {
           rransportation_costs: this.editedItem.rransportation_costs,
           equipment_id: this.editedItem.equipment_id,
           currency_estimate: this.editedItem.currency_estimate,
-          file_estimates: this.editedItem.file_estimates,
+          file_estimates:this.editedItem.file_estimates,
         },
         estimate_amount: this.totalAmount,
       };
@@ -610,7 +613,8 @@ export default {
     },
     downloadFile() {},
     deleteFile() {
-      this.deleteFileAction(this.editedItem.file_estimates).then(() => {});
+      this.deleteFileAction(this.editedItem.file_estimates).then(() => {
+      });
     },
   },
 };

@@ -55,17 +55,6 @@ const claimsEquipmentModule = {
   },
   mutations: {
     SET_CLAiMS(state, claims) {
-      for (let index = 0; index < claims.length; index++) {
-        if (claims[index].brand == null) {
-          claims[index].brand = { id: 0, name: "" };
-        }
-        if (claims[index].nature_of_damage == null) {
-          claims[index].nature_of_damage = { id: 0, name: "" };
-        }
-        if (claims[index].type_of_equipment == null) {
-          claims[index].type_of_equipment = { id: 0, name: "" };
-        }
-      }
       state.claims = claims;
     },
     ADD_CLAiM(state, claim) {
@@ -389,6 +378,7 @@ const claimsEquipmentModule = {
           .then((response) => {
             if (claim.id == 0) {
               commit("ADD_CLAiM", response.data.payload);
+              state.editedOrSavedClaimEquipment.id = response.data.payload.id;
             } else {
               commit("EDIT_CLAiM", response.data.payload);
             }

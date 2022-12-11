@@ -103,6 +103,7 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {},
+
   data(vm) {
     return {
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -113,6 +114,7 @@ export default {
           .toISOString()
           .substr(0, 10)
       ),
+
       date1: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -125,8 +127,10 @@ export default {
       },
     };
   },
+
   mounted() {
     document.title = "Claim";
+
     this.initialize();
   },
   computed: {
