@@ -11,11 +11,11 @@
                   mode="date"
                   @input="incidentDateChange"
                 >
-                  <template v-slot="{ inputEvents }">
+                  <template v-slot="{ val, inputEvents }">
                     <v-text-field
                       label="Incident Date"
                       outlined
-                      :value="dateClaim.incident_date"
+                      :value="val"
                       v-on="inputEvents"
                     >
                     </v-text-field>
@@ -30,11 +30,11 @@
                   mode="date"
                   @input="claimDateChange"
                 >
-                  <template v-slot="{ inputEvents }">
+                  <template v-slot="{ val, inputEvents }">
                     <v-text-field
                       label="Incident Date"
                       outlined
-                      :value="dateClaim.claim_date"
+                      :value="val"
                       v-on="inputEvents"
                       class="claimDateInputField"
                     >
@@ -122,16 +122,6 @@ export default {
           this.geteditedOrSavedClaimEquipment.claim_date;
         this.dateClaim.incedent_report =
           this.geteditedOrSavedClaimEquipment.incedent_report;
-        if (
-          this.dateClaim.incident_date != "" &&
-          this.dateClaim.incident_date != null
-        )
-          this.incidentDate = new Date(this.dateClaim.incident_date);
-        if (
-          this.dateClaim.claim_date != "" &&
-          this.dateClaim.claim_date != null
-        )
-          this.claimDate = new Date(this.dateClaim.claim_date);
       }
     },
     formatDate(date) {
@@ -147,7 +137,7 @@ export default {
       return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     incidentDateChange(input) {
-      this.dateClaim.incident_date = formatToSimpleFormatDD_MM_YYYY(input);
+      this.dateClaim.incedent_report = formatToSimpleFormatDD_MM_YYYY(input);
     },
     claimDateChange(input) {
       this.dateClaim.claim_date = formatToSimpleFormatDD_MM_YYYY(input);

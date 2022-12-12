@@ -1,21 +1,22 @@
 <template>
   <div>
-    <v-card class="mb-12" color="#f0f0f0cc" height="300px">
+    <v-card class="mb-12" color="#f0f0f0cc" height="auto">
       <template>
         <v-container fluid>
           <v-row align="center">
-            <v-col class="" cols="12" sm="6">
+            <v-col class="d-flex" cols="12" sm="6">
               <template>
                 <vc-date-picker
-                  v-model="incidentDate"
-                  mode="date"
-                  @input="incidentDateChange"
+                  v-model="datepickerEtd"
+                  mode="dateTime"
+                  is24hr
+                  @input="etdChange"
                 >
-                  <template v-slot="{ inputEvents }">
+                  <template v-slot="{ inputValue, inputEvents }">
                     <v-text-field
-                      label="Incident Date"
+                      label="ETD"
                       outlined
-                      :value="dateClaim.incident_date"
+                      :value="inputValue"
                       v-on="inputEvents"
                     >
                     </v-text-field>
@@ -23,27 +24,46 @@
                 </vc-date-picker>
               </template>
             </v-col>
-            <v-col class="" cols="12" sm="6">
-              <template>
-                <vc-date-picker
-                  v-model="claimDate"
-                  mode="date"
-                  @input="claimDateChange"
+            <v-col class="d-flex" cols="12" sm="6">
+              <v-menu
+                ref="menu1"
+                v-model="menu1"
+                :close-on-content-click="false"
+                :return-value.sync="dateClaim.claim_date"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="dateClaim.claim_date"
+                    label="Claim date"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="dateClaim.claim_date"
+                  no-title
+                  scrollable
                 >
-                  <template v-slot="{ inputEvents }">
-                    <v-text-field
-                      label="Incident Date"
-                      outlined
-                      :value="dateClaim.claim_date"
-                      v-on="inputEvents"
-                      class="claimDateInputField"
-                    >
-                    </v-text-field>
-                  </template>
-                </vc-date-picker>
-              </template>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menu1 = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.menu1.save(dateClaim.claim_date)"
+                  >
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
             </v-col>
-            <v-col class="" cols="12" sm="6">
+            <v-col class="d-flex" cols="12" sm="6">
               <v-file-input
                 outlined
                 label="Incident report"
@@ -59,17 +79,22 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import {
-  formatToSimpleFormatDD_MM_YYYY,
-  FormatDateStringToISOSimpleEnglishDate,
-} from "../../../helpers/helpers.js";
 
 export default {
   components: {},
   data(vm) {
     return {
-      incidentDate: new Date(),
-      claimDate: new Date(),
+      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateFormatted: vm.formatDate(
+        new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10)
+      ),
+      date1: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
       menu: false,
       menu1: false,
       dateClaim: {
@@ -101,7 +126,7 @@ export default {
     dateClaim: {
       deep: true,
       handler(newValue, oldvalue) {
-        this.set_date_claim_SetterAction(newValue);
+        this.set_date_claim_SetterAction(newValue).then(() => {});
       },
     },
     date: {
@@ -122,16 +147,6 @@ export default {
           this.geteditedOrSavedClaimEquipment.claim_date;
         this.dateClaim.incedent_report =
           this.geteditedOrSavedClaimEquipment.incedent_report;
-        if (
-          this.dateClaim.incident_date != "" &&
-          this.dateClaim.incident_date != null
-        )
-          this.incidentDate = new Date(this.dateClaim.incident_date);
-        if (
-          this.dateClaim.claim_date != "" &&
-          this.dateClaim.claim_date != null
-        )
-          this.claimDate = new Date(this.dateClaim.claim_date);
       }
     },
     formatDate(date) {
@@ -145,12 +160,6 @@ export default {
 
       const [month, day, year] = date.split("/");
       return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
-    incidentDateChange(input) {
-      this.dateClaim.incident_date = formatToSimpleFormatDD_MM_YYYY(input);
-    },
-    claimDateChange(input) {
-      this.dateClaim.claim_date = formatToSimpleFormatDD_MM_YYYY(input);
     },
     ...mapActions(["set_date_claim_SetterAction"]),
   },

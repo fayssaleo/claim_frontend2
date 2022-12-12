@@ -128,8 +128,8 @@ export default {
         )
           this.incidentDate = new Date(this.dateClaim.incident_date);
         if (
-          this.dateClaim.claim_date != "" &&
-          this.dateClaim.claim_date != null
+          this.dateClaim.incident_date != "" &&
+          this.dateClaim.incident_date != null
         )
           this.claimDate = new Date(this.dateClaim.claim_date);
       }

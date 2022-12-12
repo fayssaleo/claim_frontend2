@@ -2,7 +2,7 @@
   <div>
     <h4>Insurance declaration :</h4>
     <v-row align="center">
-      <v-col class="" cols="12" sm="4">
+      <v-col class="d-flex" cols="12" sm="4">
         <vc-date-picker
           v-model="declarationDate"
           mode="date"
@@ -21,7 +21,7 @@
         </vc-date-picker>
       </v-col>
 
-      <v-col class="" cols="12" sm="4">
+      <v-col class="d-flex" cols="12" sm="4">
         <vc-date-picker
           v-model="feedbackDate"
           mode="date"
@@ -75,7 +75,7 @@
           outlined
         ></v-select>
       </v-col>
-      <v-col class="" cols="12" sm="4">
+      <v-col class="d-flex" cols="12" sm="4">
         <vc-date-picker
           v-model="indemnificationDate"
           mode="date"

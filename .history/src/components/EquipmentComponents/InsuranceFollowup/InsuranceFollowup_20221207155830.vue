@@ -2,42 +2,80 @@
   <div>
     <h4>Insurance declaration :</h4>
     <v-row align="center">
-      <v-col class="" cols="12" sm="4">
-        <vc-date-picker
-          v-model="declarationDate"
-          mode="date"
-          @input="declarationDateChange"
+      <v-col class="d-flex" cols="12" sm="4">
+        <v-menu
+          ref="menu2"
+          v-model="menu2"
+          :close-on-content-click="false"
+          :return-value.sync="date2"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
         >
-          <template v-slot="{ inputEvents }">
+          <template v-slot:activator="{ on, attrs }">
             <v-text-field
-              label="Declaration Date"
-              outlined
-              :value="insurance_followup.date_of_declaration"
-              v-on="inputEvents"
-              class="declarationDateInputField"
-            >
-            </v-text-field>
+              v-model="insurance_followup.date_of_declaration"
+              label="Date of declaration"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
           </template>
-        </vc-date-picker>
+          <v-date-picker
+            v-model="insurance_followup.date_of_declaration"
+            no-title
+            scrollable
+          >
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="menu2 = false"> Cancel </v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="$refs.menu2.save(insurance_followup.date_of_declaration)"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-menu>
       </v-col>
 
-      <v-col class="" cols="12" sm="4">
-        <vc-date-picker
-          v-model="feedbackDate"
-          mode="date"
-          @input="feedbackDateChange"
+      <v-col class="d-flex" cols="12" sm="4">
+        <v-menu
+          ref="menu3"
+          v-model="menu3"
+          :close-on-content-click="false"
+          :return-value.sync="date3"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
         >
-          <template v-slot="{ inputEvents }">
+          <template v-slot:activator="{ on, attrs }">
             <v-text-field
-              label="Date of feedback"
-              outlined
-              :value="insurance_followup.date_of_feedback"
-              v-on="inputEvents"
-              class="feedbackDateInputField"
-            >
-            </v-text-field>
+              v-model="insurance_followup.date_of_feedback"
+              label="Date of feedback "
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
           </template>
-        </vc-date-picker>
+          <v-date-picker
+            v-model="insurance_followup.date_of_feedback"
+            no-title
+            scrollable
+          >
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="menu3 = false"> Cancel </v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="$refs.menu3.save(insurance_followup.date_of_feedback)"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-menu>
       </v-col>
       <v-col class="d-flex" cols="12" sm="4">
         <v-text-field
@@ -75,23 +113,46 @@
           outlined
         ></v-select>
       </v-col>
-      <v-col class="" cols="12" sm="4">
-        <vc-date-picker
-          v-model="indemnificationDate"
-          mode="date"
-          @input="indemnificationDateChange"
+      <v-col class="d-flex" cols="12" sm="4">
+        <v-menu
+          ref="menu4"
+          v-model="menu4"
+          :close-on-content-click="false"
+          :return-value.sync="date4"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
         >
-          <template v-slot="{ inputEvents }">
+          <template v-slot:activator="{ on, attrs }">
             <v-text-field
-              label="Indemnification Date"
-              outlined
-              :value="insurance_followup.indemnificationDate"
-              v-on="inputEvents"
-              class="indemnificationDateInputField"
-            >
-            </v-text-field>
+              v-model="insurance_followup.Complementary_indemnification"
+              label="Date of Complementary indemnification"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
           </template>
-        </vc-date-picker>
+          <v-date-picker
+            v-model="insurance_followup.Complementary_indemnification"
+            no-title
+            scrollable
+          >
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="menu4 = false"> Cancel </v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="
+                $refs.menu4.save(
+                  insurance_followup.Complementary_indemnification
+                )
+              "
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-menu>
       </v-col>
 
       <v-col class="d-flex" cols="12" sm="6">
@@ -107,30 +168,23 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { formatToSimpleFormatDD_MM_YYYY } from "../../../helpers/helpers.js";
 
 export default {
   components: {},
 
   data() {
     return {
-      declarationDate: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
+      date2: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
-      feedbackDate: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
+      date3: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
-      indemnificationDate: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
+      date4: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
-
       menu2: false,
+
       menu3: false,
       menu4: false,
 
@@ -205,18 +259,6 @@ export default {
         this.insurance_followup.insurance_declaration =
           this.geteditedOrSavedClaimEquipment.insurance_declaration;
       }
-    },
-    declarationDateChange(input) {
-      this.insurance_followup.date_of_declaration =
-        formatToSimpleFormatDD_MM_YYYY(input);
-    },
-    feedbackDateChange(input) {
-      this.insurance_followup.date_of_feedback =
-        formatToSimpleFormatDD_MM_YYYY(input);
-    },
-    indemnificationDateChange(input) {
-      this.insurance_followup.indemnificationDate =
-        formatToSimpleFormatDD_MM_YYYY(input);
     },
     ...mapActions(["set_insurance_followup_claim_SetterAction"]),
   },

@@ -1,3 +1,4 @@
+
 .btn {
   border-radius: 6px;
   width: 220px;
@@ -10,31 +11,34 @@
   color: rgb(255, 255, 255);
   padding: 8px;
 }
-.settingContainer {
+.settingContainer{
   display: flex;
   border: 1px solid #000;
   height: 45px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
+  justify-content:center;
+  align-items:center;
+  border-radius:4px;
   padding: 12px;
-  .username {
-    color: #284066;
+  .username{
+
+    color:#284066;
     font-family: "system-ui" !important;
     padding-right: 8px !important;
   }
 }
-.title {
-  color: #284066;
+.title{
+  color:#284066;
   font-weight: bold !important;
   font-family: "system-ui" !important;
+
 }
-h3 {
+h3{
   text-align: center;
 }
 
-.linktext {
+.linktext{
   text-decoration: none !important;
+
 }
 .itemdrawer {
   text-align: center;
@@ -59,7 +63,7 @@ h3 {
 .itemdrawer:hover {
   text-align: center;
 
-  background-color: #01a8ca;
+  background-color: #01A8CA;
   margin-right: 2px;
   margin-left: 2px;
 
@@ -92,11 +96,11 @@ h3 {
   color: #fff !important;
   text-decoration: none;
 }
-.btnFile {
+.btnFile{
   width: 30px;
   margin-bottom: 4px;
   margin-left: 4px;
 }
-.claimDateInputField {
-  width: 100%;
+.containerFileEstimate{
+  
 }

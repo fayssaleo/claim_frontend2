@@ -328,17 +328,11 @@ const claimsEquipmentModule = {
         claimFormData.append("Invoice_number", claim.Invoice_number);
         claimFormData.append(
           "date_of_reimbursement",
-          toLaravelDatetime(claim.date_of_reimbursement)
+          claim.date_of_reimbursement
         );
         claimFormData.append("reimbursed_amount", claim.reimbursed_amount);
-        claimFormData.append(
-          "date_of_declaration",
-          toLaravelDatetime(claim.date_of_declaration)
-        );
-        claimFormData.append(
-          "date_of_feedback",
-          toLaravelDatetime(claim.date_of_feedback)
-        );
+        claimFormData.append("date_of_declaration", claim.date_of_declaration);
+        claimFormData.append("date_of_feedback", claim.date_of_feedback);
         claimFormData.append("comment_Insurance", claim.comment_Insurance);
         claimFormData.append(
           "Indemnification_of_insurer",

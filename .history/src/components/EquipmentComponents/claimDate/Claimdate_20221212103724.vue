@@ -122,16 +122,6 @@ export default {
           this.geteditedOrSavedClaimEquipment.claim_date;
         this.dateClaim.incedent_report =
           this.geteditedOrSavedClaimEquipment.incedent_report;
-        if (
-          this.dateClaim.incident_date != "" &&
-          this.dateClaim.incident_date != null
-        )
-          this.incidentDate = new Date(this.dateClaim.incident_date);
-        if (
-          this.dateClaim.claim_date != "" &&
-          this.dateClaim.claim_date != null
-        )
-          this.claimDate = new Date(this.dateClaim.claim_date);
       }
     },
     formatDate(date) {
