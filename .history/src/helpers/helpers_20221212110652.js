@@ -21,6 +21,3 @@ export function toLaravelDatetime(d) {
     dateHolderArray[2] + "-" + dateHolderArray[0] + "-" + dateHolderArray[1]
   );
 }
-export function NullTest(d) {
-  return !d ? "" : d;
-}

@@ -22,5 +22,6 @@ export function toLaravelDatetime(d) {
   );
 }
 export function NullTest(d) {
-  return !d ? "" : d;
+  if (d == "") return "";
+  if (d == null) return "";
 }

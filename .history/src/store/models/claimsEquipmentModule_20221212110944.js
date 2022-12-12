@@ -1,4 +1,4 @@
-import { toLaravelDatetime, NullTest } from "@/helpers/helpers";
+import { toLaravelDatetime } from "@/helpers/helpers";
 import CustomizedAxios from "../../plugins/axios";
 
 const claimsEquipmentModule = {
@@ -296,53 +296,41 @@ const claimsEquipmentModule = {
         var claimFormData = new FormData();
 
         claimFormData.append("id", claim.id);
-        claimFormData.append("status", NullTest(claim.status));
+        claimFormData.append("status", claim.status ? "" : claim.status);
         claimFormData.append(
           "incident_date",
           toLaravelDatetime(claim.incident_date)
         );
         claimFormData.append("claim_date", toLaravelDatetime(claim.claim_date));
-        claimFormData.append(
-          "ClaimOrIncident",
-          NullTest(claim.ClaimOrIncident)
-        );
+        claimFormData.append("ClaimOrIncident", claim.ClaimOrIncident);
         claimFormData.append(
           "categorie_of_equipment",
-          NullTest(claim.categorie_of_equipment)
+          claim.categorie_of_equipment
         );
         claimFormData.append(
           "concerned_internal_department",
-          NullTest(claim.concerned_internal_department)
+          claim.concerned_internal_department
         );
         claimFormData.append(
           "equipement_registration",
-          NullTest(claim.equipement_registration)
+          claim.equipement_registration
         );
-        claimFormData.append("cause_damage", NullTest(claim.cause_damage));
+        claimFormData.append("cause_damage", claim.cause_damage);
         claimFormData.append(
           "Liability_letter_number",
-          NullTest(claim.Liability_letter_number)
+          claim.Liability_letter_number
         );
-        claimFormData.append("amount", NullTest(claim.amount));
-        claimFormData.append("currency", NullTest(claim.currency));
-        claimFormData.append(
-          "comment_third_party",
-          NullTest(claim.comment_third_party)
-        );
-        claimFormData.append("reinvoiced", NullTest(claim.reinvoiced));
-        claimFormData.append(
-          "currency_Insurance",
-          NullTest(claim.currency_Insurance)
-        );
-        claimFormData.append("Invoice_number", NullTest(claim.Invoice_number));
+        claimFormData.append("amount", claim.amount);
+        claimFormData.append("currency", claim.currency);
+        claimFormData.append("comment_third_party", claim.comment_third_party);
+        claimFormData.append("reinvoiced", claim.reinvoiced);
+        claimFormData.append("currency_Insurance", claim.currency_Insurance);
+        claimFormData.append("Invoice_number", claim.Invoice_number);
         claimFormData.append(
           "date_of_reimbursement",
           toLaravelDatetime(claim.date_of_reimbursement)
         );
-        claimFormData.append(
-          "reimbursed_amount",
-          NullTest(claim.reimbursed_amount)
-        );
+        claimFormData.append("reimbursed_amount", claim.reimbursed_amount);
         claimFormData.append(
           "date_of_declaration",
           toLaravelDatetime(claim.date_of_declaration)
@@ -351,57 +339,42 @@ const claimsEquipmentModule = {
           "date_of_feedback",
           toLaravelDatetime(claim.date_of_feedback)
         );
-        claimFormData.append(
-          "comment_Insurance",
-          NullTest(claim.comment_Insurance)
-        );
+        claimFormData.append("comment_Insurance", claim.comment_Insurance);
         claimFormData.append(
           "Indemnification_of_insurer",
-          NullTest(claim.Indemnification_of_insurer)
+          claim.Indemnification_of_insurer
         );
         claimFormData.append(
           "currency_indemnisation",
-          NullTest(claim.currency_indemnisation)
+          claim.currency_indemnisation
         );
         claimFormData.append(
           "deductible_charge_TAT",
-          NullTest(claim.deductible_charge_TAT)
+          claim.deductible_charge_TAT
         );
-        claimFormData.append(
-          "damage_caused_by",
-          NullTest(claim.damage_caused_by)
-        );
-        claimFormData.append(
-          "TAT_name_persons",
-          NullTest(claim.TAT_name_persons)
-        );
+        claimFormData.append("damage_caused_by", claim.damage_caused_by);
+        claimFormData.append("TAT_name_persons", claim.TAT_name_persons);
         claimFormData.append(
           "outsourcer_company_name",
-          NullTest(claim.outsourcer_company_name)
+          claim.outsourcer_company_name
         );
         claimFormData.append(
           "thirdparty_company_name",
-          NullTest(claim.thirdparty_company_name)
+          claim.thirdparty_company_name
         );
         claimFormData.append(
           "thirdparty_Activity_comments",
-          NullTest(claim.thirdparty_Activity_comments)
+          claim.thirdparty_Activity_comments
         );
         claimFormData.append(
           "categorie_of_equipment",
           claim.categorie_of_equipment
         );
-        claimFormData.append(
-          "incedent_report",
-          NullTest(claim.incedent_report)
-        );
-        claimFormData.append(
-          "liability_letter",
-          NullTest(claim.liability_letter)
-        );
+        claimFormData.append("incedent_report", claim.incedent_report);
+        claimFormData.append("liability_letter", claim.liability_letter);
         claimFormData.append(
           "insurance_declaration",
-          NullTest(claim.insurance_declaration)
+          claim.insurance_declaration
         );
         claimFormData.append(
           "type_of_equipment[id]",
@@ -409,14 +382,14 @@ const claimsEquipmentModule = {
         );
         claimFormData.append(
           "type_of_equipment[name]",
-          NullTest(claim.type_of_equipment.name)
+          claim.type_of_equipment.name
         );
         claimFormData.append("brand[id]", claim.brand.id);
-        claimFormData.append("brand[name]", NullTest(claim.brand.name));
+        claimFormData.append("brand[name]", claim.brand.name);
         claimFormData.append("nature_of_damage[id]", claim.nature_of_damage.id);
         claimFormData.append(
           "nature_of_damage[name]",
-          NullTest(claim.nature_of_damage.name)
+          claim.nature_of_damage.name
         );
 
         CustomizedAxios.post(

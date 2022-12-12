@@ -1,4 +1,4 @@
-import { toLaravelDatetime, NullTest } from "@/helpers/helpers";
+import { toLaravelDatetime } from "@/helpers/helpers";
 import CustomizedAxios from "../../plugins/axios";
 
 const claimsEquipmentModule = {
