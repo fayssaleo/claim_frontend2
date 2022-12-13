@@ -61,20 +61,21 @@
                     </v-col>
                     <v-col class="d-flex" cols="12" sm="4">
                       <v-file-input
-                        v-if="editedItem.file_estimates == null"
+                        v-if="editedItem.fileName == null"
                         outlined
-                        v-model="file"
+                        v-model="editedItem.file"
                         label="File input"
                         class="mt-2"
                       ></v-file-input>
-                      <div
-                        v-if="editedItem.file_estimates != null"
-                        class="d-flex flex-column"
-                      >
+                      <div v-if="editedItem.fileName != null" class="d-flex">
+                        <span class="fileNameEstimate">
+                          {{ editedItem.fileName }}
+                        </span>
+
                         <v-btn class="white--text btnFile" color="teal">
                           <a
                             class="downloadpicture"
-                            :href="`${URL}/${editedItem.file_estimates.filename}`"
+                            :href="`${URL}/${editedItem.fileName}`"
                             download
                             target="_blank"
                           >
@@ -158,12 +159,25 @@
                         outlined
                       ></v-text-field>
                     </v-col>
-                    <Inputs
-                      v-for="item in textFields"
-                      :key="item.id"
-                      :refreshInputEstimate="refreshInputEstimate"
-                      :input_item="item"
-                    />
+
+                    <div v-if="estimateUpdate.estimate.customedFields != null">
+                      <Inputs
+                        v-for="item in estimateUpdate.estimate.customedFields"
+                        :key="item.id"
+                        :addToListTextFields="addToListTextFields"
+                        :refreshInputEstimate="refreshInputEstimate"
+                        :input_item="item"
+                      />
+                    </div>
+                    <div v-else>
+                      <Inputs
+                        v-for="item in estimateUpdate.estimate.customedFields"
+                        :key="item.id"
+                        :addToListTextFields="addToListTextFields"
+                        :refreshInputEstimate="refreshInputEstimate"
+                        :input_item="item"
+                      />
+                    </div>
                   </v-row>
                   <v-row class="pa-4 ma-2">
                     <h3>Others :</h3>
@@ -271,16 +285,31 @@ export default {
     estimates: [],
     editedIndex: -1,
     estimateDelete: null,
-    estimateUpdate: null,
+    estimateUpdate: {
+      estimate: {
+        id: null,
+        temporary_or_permanent: "",
+        currency_estimate: "",
+        fileName: "",
+        equipment_purchase_costs: 0,
+        installation_and_facilities_costs: 0,
+        rransportation_costs: 0,
+        equipment_id: null,
+        customedFields: [],
+      },
+      estimate_amount: 0,
+    },
     editedItem: {
-      id: 0,
+      id: null,
       temporary_or_permanent: "Temporary",
+      currency_estimate: "",
+      fileName: "",
       equipment_purchase_costs: 0,
       installation_and_facilities_costs: 0,
       rransportation_costs: 0,
       equipment_id: null,
-      currency_estimate: "",
-      file_estimates: null,
+      customedFields: [],
+      file: "",
     },
     defaultItem: {
       id: 0,
@@ -290,7 +319,8 @@ export default {
       equipment_id: null,
       currency_estimate: "",
       temporary_or_permanent: "Temporary",
-      file_estimates: null,
+      fileName: null,
+      file: "",
     },
     isAdd: true,
     AmountList: [],
@@ -344,7 +374,8 @@ export default {
           rransportation_costs: 0,
           equipment_id: null,
           currency_estimate: "",
-          file_estimates: null,
+          fileName: null,
+          file: "",
         };
       }
       val || this.close();
@@ -361,10 +392,16 @@ export default {
         this.TotalAmount();
       },
     },
-    textFields: {
+    estimateUpdate: {
       deep: true,
       handler(newValue, oldvalue) {
-        this.SUM();
+        this.TotalAmount();
+      },
+    },
+    editedItem: {
+      deep: true,
+      handler(newValue, oldvalue) {
+        this.TotalAmount();
       },
     },
   },
@@ -402,9 +439,15 @@ export default {
       this.AmountList.push(
         numOr0(parseFloat(this.editedItem.rransportation_costs))
       );
-      this.textFields.map((x) => {
-        this.AmountList.push(numOr0(parseFloat(x.value)));
-      });
+
+      if (this.estimateUpdate != null) {
+        if (this.estimateUpdate.estimate.customedFields != null) {
+          this.estimateUpdate.estimate.customedFields.map((x) => {
+            this.AmountList.push(numOr0(parseFloat(x.value)));
+          });
+        }
+      }
+
       this.SUM();
     },
     SUM() {
@@ -413,6 +456,10 @@ export default {
       this.AmountList.map((x) => {
         this.totalAmount = x + this.totalAmount;
       });
+    },
+    addToListTextFields(data) {
+      this.textFields.push(data);
+      console.info("this.textFields", this.textFields);
     },
     TemporaryOrPermanent() {
       if (this.switch1 == false) {
@@ -424,12 +471,11 @@ export default {
     addEstimate() {
       this.editedItem.equipment_id = this.geteditedOrSavedClaimEquipment.id;
       this.TemporaryOrPermanent();
+      this.editedItem.customedFields =
+        this.estimateUpdate.estimate.customedFields;
+      console.log("estimate file test", this.editedItem);
       this.addestimateAction(this.editedItem).then((resolve) => {
         this.editedItem.id = resolve.estimate.id;
-
-        if (this.file != null) {
-          this.addFile();
-        }
 
         this.estimates = [...this.getestimates];
         this.editedItem.equipment_purchase_costs = "";
@@ -439,9 +485,13 @@ export default {
         this.editedItem.currency_estimate = "";
         this.editedItem.id = 0;
       });
+      this.close();
     },
     updateEstimate() {
       this.editedItem.equipment_id = this.geteditedOrSavedClaimEquipment.id;
+      this.editedItem.customedFields =
+        this.estimateUpdate.estimate.customedFields;
+
       this.TemporaryOrPermanent();
       var modelUpdate = {
         estimate: {
@@ -453,16 +503,14 @@ export default {
           rransportation_costs: this.editedItem.rransportation_costs,
           equipment_id: this.editedItem.equipment_id,
           currency_estimate: this.editedItem.currency_estimate,
-          file_estimates: this.editedItem.file_estimates,
+          fileName: this.editedItem.fileName,
+          customedFields: this.editedItem.customedFields,
+          file: "",
         },
         estimate_amount: this.totalAmount,
       };
 
       this.editestimateAction(modelUpdate).then(() => {
-        if (this.file != null) {
-          this.addFile();
-        }
-
         setTimeout(() => {
           this.estimates = [...this.getestimates];
         }, 1000);
@@ -472,6 +520,8 @@ export default {
         this.editedItem.equipment_id = null;
         this.editedItem.currency_estimate = "";
         this.editedItem.id = 0;
+        this.editedItem.customedFields = [];
+        this.estimateUpdate.estimate.customedFields = [];
       });
       this.dialog = false;
 
@@ -486,7 +536,12 @@ export default {
         this.switch1 = true;
       }
 
+      console.log("item update", item);
       this.estimateUpdate = item;
+      this.estimateUpdate.estimate.customedFields =
+        item.estimate.customed_field;
+
+      //
       this.editedItem.equipment_purchase_costs =
         item.estimate.equipment_purchase_costs;
       this.editedItem.installation_and_facilities_costs =
@@ -497,8 +552,9 @@ export default {
       this.editedItem.temporary_or_permanent =
         item.estimate.temporary_or_permanent;
       this.editedItem.id = item.estimate.id;
-      //this.editedItem.file_estimates = this.URL+"/"+item.estimate.file_estimates.filename;
-      this.editedItem.file_estimates = item.estimate.file_estimates;
+      //this.editedItem.fileName = this.URL+"/"+item.estimate.fileName.filename;
+      this.editedItem.fileName = item.estimate.fileName;
+      this.editedItem.customedFields = item.estimate.customedFields;
 
       this.dialog = true;
       this.isAdd = false;
@@ -543,7 +599,7 @@ export default {
     },
     save() {
       if (this.isAdd == true) {
-        this.addeItem();
+        //this.addeItem();
         this.isAdd = false;
         console.log("add", "");
         setTimeout(() => {
@@ -551,7 +607,7 @@ export default {
         }, 2000);
         //this.closeAddSaveDialog();
       } else {
-        this.updateEstimate();
+        // this.updateEstimate();
 
         console.log("update", "");
         //this.LoadingPage = true;
@@ -565,8 +621,9 @@ export default {
       this.close();
     },
     refreshInputEstimate(id) {
-      this.textFields = this.textFields.filter((c) => c.id != id);
-      console.table(this.textFields);
+      this.estimateUpdate.estimate.customedFields =
+        this.estimateUpdate.estimate.customedFields.filter((c) => c.id != id);
+      console.table(this.estimateUpdate.estimate.customedFields);
       this.TotalAmount();
     },
     addOthers() {
@@ -575,11 +632,12 @@ export default {
       this.incrument = parseInt(this.incrument + 1);
       var model = {
         id: this.incrument,
+        estimate_id: 2,
         name: this.textFieldModel.name,
         value: this.textFieldModel.value,
       };
       this.AmountList.push(numOr0(parseFloat(this.textFieldModel.value)));
-      this.textFields.push(model);
+      this.estimateUpdate.estimate.customedFields.push(model);
       this.textFieldModel.name = "";
       this.textFieldModel.value = "";
     },
@@ -590,15 +648,7 @@ export default {
 
       this.addFileAction(formData)
         .then((resolve) => {
-          /* 
-
-            this.LoadingPage = true;
-            setTimeout(() => {
-              this.LoadingPage = false;
-              swal("Good job!", "success", "success");
-            }, 2000); 
-
-          */
+          
           console.info("file done");
         })
         .catch(() => {
@@ -610,7 +660,28 @@ export default {
     },
     downloadFile() {},
     deleteFile() {
-      this.deleteFileAction(this.editedItem.file_estimates).then(() => {});
+      this.editedItem.equipment_id = this.geteditedOrSavedClaimEquipment.id;
+      this.editedItem.customedFields =
+        this.estimateUpdate.estimate.customedFields;
+      this.editedItem.fileName = null;
+
+      this.TemporaryOrPermanent();
+      var modelUpdate = {
+        estimate: {
+          id: this.editedItem.id,
+          temporary_or_permanent: this.editedItem.temporary_or_permanent,
+          equipment_purchase_costs: this.editedItem.equipment_purchase_costs,
+          installation_and_facilities_costs:
+            this.editedItem.installation_and_facilities_costs,
+          rransportation_costs: this.editedItem.rransportation_costs,
+          equipment_id: this.editedItem.equipment_id,
+          currency_estimate: this.editedItem.currency_estimate,
+          fileName: null,
+          customedFields: this.editedItem.customedFields,
+        },
+        estimate_amount: this.totalAmount,
+      };
+      this.editestimateAction(modelUpdate).then(() => {});
     },
   },
 };

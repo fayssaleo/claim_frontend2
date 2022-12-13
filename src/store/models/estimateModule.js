@@ -78,8 +78,32 @@ const estimateModule = {
     },
     addestimateAction({ commit }, estimate) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.post("estimates/create", estimate)
+        var estimateFormData = new FormData();
+
+        estimateFormData.append("temporary_or_permanent", estimate.temporary_or_permanent);
+        estimateFormData.append("equipment_purchase_costs", estimate.equipment_purchase_costs);
+        estimateFormData.append("installation_and_facilities_costs", estimate.installation_and_facilities_costs);
+        estimateFormData.append("rransportation_costs", estimate.rransportation_costs);
+        estimateFormData.append("currency_estimate", estimate.currency_estimate);
+        estimateFormData.append("equipment_id", estimate.equipment_id);
+        estimateFormData.append("file", estimate.file);
+        estimateFormData.append("equipment_id", estimate.equipment_id);
+        if (estimate.customedFields.length  > 0) {
+          console.warn('tag', 'ccccc add');
+          var i =0;
+          
+          estimate.customedFields.map(customedField => {
+            estimateFormData.append(`customedFields[${i}][name]`, customedField.name);
+            estimateFormData.append(`customedFields[${i}][value]`, customedField.value);
+            i++;
+          });
+
+        }
+        
+        CustomizedAxios.post("estimates/create", estimateFormData)
           .then((response) => {
+            estimateFormData=null;
+
             commit("ADD_ESTIMATE", response.data.payload);
             resolve(response.data.payload);
           })
@@ -90,7 +114,7 @@ const estimateModule = {
     },
     deleteestimateAction({ commit }, estimate) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.post("estimates/delete", estimate)
+        CustomizedAxios.post("estimates/delete", estimate.estimate)
           .then((response) => {
             commit("DELETE_ESTIMATE", estimate);
             resolve(response.data);
@@ -102,8 +126,32 @@ const estimateModule = {
     },
     editestimateAction({ commit }, estimate) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.post("estimates/update", estimate.estimate)
+        var estimateFormData = new FormData();
+
+
+        estimateFormData.append("id", estimate.estimate.id);
+        estimateFormData.append("temporary_or_permanent", estimate.estimate.temporary_or_permanent);
+        estimateFormData.append("equipment_purchase_costs", estimate.estimate.equipment_purchase_costs);
+        estimateFormData.append("installation_and_facilities_costs", estimate.estimate.installation_and_facilities_costs);
+        estimateFormData.append("rransportation_costs", estimate.estimate.rransportation_costs);
+        estimateFormData.append("currency_estimate",  estimate.estimate.currency_estimate);
+        estimateFormData.append("equipment_id", estimate.estimate.equipment_id);
+        estimateFormData.append("file", estimate.estimate.file);
+        if (estimate.estimate.customedFields.length  > 0) {
+          console.warn('tag', 'ccccc edite');
+
+          var i =0;
+          estimate.estimate.customedFields.map(customedField => {
+            estimateFormData.append(`customedFields[${i}][id]`, customedField.id);
+            estimateFormData.append(`customedFields[${i}][name]`, customedField.name);
+            estimateFormData.append(`customedFields[${i}][value]`, customedField.value);
+            i++;
+          });
+
+        }
+        CustomizedAxios.post("estimates/update", estimateFormData)
           .then((response) => {
+            estimateFormData=null;
             commit("EDIT_ESTIMATE", estimate);
             resolve(response.data.payload);
           })

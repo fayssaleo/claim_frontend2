@@ -1,18 +1,19 @@
 <template>
-  <v-col class="d-flex" cols="12" sm="4">
+  <div class="d-inline-flex " >
     <v-text-field
+      disabled
       :label="inputModel.name"
       v-model="inputModel.value"
       outlined
     ></v-text-field>
     <v-btn @click="removeInputEstimate(inputModel)" class="ml-2 error">delete</v-btn>
-  </v-col>
+  </div>
 </template>
 
 <script>
 export default {
   name: "ClaimFrontendInputs",
-  props: ["input_item","refreshInputEstimate"],
+  props: ["input_item","refreshInputEstimate","addToListTextFields"],
   data() {
     return {
         inputModel:{
@@ -28,9 +29,13 @@ export default {
     this.inputModel.name=this.input_item.name;
     this.inputModel.value=this.input_item.value;
 
+    //this.addToListTextFields(this.input_item);
   },
 
   methods: {
+    initialize() {
+      
+    },
     removeInputEstimate(item) {
         console.info('remove', item);
         this.refreshInputEstimate(item.id);
