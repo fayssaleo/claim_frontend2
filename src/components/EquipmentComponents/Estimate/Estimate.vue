@@ -24,7 +24,7 @@
             </template>
             <v-card>
               <v-toolbar dark color="primary">
-                <v-btn icon dark @click="dialog = false">
+                <v-btn icon dark @click="closeDialoge">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
                 <v-toolbar-title>Settings</v-toolbar-title>
@@ -72,18 +72,16 @@
                           {{ editedItem.fileName }}
                         </span>
 
-                        <v-btn class="white--text btnFile" color="teal">
-                          <a
-                            class="downloadpicture"
-                            :href="`${URL}/${editedItem.fileName}`"
-                            download
-                            target="_blank"
-                          >
-                            <v-icon medium>
-                              mdi-download-circle-outline
-                            </v-icon>
-                          </a>
-                        </v-btn>
+                        <a
+                          class="downloadpicture white--text bg-teal btnFile"
+                          :href="`${URL}/${editedItem.fileName}`"
+                          download
+                          target="_blank"
+                        >
+                          <v-icon color="white" medium>
+                            mdi-download-circle-outline
+                          </v-icon>
+                        </a>
                         <v-btn
                           class="btnFile white--text"
                           color="red"
@@ -309,7 +307,7 @@ export default {
       rransportation_costs: 0,
       equipment_id: null,
       customedFields: [],
-      file: "",
+      file: "create",
     },
     defaultItem: {
       id: 0,
@@ -320,7 +318,7 @@ export default {
       currency_estimate: "",
       temporary_or_permanent: "Temporary",
       fileName: null,
-      file: "",
+      file: "create",
     },
     isAdd: true,
     AmountList: [],
@@ -351,6 +349,7 @@ export default {
       { name: "Australian Dollar", code: "AUD", symbol: "$", id: 11 },
     ],
     URL: "http://127.0.0.1:8000/storage/cdn/fileEstimates",
+    deleteInputs: [],
   }),
   mounted() {
     document.title = "Claim";
@@ -375,7 +374,7 @@ export default {
           equipment_id: null,
           currency_estimate: "",
           fileName: null,
-          file: "",
+          file: "create",
         };
       }
       val || this.close();
@@ -476,6 +475,8 @@ export default {
       console.log("estimate file test", this.editedItem);
       this.addestimateAction(this.editedItem).then((resolve) => {
         this.editedItem.id = resolve.estimate.id;
+        this.estimateUpdate = resolve;
+        this.estimateUpdate.estimate.customedFields = [];
 
         this.estimates = [...this.getestimates];
         this.editedItem.equipment_purchase_costs = "";
@@ -484,6 +485,7 @@ export default {
         this.editedItem.equipment_id = null;
         this.editedItem.currency_estimate = "";
         this.editedItem.id = 0;
+        this.editedItem.file = "";
       });
       this.close();
     },
@@ -493,6 +495,7 @@ export default {
         this.estimateUpdate.estimate.customedFields;
 
       this.TemporaryOrPermanent();
+      console.info("this.editedItem", this.editedItem);
       var modelUpdate = {
         estimate: {
           id: this.editedItem.id,
@@ -505,12 +508,14 @@ export default {
           currency_estimate: this.editedItem.currency_estimate,
           fileName: this.editedItem.fileName,
           customedFields: this.editedItem.customedFields,
-          file: "",
+          file: this.editedItem.file,
         },
         estimate_amount: this.totalAmount,
+        deleteInputs: this.deleteInputs,
       };
+      //console.log('modelUpdate', modelUpdate);
 
-      this.editestimateAction(modelUpdate).then(() => {
+      this.editestimateAction(modelUpdate).then((resolve) => {
         setTimeout(() => {
           this.estimates = [...this.getestimates];
         }, 1000);
@@ -522,6 +527,13 @@ export default {
         this.editedItem.id = 0;
         this.editedItem.customedFields = [];
         this.estimateUpdate.estimate.customedFields = [];
+        this.editedItem.file = "";
+
+        this.estimates = this.estimates.map((c) => {
+          if (c.estimate.id == resolve.estimate.id) return resolve;
+          return c;
+        });
+        //this.estimates = [...this.getestimates];
       });
       this.dialog = false;
 
@@ -538,8 +550,14 @@ export default {
 
       console.log("item update", item);
       this.estimateUpdate = item;
-      this.estimateUpdate.estimate.customedFields =
-        item.estimate.customed_field;
+
+      //debugger;
+      if (typeof item.estimate.customed_field !== "undefined") {
+        this.estimateUpdate.estimate.customedFields =
+          item.estimate.customed_field;
+      } else {
+        this.estimateUpdate.estimate.customedFields = [];
+      }
 
       //
       this.editedItem.equipment_purchase_costs =
@@ -621,9 +639,16 @@ export default {
       this.close();
     },
     refreshInputEstimate(id) {
+      this.deleteInputs = [];
       this.estimateUpdate.estimate.customedFields =
-        this.estimateUpdate.estimate.customedFields.filter((c) => c.id != id);
-      console.table(this.estimateUpdate.estimate.customedFields);
+        this.estimateUpdate.estimate.customedFields.filter((c) => {
+          if (c.id == id) {
+            this.deleteInputs.push(c);
+          }
+          return c.id != id;
+        });
+      console.info("delete array", this.deleteInputs);
+      //console.table(this.estimateUpdate.estimate.customedFields);
       this.TotalAmount();
     },
     addOthers() {
@@ -648,7 +673,6 @@ export default {
 
       this.addFileAction(formData)
         .then((resolve) => {
-          
           console.info("file done");
         })
         .catch(() => {
@@ -658,7 +682,10 @@ export default {
 
       this.dialogimage = false;
     },
-    downloadFile() {},
+    closeDialoge() {
+      this.isAdd = true;
+      this.dialog = false;
+    },
     deleteFile() {
       this.editedItem.equipment_id = this.geteditedOrSavedClaimEquipment.id;
       this.editedItem.customedFields =
@@ -666,7 +693,7 @@ export default {
       this.editedItem.fileName = null;
 
       this.TemporaryOrPermanent();
-      var modelUpdate = {
+      var modelDelete = {
         estimate: {
           id: this.editedItem.id,
           temporary_or_permanent: this.editedItem.temporary_or_permanent,
@@ -678,10 +705,11 @@ export default {
           currency_estimate: this.editedItem.currency_estimate,
           fileName: null,
           customedFields: this.editedItem.customedFields,
+          file: "delete",
         },
         estimate_amount: this.totalAmount,
       };
-      this.editestimateAction(modelUpdate).then(() => {});
+      this.editestimateAction(modelDelete).then(() => {});
     },
   },
 };

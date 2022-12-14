@@ -88,7 +88,7 @@ const estimateModule = {
         estimateFormData.append("equipment_id", estimate.equipment_id);
         estimateFormData.append("file", estimate.file);
         estimateFormData.append("equipment_id", estimate.equipment_id);
-        if (estimate.customedFields.length  > 0) {
+        if (estimate.customedFields.length  > 0  ) {
           console.warn('tag', 'ccccc add');
           var i =0;
           
@@ -136,6 +136,7 @@ const estimateModule = {
         estimateFormData.append("rransportation_costs", estimate.estimate.rransportation_costs);
         estimateFormData.append("currency_estimate",  estimate.estimate.currency_estimate);
         estimateFormData.append("equipment_id", estimate.estimate.equipment_id);
+          
         estimateFormData.append("file", estimate.estimate.file);
         if (estimate.estimate.customedFields.length  > 0) {
           console.warn('tag', 'ccccc edite');
@@ -145,6 +146,18 @@ const estimateModule = {
             estimateFormData.append(`customedFields[${i}][id]`, customedField.id);
             estimateFormData.append(`customedFields[${i}][name]`, customedField.name);
             estimateFormData.append(`customedFields[${i}][value]`, customedField.value);
+            i++;
+          });
+
+        }
+        if (estimate.deleteInputs.length  > 0) {
+          console.warn('tag', 'ccccc edite');
+
+          var i =0;
+          estimate.deleteInputs.map(deleteInput => {
+            estimateFormData.append(`deleteInputs[${i}][id]`, deleteInput.id);
+            estimateFormData.append(`deleteInputs[${i}][name]`, deleteInput.name);
+            estimateFormData.append(`deleteInputs[${i}][value]`, deleteInput.value);
             i++;
           });
 
