@@ -12,6 +12,7 @@ import claimsAutomobileModule from "./models/claimsAutomobileModule";
 import claimsVesselModule from "./models/claimsVesselModule";
 import claimsContainerModule from "./models/claimsContainerModule";
 import estimateModule from "./models/estimateModule";
+import shippingLineModule from "./models/shippingLineModule";
 import loadingModule from "./models/loadingModule";
 
 import VuexPersist from "vuex-persist";
@@ -51,7 +52,8 @@ export default function () {
       estimateModule,
       claimsAutomobileModule,
       claimsVesselModule,
-      claimsContainerModule
+      claimsContainerModule,
+      shippingLineModule,
     },
     state: {},
     mutations: {},
