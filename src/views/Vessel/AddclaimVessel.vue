@@ -1,16 +1,15 @@
 <template>
   <div style="padding: 5px; padding-top: 1%">
-    <h3 class="text-uppercase" >{{createdOrEdited}} THE CLAIM</h3>
+    <h3 class="text-uppercase" >{{createdOrEdited}} THE VESSEL</h3>
     <template>
-      <v-card class="d-flex pa-4 mb-4" max-width="170" outlined>
-        <h5 class="green--text text--lighten-2">Claim</h5>
-        <v-switch
-          color="deep-orange lighten-1"
-          v-model="switch1"
-          @change="ClaimOrIncident()"
-        ></v-switch>
-        <h5 class="deep-orange--text text--lighten-1">Incident</h5>
-      </v-card>
+      <v-icon
+      large
+      class="mx-2 ma-2"
+      color="blue darken-2"
+      @click="back()"
+      >
+        mdi-arrow-left
+     </v-icon>
 
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -130,7 +129,7 @@ export default {
     ClaimOrIncidentValue: "",
     departmentID: "",
     modal: false,
-    createdOrEdited:"CREATING",
+    createdOrEdited:"Create",
   }),
   mounted() {
     document.title = "Claim";
@@ -150,9 +149,7 @@ export default {
   watch: {
     ClaimOrIncidentValue: {
       handler(newValue, oldvalue) {
-        this.set_ClaimOrIncident_claim_SetterAction(
-          newValue
-        ).then(() => {});     
+            
       },
     }
   },
@@ -161,16 +158,12 @@ export default {
   },
   methods: {
     initialize() {
-      if (this.geteditedOrSavedClaimVessel.id > 0) {
-        this.createdOrEdited="Editing";
-
-        if (this.geteditedOrSavedClaimVessel.ClaimOrIncident == "Incident") {
-          this.switch1 = true;
-        } else {
-          this.switch1 = false;
-        }
+      if (this.geteditedOrSavedClaimVessel.id === 0) {
+        this.createdOrEdited = "Create";
+      } else {
+        this.createdOrEdited = "Edit";
       }
-      this.ClaimOrIncident();
+      //this.ClaimOrIncident();
 
     },
     ...mapActions([
@@ -178,16 +171,7 @@ export default {
       "editedOrSavedVesselClaimAction",
     ]),
 
-    ClaimOrIncident() {
-      if (this.switch1 == false) {
-        this.ClaimOrIncidentValue = "Claim";
-      } else {
-        this.ClaimOrIncidentValue = "Incident";
-      }
-      this.set_ClaimOrIncident_claim_SetterAction(
-        this.ClaimOrIncidentValue
-      ).then(() => {});
-    },
+   
     editedOrSavedClaim() {
       this.editedOrSavedVesselClaimAction(this.geteditedOrSavedClaimVessel).then(() => {
         console.log("save", "save");
@@ -223,6 +207,10 @@ export default {
         }
       }
     },
+    back(){
+    this.$router.push({ name: "CreateClaimOrIncident" });
+
+  }
   },
 };
 </script>

@@ -31,7 +31,6 @@
                 v-model="EquipmentModel.type_of_equipment.id"
               ></v-select>
             </v-col>
-
             <v-col
               class="d-flex other"
               cols="6"
@@ -63,9 +62,7 @@
                 class="mr-2"
               ></v-text-field>
             </v-col>
-
             <!---------------------------------------------------------------------------------------------------------------->
-
             <v-col
               class="d-flex"
               cols="12"
@@ -82,7 +79,6 @@
                 outlined
               ></v-select>
             </v-col>
-
             <v-col
               class="d-flex"
               cols="6"
@@ -114,9 +110,7 @@
                 class="mr-2"
               ></v-text-field>
             </v-col>
-
             <!---------------------------------------------------------------------------------------------------------------->
-
             <v-col class="d-flex" cols="12" sm="6">
               <v-text-field
                 label="Category of the equipment :"
@@ -126,7 +120,7 @@
             </v-col>
             <v-col class="d-flex" cols="12" sm="6">
               <v-text-field
-                label="Equipement Registration"
+                label="Id Equipement "
                 outlined
                 v-model="EquipmentModel.equipement_registration"
               ></v-text-field>
@@ -212,7 +206,6 @@
               </v-row>
             </v-col>
             <!---------------------------------------------------------------------------------------------------------------->
-
             <v-col cols="12"><v-divider></v-divider></v-col>
             <v-col
               cols="12"

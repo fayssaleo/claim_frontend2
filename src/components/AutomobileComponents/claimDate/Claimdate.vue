@@ -1,94 +1,76 @@
 <template>
   <div>
-    <v-card class="mb-12" color="#f0f0f0cc" height="auto">
+    <v-card class="mb-12" color="#f0f0f0cc" height="300px">
       <template>
         <v-container fluid>
           <v-row align="center">
-            <v-col class="d-flex" cols="12" sm="6">
+            <v-col class="" cols="12" sm="6">
               <template>
-                <v-menu
-                  ref="menu"
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="dateClaim.incident_date"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
+                <vc-date-picker
+                  v-model="incidentDate"
+                  mode="date"
+                  @input="incidentDateChange"
                 >
-                  <template v-slot:activator="{ on, attrs }">
+                  <template v-slot="{ inputEvents }">
                     <v-text-field
-                      v-model="dateClaim.incident_date"
-                      label="incident date"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="dateClaim.incident_date"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.menu.save(dateClaim.incident_date)"
+                      label="Incident Date"
+                      outlined
+                      :value="dateClaim.incident_date"
+                      v-on="inputEvents"
                     >
-                      OK
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
+                    </v-text-field>
+                  </template>
+                </vc-date-picker>
               </template>
             </v-col>
-            <v-col class="d-flex" cols="12" sm="6">
-              <v-menu
-                ref="menu1"
-                v-model="menu1"
-                :close-on-content-click="false"
-                :return-value.sync="dateClaim.claim_date"
-                transition="scale-transition"
-                offset-y
-                min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="dateClaim.claim_date"
-                    label="Claim date"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="dateClaim.claim_date"
-                  no-title
-                  scrollable
+            <v-col class="" cols="12" sm="6">
+              <template>
+                <vc-date-picker
+                  v-model="claimDate"
+                  mode="date"
+                  @input="claimDateChange"
                 >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu1 = false">
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.menu1.save(dateClaim.claim_date)"
-                  >
-                    OK
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
+                  <template v-slot="{ inputEvents }">
+                    <v-text-field
+                      label="Incident Date"
+                      outlined
+                      :value="dateClaim.claim_date"
+                      v-on="inputEvents"
+                      class="claimDateInputField"
+                    >
+                    </v-text-field>
+                  </template>
+                </vc-date-picker>
+              </template>
             </v-col>
-            <v-col class="d-flex" cols="12" sm="6">
-              
-              <v-file-input outlined label="Incident report"></v-file-input>
+            <v-col class="" cols="12" sm="6">
+              <v-file-input
+                v-if="!showDownload"
+                outlined
+                label="Incident report"
+                v-model="dateClaim.incident_reportFile"
+              ></v-file-input>
+              <a
+                class="download mr-4"
+                color="white"
+                v-if="showDownload"
+                :href="
+                  'http://127.0.0.1:8000/storage/cdn/automobiles/incident_report/' +
+                  dateClaim.incident_report
+                "
+                download="proposed_file_name"
+                >DOWNLOAD THE INCIDENT REPORT
+                <v-icon class="mr-2"> mdi-download </v-icon></a
+              >
+              <span
+                class="change"
+                color="white"
+                v-if="showDownload"
+                @click="clickOnChange"
+                >CHANGE THE INCIDENT REPORT
+                <v-icon class="mr-2"> mdi-rotate-3d-variant </v-icon></span
+              >
             </v-col>
-
           </v-row>
         </v-container>
       </template>
@@ -98,35 +80,39 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import {
+  formatToSimpleFormatDD_MM_YYYY,
+  FormatDateStringToISOSimpleEnglishDate,
+} from "../../../helpers/helpers.js";
 
 export default {
   components: {},
-
-  data() {
+  data(vm) {
     return {
-      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      date1: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
+      showDownload: false,
+      incidentDate: new Date(),
+      claimDate: new Date(),
       menu: false,
       menu1: false,
       dateClaim: {
-        incident_date: "",
-        claim_date: "",
+        incident_date: null,
+        claim_date: null,
+        incident_report: "",
+        incident_reportFile: "",
       },
     };
   },
-
   mounted() {
     document.title = "Claim";
-
     this.initialize();
   },
   computed: {
+    computedDateFormatted() {
+      return this.formatDate(this.date);
+    },
     formTitle() {},
     ...mapGetters([
+      "geteditedOrSavedClaimAutomobile",
       "getTypeOfEquipments",
       "getbrands",
       "getnatureOfDamages",
@@ -138,7 +124,12 @@ export default {
     dateClaim: {
       deep: true,
       handler(newValue, oldvalue) {
-        this.set_date_automobile_claim_SetterAction(newValue).then(() => {});
+        this.set_date_automobile_claim_SetterAction(newValue);
+      },
+    },
+    date: {
+      handler(newValue, oldvalue) {
+        this.dateFormatted = this.formatDate(this.date);
       },
     },
   },
@@ -146,15 +137,56 @@ export default {
     // this.initialize();
   },
   methods: {
+    ...mapActions(["set_date_automobile_claim_SetterAction"]),
     initialize() {
       if (this.geteditedOrSavedClaimAutomobile.id > 0) {
         this.dateClaim.incident_date =
           this.geteditedOrSavedClaimAutomobile.incident_date;
         this.dateClaim.claim_date =
           this.geteditedOrSavedClaimAutomobile.claim_date;
+        this.dateClaim.incident_report =
+          this.geteditedOrSavedClaimAutomobile.incident_report;
+        this.dateClaim.incident_reportFile =
+          this.geteditedOrSavedClaimAutomobile.incident_reportFile;
+        if (
+          this.dateClaim.incident_date != "" &&
+          this.dateClaim.incident_date != null
+        )
+          this.incidentDate = new Date(this.dateClaim.incident_date);
+        if (
+          this.dateClaim.claim_date != "" &&
+          this.dateClaim.claim_date != null
+        )
+          this.claimDate = new Date(this.dateClaim.claim_date);
+
+        this.showDownload =
+          this.geteditedOrSavedClaimAutomobile.incident_report != null &&
+          this.geteditedOrSavedClaimAutomobile.incident_report != ""
+            ? true
+            : false;
       }
     },
-    ...mapActions(["set_date_automobile_claim_SetterAction"]),
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${month}/${day}/${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
+    incidentDateChange(input) {
+      this.dateClaim.incident_date = formatToSimpleFormatDD_MM_YYYY(input);
+    },
+    claimDateChange(input) {
+      this.dateClaim.claim_date = formatToSimpleFormatDD_MM_YYYY(input);
+    },
+    clickOnChange() {
+      this.showDownload = false;
+    },
   },
 };
 </script>

@@ -26,7 +26,7 @@
             </v-col>
             <v-col class="d-flex" cols="6" sm="4">
               <v-text-field
-                label="Nombre of containers :"
+                label="Numbre of containers :"
                 outlined
                 v-model="shippingLineModel.nombre_of_containers"
                 class="mr-2"

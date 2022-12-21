@@ -142,27 +142,12 @@
                   <v-list-item class="itemd"> User </v-list-item>
                 </div>
               </router-link>
-              <router-link class="linktext" to="/">
+              <router-link class="linktext" to="/Claim">
                 <div class="itemdrawer">
-                  <v-list-item class="itemd"> Equipment </v-list-item>
+                  <v-list-item class="itemd"> Claim </v-list-item>
                 </div>
               </router-link>
-            
-              <router-link class="linktext" to="/Automobile">
-                <div class="itemdrawer">
-                  <v-list-item class="itemd"> Automobile </v-list-item>
-                </div>
-              </router-link>
-              <router-link class="linktext" to="/Vessel">
-                <div class="itemdrawer">
-                  <v-list-item class="itemd"> Vessel </v-list-item>
-                </div>
-              </router-link>
-              <router-link class="linktext" to="/Container">
-                <div class="itemdrawer">
-                  <v-list-item class="itemd"> Container </v-list-item>
-                </div>
-              </router-link>
+             
             </v-list-item-group>
           </v-list>
         </v-list-item-group>

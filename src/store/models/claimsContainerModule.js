@@ -270,7 +270,7 @@ const claimsContainerModule = {
     },
     emptyAll_Attr_CONTAINER_CLAiM(state) {
       state.editedOrSavedClaimContainer.id = 0;
-      state.editedOrSavedClaimContainer.ClaimOrIncident = "";
+      //state.editedOrSavedClaimContainer.ClaimOrIncident = "";
       state.editedOrSavedClaimContainer.containerID = 0;
       state.editedOrSavedClaimContainer.nombre_of_containers = 0;
       state.editedOrSavedClaimContainer.containerType = "";

@@ -7,9 +7,7 @@ const claimsEquipmentModule = {
     editedOrSavedClaimEquipment: {
       id: 0,
       status: "",
-      incident_date: "",
-      claim_date: "",
-      ClaimOrIncident: "",
+      claim_id:0,
       categorie_of_equipment: "",
       concerned_internal_department: "",
       equipement_registration: "",
@@ -86,7 +84,6 @@ const claimsEquipmentModule = {
       });
     },
     setClaimOrIncident_EQUIPMENT_CLAiM(state, ClaimOrIncident) {
-      state.editedOrSavedClaimEquipment.ClaimOrIncident = ClaimOrIncident;
     },
     setEQUIPMENT_CLAiM(state, equipment) {
       state.editedOrSavedClaimEquipment.type_of_equipment.id =
@@ -123,8 +120,6 @@ const claimsEquipmentModule = {
         equipment.department.join("|");
     },
     setDATE_EQUIPMENT_CLAiM(state, dateClaim) {
-      state.editedOrSavedClaimEquipment.incident_date = dateClaim.incident_date;
-      state.editedOrSavedClaimEquipment.claim_date = dateClaim.claim_date;
       state.editedOrSavedClaimEquipment.incident_reportFile =
         dateClaim.incident_reportFile;
       state.editedOrSavedClaimEquipment.incident_report =
@@ -171,8 +166,8 @@ const claimsEquipmentModule = {
     },
     setAll_Attr_EQUIPMENT_CLAiM(state, EquipmentClaim) {
       state.editedOrSavedClaimEquipment.id = EquipmentClaim.id;
-      state.editedOrSavedClaimEquipment.ClaimOrIncident =
-        EquipmentClaim.ClaimOrIncident;
+      state.editedOrSavedClaimEquipment.claim_id = EquipmentClaim.claim_id;
+
       state.editedOrSavedClaimEquipment.categorie_of_equipment =
         EquipmentClaim.categorie_of_equipment;
       state.editedOrSavedClaimEquipment.Deductible_charge_TAT =
@@ -225,9 +220,7 @@ const claimsEquipmentModule = {
       // estimation
       state.editedOrSavedClaimEquipment.estimate = EquipmentClaim.estimate;
       // date
-      state.editedOrSavedClaimEquipment.incident_date =
-        EquipmentClaim.incident_date;
-      state.editedOrSavedClaimEquipment.claim_date = EquipmentClaim.claim_date;
+    
       state.editedOrSavedClaimEquipment.date_of_declaration =
         EquipmentClaim.date_of_declaration;
       state.editedOrSavedClaimEquipment.date_of_feedback =
@@ -253,7 +246,7 @@ const claimsEquipmentModule = {
     },
     emptyAll_Attr_EQUIPMENT_CLAiM(state) {
       state.editedOrSavedClaimEquipment.id = 0;
-      state.editedOrSavedClaimEquipment.ClaimOrIncident = "";
+      state.editedOrSavedClaimEquipment.claim_id = 0;
       state.editedOrSavedClaimEquipment.categorie_of_equipment = "";
       state.editedOrSavedClaimEquipment.Deductible_charge_TAT = "";
       state.editedOrSavedClaimEquipment.categorie_of_equipment = "";
@@ -295,8 +288,6 @@ const claimsEquipmentModule = {
       state.editedOrSavedClaimEquipment.estimate = "";
 
       // date
-      state.editedOrSavedClaimEquipment.incident_date = "";
-      state.editedOrSavedClaimEquipment.claim_date = "";
       state.editedOrSavedClaimEquipment.date_of_declaration = "";
       state.editedOrSavedClaimEquipment.date_of_feedback = "";
       state.editedOrSavedClaimEquipment.thirdparty_Activity_comments = "";
@@ -346,16 +337,10 @@ const claimsEquipmentModule = {
         var claimFormData = new FormData();
 
         claimFormData.append("id", claim.id);
+        claimFormData.append("claim_id", claim.claim_id);
         claimFormData.append("status", NullTest(claim.status));
-        claimFormData.append(
-          "incident_date",
-          toLaravelDatetime(claim.incident_date)
-        );
-        claimFormData.append("claim_date", toLaravelDatetime(claim.claim_date));
-        claimFormData.append(
-          "ClaimOrIncident",
-          NullTest(claim.ClaimOrIncident)
-        );
+
+       
         claimFormData.append(
           "categorie_of_equipment",
           NullTest(claim.categorie_of_equipment)
@@ -518,7 +503,7 @@ const claimsEquipmentModule = {
     },
     deleteEquipmentClaimAction({ commit }, claim) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.post("containers/delete", claim)
+        CustomizedAxios.post("equipments/delete", claim)
           .then((response) => {
             commit("DELETE_CLAiM", claim);
             resolve(response.data);

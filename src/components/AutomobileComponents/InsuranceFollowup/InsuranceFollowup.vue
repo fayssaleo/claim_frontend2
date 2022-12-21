@@ -2,80 +2,42 @@
   <div>
     <h4>Insurance declaration :</h4>
     <v-row align="center">
-      <v-col class="d-flex" cols="12" sm="4">
-        <v-menu
-          ref="menu2"
-          v-model="menu2"
-          :close-on-content-click="false"
-          :return-value.sync="date2"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
+      <v-col class="" cols="12" sm="4">
+        <vc-date-picker
+          v-model="declarationDate"
+          mode="date"
+          @input="declarationDateChange"
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot="{ inputEvents }">
             <v-text-field
-              v-model="insurance_followup.date_of_declaration"
-              label="Date of declaration"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="insurance_followup.date_of_declaration"
-            no-title
-            scrollable
-          >
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu2 = false"> Cancel </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="$refs.menu2.save(insurance_followup.date_of_declaration)"
+              label="Declaration Date"
+              outlined
+              :value="insurance_followup.date_of_declaration"
+              v-on="inputEvents"
+              class="declarationDateInputField"
             >
-              OK
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
+            </v-text-field>
+          </template>
+        </vc-date-picker>
       </v-col>
 
-      <v-col class="d-flex" cols="12" sm="4">
-        <v-menu
-          ref="menu3"
-          v-model="menu3"
-          :close-on-content-click="false"
-          :return-value.sync="date3"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
+      <v-col class="" cols="12" sm="4">
+        <vc-date-picker
+          v-model="feedbackDate"
+          mode="date"
+          @input="feedbackDateChange"
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot="{ inputEvents }">
             <v-text-field
-              v-model="insurance_followup.date_of_feedback"
-              label="Date of feedback "
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="insurance_followup.date_of_feedback"
-            no-title
-            scrollable
-          >
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu3 = false"> Cancel </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="$refs.menu3.save(insurance_followup.date_of_feedback)"
+              label="Date of feedback"
+              outlined
+              :value="insurance_followup.date_of_feedback"
+              v-on="inputEvents"
+              class="feedbackDateInputField"
             >
-              OK
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
+            </v-text-field>
+          </template>
+        </vc-date-picker>
       </v-col>
       <v-col class="d-flex" cols="12" sm="4">
         <v-text-field
@@ -84,11 +46,34 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col class="d-flex" cols="12" sm="4">
-              <v-file-input
-                label="Insurance declaration :"
-              ></v-file-input>
-            </v-col>
+      <v-col class="d-flex" cols="12">
+        <v-file-input
+          v-if="!showDownload"
+          outlined
+          label="Insurance declaration"
+          v-model="insurance_followup.insurance_declarationFile"
+        ></v-file-input>
+        <a
+          class="download mr-4"
+          color="white"
+          v-if="showDownload"
+          :href="
+            'http://127.0.0.1:8000/storage/cdn/automobiles/insurance_declaration/' +
+            insurance_followup.insurance_declaration
+          "
+          download="proposed_file_name"
+          >DOWNLOAD THE INSURANCE DECLARATION
+          <v-icon class="mr-2"> mdi-download </v-icon></a
+        >
+        <span
+          class="change"
+          color="white"
+          v-if="showDownload"
+          @click="clickOnChange"
+          >CHANGE THE INSURANCE DECLARATION
+          <v-icon class="mr-2"> mdi-rotate-3d-variant </v-icon></span
+        >
+      </v-col>
     </v-row>
     <v-divider class="ma-2"></v-divider>
     <h4>Indemnisation :</h4>
@@ -112,46 +97,23 @@
           outlined
         ></v-select>
       </v-col>
-      <v-col class="d-flex" cols="12" sm="4">
-        <v-menu
-          ref="menu4"
-          v-model="menu4"
-          :close-on-content-click="false"
-          :return-value.sync="date4"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
+      <v-col class="" cols="12" sm="4">
+        <vc-date-picker
+          v-model="Indemnification_date"
+          mode="date"
+          @input="Indemnification_dateChange"
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot="{ inputEvents }">
             <v-text-field
-              v-model="insurance_followup.Complementary_indemnification"
-              label="Date of Complementary indemnification"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="insurance_followup.Complementary_indemnification"
-            no-title
-            scrollable
-          >
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu4 = false"> Cancel </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="
-                $refs.menu4.save(
-                  insurance_followup.Complementary_indemnification
-                )
-              "
+              label="Indemnification Date"
+              outlined
+              :value="insurance_followup.Indemnification_date"
+              v-on="inputEvents"
+              class="Indemnification_dateInputField"
             >
-              OK
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
+            </v-text-field>
+          </template>
+        </vc-date-picker>
       </v-col>
 
       <v-col class="d-flex" cols="12" sm="6">
@@ -167,34 +129,43 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import { formatToSimpleFormatDD_MM_YYYY } from "../../../helpers/helpers.js";
 
 export default {
   components: {},
 
   data() {
     return {
-      date2: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      showDownload: false,
+      declarationDate: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
         .toISOString()
         .substr(0, 10),
-      date3: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      feedbackDate: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
         .toISOString()
         .substr(0, 10),
-      date4: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      Indemnification_date: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
         .toISOString()
         .substr(0, 10),
       menu2: false,
-
       menu3: false,
       menu4: false,
-
       insurance_followup: {
         date_of_declaration: null,
         date_of_feedback: "",
         comment_Insurance: "",
         Indemnification_of_insurer: null,
+        Indemnification_date: null,
         currency_indemnisation: null,
         deductible_charge_TAT: null,
         Complementary_indemnification: null,
+        insurance_declaration: null,
+        insurance_declarationFile: null,
       },
       currency_list: [
         { name: "Moroccan Dirham", code: "MAD", symbol: "MAD", id: 1 },
@@ -254,9 +225,35 @@ export default {
 
         this.insurance_followup.Complementary_indemnification =
           this.geteditedOrSavedClaimAutomobile.Complementary_indemnification;
+
+        this.insurance_followup.insurance_declaration =
+          this.geteditedOrSavedClaimAutomobile.insurance_declaration;
+        this.insurance_followup.Indemnification_date =
+          this.geteditedOrSavedClaimAutomobile.Indemnification_date;
+
+        this.showDownload =
+          this.geteditedOrSavedClaimAutomobile.insurance_declaration != null &&
+          this.geteditedOrSavedClaimAutomobile.insurance_declaration != ""
+            ? true
+            : false;
       }
     },
+    declarationDateChange(input) {
+      this.insurance_followup.date_of_declaration =
+        formatToSimpleFormatDD_MM_YYYY(input);
+    },
+    feedbackDateChange(input) {
+      this.insurance_followup.date_of_feedback =
+        formatToSimpleFormatDD_MM_YYYY(input);
+    },
+    Indemnification_dateChange(input) {
+      this.insurance_followup.Indemnification_date =
+        formatToSimpleFormatDD_MM_YYYY(input);
+    },
     ...mapActions(["set_insurance_followup_automobile_claim_SetterAction"]),
+    clickOnChange() {
+      this.showDownload = false;
+    },
   },
 };
 </script>

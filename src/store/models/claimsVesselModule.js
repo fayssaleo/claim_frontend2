@@ -168,7 +168,7 @@ const claimsVesselModule = {
     },
     emptyAll_Attr_VESSEL_CLAiM(state) {
       state.editedOrSavedClaimVessel.id = 0;
-      state.editedOrSavedClaimVessel.ClaimOrIncident = "";
+     // state.editedOrSavedClaimVessel.ClaimOrIncident = "";
       state.editedOrSavedClaimVessel.categorie_of_equipment = "";
       state.editedOrSavedClaimVessel.Deductible_charge_TAT = "";
       state.editedOrSavedClaimVessel.categorie_of_equipment = "";
