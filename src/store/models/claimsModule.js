@@ -7,6 +7,7 @@ const claimsModule = {
     claims: [],
     editedOrSavedclaim: {
       id: 0,
+      status: "",
       incident_date: "",
       claim_date: "",
       ClaimOrIncident: "",
@@ -20,6 +21,7 @@ const claimsModule = {
     },
     ADD_CLAiM(state, claim) {
       state.claims.push(claim);
+      state.editedOrSavedclaim.id=claim.id;
     },
     DELETE_CLAiM(state, id) {
       state.claims = state.claims.filter((c) => c.id != id);
@@ -30,22 +32,29 @@ const claimsModule = {
         return c;
       });
     },
-
     set_attr_ClaimOrIncident_CLAiM(state, ClaimOrIncident) {
-      state.editedOrSavedclaim.ClaimOrIncident = ClaimOrIncident;   
+      state.editedOrSavedclaim.ClaimOrIncident = ClaimOrIncident;
+    },
+    set_attr_without_CLAiM(state, claim) {
+      state.editedOrSavedclaim.id = claim.id;
+      state.editedOrSavedclaim.status = claim.status;
+      state.editedOrSavedclaim.incident_date = claim.incident_date;
+      state.editedOrSavedclaim.claim_date = claim.claim_date;
+      state.editedOrSavedclaim.incident_reportFile = claim.incident_reportFile;
+      state.editedOrSavedclaim.incident_report = claim.incident_report;
     },
     set_attr_CLAiM(state, claim) {
       state.editedOrSavedclaim.id = claim.id;
+      state.editedOrSavedclaim.status = claim.status;
       state.editedOrSavedclaim.incident_date = claim.incident_date;
       state.editedOrSavedclaim.claim_date = claim.claim_date;
       state.editedOrSavedclaim.ClaimOrIncident = claim.ClaimOrIncident;
-      state.editedOrSavedclaim.incident_reportFile =
-        claim.incident_reportFile;
-      state.editedOrSavedclaim.incident_report =
-        claim.incident_report;
+      state.editedOrSavedclaim.incident_reportFile = claim.incident_reportFile;
+      state.editedOrSavedclaim.incident_report = claim.incident_report;
     },
     empty_attr_CLAiM(state, claim) {
       state.editedOrSavedclaim.id = 0;
+      state.editedOrSavedclaim.status = "";
       state.editedOrSavedclaim.incident_date = "";
       state.editedOrSavedclaim.claim_date = "";
       state.editedOrSavedclaim.ClaimOrIncident = "";
@@ -54,9 +63,22 @@ const claimsModule = {
     },
   },
   actions: {
-    setClaimsAction({ commit }) {
+    setindexClaimsAction({ commit }) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.get("claim/")
+        CustomizedAxios.get("claims/indexClaims")
+          .then((response) => {
+            commit("SET_CLAiMS", response.data.payload);
+            console.log("set claims");
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    setindexIncidentsAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("claims/indexIncidents")
           .then((response) => {
             commit("SET_CLAiMS", response.data.payload);
             console.log("set claims");
@@ -81,6 +103,7 @@ const claimsModule = {
           "ClaimOrIncident",
           NullTest(claim.ClaimOrIncident)
         );
+        claimFormData.append("status", NullTest(claim.status));
         claimFormData.append(
           "incident_report",
           NullTest(claim.incident_report)
@@ -90,7 +113,7 @@ const claimsModule = {
           NullTest(claim.incident_reportFile)
         );
 
-        CustomizedAxios.post("claim/create", claimFormData)
+        CustomizedAxios.post("claims/create", claimFormData)
           .then((response) => {
             console.log("res add ", response);
             commit("ADD_CLAiM", response.data.payload);
@@ -103,9 +126,9 @@ const claimsModule = {
     },
     deleteClaimAction({ commit }, claim) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.post("claim/delete", claim)
+        CustomizedAxios.post("claims/delete", claim)
           .then((response) => {
-            commit("DELETE_CLAiM", id);
+            commit("DELETE_CLAiM", claim.id);
             resolve(response.data);
           })
           .catch((error) => {
@@ -145,11 +168,38 @@ const claimsModule = {
           });
       });
     },
-    set_attr_ClaimOrIncident_CLAiMAction({ commit },ClaimOrIncident) {
-      commit("set_attr_ClaimOrIncident_CLAiM",ClaimOrIncident);
+    closedClaimAction({ commit }, claim) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.post("claims/closed", claim)
+          .then((response) => {
+            commit("EDIT_CLAiM", response.data.payload);
+            resolve(response.data.payload);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
     },
-    set_attr_CLAiMAction({ commit },claim) {
-      commit("set_attr_CLAiM",claim);
+    treatedClaimAction({ commit }, claim) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.post("claims/treated", claim)
+          .then((response) => {
+            commit("EDIT_CLAiM", response.data.payload);
+            resolve(response.data.payload);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    set_attr_ClaimOrIncident_CLAiMAction({ commit }, ClaimOrIncident) {
+      commit("set_attr_ClaimOrIncident_CLAiM", ClaimOrIncident);
+    },
+    set_attr_without_CLAiMAction({ commit }, claim) {
+      commit("set_attr_without_CLAiM", claim);
+    },
+    set_attr_CLAiMAction({ commit }, claim) {
+      commit("set_attr_CLAiM", claim);
     },
     empty_attr_CLAiMAction({ commit }) {
       commit("empty_attr_CLAiM");

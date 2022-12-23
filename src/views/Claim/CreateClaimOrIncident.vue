@@ -12,18 +12,32 @@
         ></v-switch>
         <h5 class="deep-orange--text text--lighten-1">Incident</h5>
       </v-card>
+
       <template>
         <div>
           <v-card>
           <v-toolbar color="green lighten-2" dark flat>
             <template v-slot:extension>
+
               <v-tabs v-model="tab" align-with-title>
                 <v-tabs-slider color="white"></v-tabs-slider>
-
-                <v-tab v-for="item in items" :key="item">
-                  {{ item }}
+                <v-tab  key="0"  >
+                  {{ items[0] }}
+                </v-tab>
+                <v-tab  key="1" :disabled="geteditedOrSavedclaim.id >= 1?false:true" >
+                  {{ items[1]  }}
+                </v-tab>
+                <v-tab  key="2" :disabled="geteditedOrSavedclaim.id >= 1?false:true" >
+                  {{ items[2]  }}
+                </v-tab>
+                <v-tab  key="3" :disabled="geteditedOrSavedclaim .id>= 1?false:true" >
+                  {{ items[3]  }}
+                </v-tab>
+                <v-tab  key="4" :disabled="geteditedOrSavedclaim.id >= 1?false:true" >
+                  {{ items[4]  }}
                 </v-tab>
               </v-tabs>
+              
             </template>
           </v-toolbar>
 
@@ -83,7 +97,7 @@ export default {
       tab: null,
       createdOrEdited: "CREATING",
       items: ["Date","Equipmemt", "Automobile", "Vessel", "Container"],
-      
+      id_claim:0,
     };
   },
   computed: {
@@ -92,13 +106,13 @@ export default {
   },
   mounted() {
     document.title = "Claim";
-
+    this.id_claim=this.geteditedOrSavedclaim.id;
     this.initialize();
   },
   watch: {
     ClaimOrIncidentValue: {
       handler(newValue, oldvalue) {
-        this.set_attr_ClaimOrIncident_CLAiMAction(newValue).then(() => {});
+       // this.set_attr_ClaimOrIncident_CLAiMAction(newValue).then(() => {});
       },
     },
   },
@@ -106,7 +120,6 @@ export default {
   methods: {
     ...mapActions([
       "set_attr_ClaimOrIncident_CLAiMAction",
-      "editedOrSavedEquipmentClaimAction",
       "setModuleShowToTrueAction",
       "setModuleShowToFalseAction",
     ]),
@@ -117,15 +130,13 @@ export default {
       } else {
         this.createdOrEdited = "Edit";
       }
-      this.set_attr_ClaimOrIncident_CLAiMAction(
-        this.ClaimOrIncidentValue
-      ).then(() => {});
+       
       if (this.geteditedOrSavedclaim.ClaimOrIncident == "Incident") {
         this.switch1 = true;
       } else {
         this.switch1 = false;
       }
-      this.ClaimOrIncident();
+      this.ClaimOrIncident(); 
     },
     ClaimOrIncident() {
       if (this.switch1 == false) {
@@ -134,6 +145,9 @@ export default {
         this.ClaimOrIncidentValue = "Incident";
       }
       this.set_attr_ClaimOrIncident_CLAiMAction(
+        this.ClaimOrIncidentValue
+      ).then(() => {});
+      this.set_attr_ClaimOrIncident_EQUIPMENTAction(
         this.ClaimOrIncidentValue
       ).then(() => {});
     },

@@ -6,10 +6,7 @@ const claimsAutomobileModule = {
     automobiles: [],
     editedOrSavedClaimAutomobile: {
       id: 0,
-      status: "",
-      incident_date: "",
-      claim_date: "",
-      ClaimOrIncident: "",
+      claim_id: 0,
       categorie_of_equipment: "",
       concerned_internal_department: "",
       equipement_registration: "",
@@ -85,8 +82,8 @@ const claimsAutomobileModule = {
         return c;
       });
     },
-    setClaimOrIncident_AUTOMOBILE_CLAiM(state, ClaimOrIncident) {
-      state.editedOrSavedClaimAutomobile.ClaimOrIncident = ClaimOrIncident;
+    setclaim_id_AUTOMOBILE_CLAiM(state, claim_id) {
+      state.editedOrSavedClaimAutomobile.claim_id = claim_id;
     },
     setAUTOMOBILE_CLAiM(state, equipment) {
       state.editedOrSavedClaimAutomobile.type_of_equipment.id =
@@ -123,8 +120,7 @@ const claimsAutomobileModule = {
         equipment.department.join("|");
     },
     setDATE_AUTOMOBILE_CLAiM(state, dateClaim) {
-      state.editedOrSavedClaimAutomobile.incident_date = dateClaim.incident_date;
-      state.editedOrSavedClaimAutomobile.claim_date = dateClaim.claim_date;
+   
       state.editedOrSavedClaimAutomobile.incident_reportFile =
         dateClaim.incident_reportFile;
       state.editedOrSavedClaimAutomobile.incident_report =
@@ -171,8 +167,8 @@ const claimsAutomobileModule = {
     },
     setAll_Attr_AUTOMOBILE_CLAiM(state, AutomobileClaim) {
       state.editedOrSavedClaimAutomobile.id = AutomobileClaim.id;
-      state.editedOrSavedClaimAutomobile.ClaimOrIncident =
-        AutomobileClaim.ClaimOrIncident;
+      state.editedOrSavedClaimAutomobile.claim_id =
+        AutomobileClaim.claim_id;
       state.editedOrSavedClaimAutomobile.categorie_of_equipment =
         AutomobileClaim.categorie_of_equipment;
       state.editedOrSavedClaimAutomobile.Deductible_charge_TAT =
@@ -225,9 +221,7 @@ const claimsAutomobileModule = {
       // estimation
       state.editedOrSavedClaimAutomobile.estimate = AutomobileClaim.estimate;
       // date
-      state.editedOrSavedClaimAutomobile.incident_date =
-        AutomobileClaim.incident_date;
-      state.editedOrSavedClaimAutomobile.claim_date = AutomobileClaim.claim_date;
+      
       state.editedOrSavedClaimAutomobile.date_of_declaration =
         AutomobileClaim.date_of_declaration;
       state.editedOrSavedClaimAutomobile.date_of_feedback =
@@ -253,7 +247,7 @@ const claimsAutomobileModule = {
     },
     emptyAll_Attr_AUTOMOBILE_CLAiM(state) {
       state.editedOrSavedClaimAutomobile.id = 0;
-     // state.editedOrSavedClaimAutomobile.ClaimOrIncident = "";
+      state.editedOrSavedClaimAutomobile.claim_id = 0;
       state.editedOrSavedClaimAutomobile.categorie_of_equipment = "";
       state.editedOrSavedClaimAutomobile.Deductible_charge_TAT = "";
       state.editedOrSavedClaimAutomobile.categorie_of_equipment = "";
@@ -295,8 +289,7 @@ const claimsAutomobileModule = {
       state.editedOrSavedClaimAutomobile.estimate = "";
 
       // date
-      state.editedOrSavedClaimAutomobile.incident_date = "";
-      state.editedOrSavedClaimAutomobile.claim_date = "";
+     
       state.editedOrSavedClaimAutomobile.date_of_declaration = "";
       state.editedOrSavedClaimAutomobile.date_of_feedback = "";
       state.editedOrSavedClaimAutomobile.thirdparty_Activity_comments = "";
@@ -317,9 +310,9 @@ const claimsAutomobileModule = {
           });
       });
     },
-    setAutomobilesAllClaimAction({ commit }) {
+    setAutomobilesAction({ commit },id) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.get("automobiles/allClaim")
+        CustomizedAxios.get("automobiles/"+id)
           .then((response) => {
             commit("SET_CLAiMS", response.data.payload);
             resolve(response);
@@ -329,33 +322,15 @@ const claimsAutomobileModule = {
           });
       });
     },
-    setAutomobilesAllIncidentAction({ commit }) {
-      return new Promise((resolve, reject) => {
-        CustomizedAxios.get("automobiles/allIncident")
-          .then((response) => {
-            commit("SET_CLAiMS", response.data.payload);
-            resolve(response);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    },
+   
     editedOrSavedAutomobileClaimAction({ commit }, automobile) {
       return new Promise((resolve, reject) => {
         var claimFormData = new FormData();
 
         claimFormData.append("id", automobile.id);
-        claimFormData.append("status", NullTest(automobile.status));
-        claimFormData.append(
-          "incident_date",
-          toLaravelDatetime(automobile.incident_date)
-        );
-        claimFormData.append("claim_date", toLaravelDatetime(automobile.claim_date));
-        claimFormData.append(
-          "ClaimOrIncident",
-          NullTest(automobile.ClaimOrIncident)
-        );
+        claimFormData.append("claim_id", NullTest(automobile.claim_id));
+      
+    
         claimFormData.append(
           "categorie_of_equipment",
           NullTest(automobile.categorie_of_equipment)
@@ -540,8 +515,8 @@ const claimsAutomobileModule = {
           });
       });
     },
-    set_ClaimOrIncident_automobileclaim_SetterAction({ commit }, equipment) {
-      commit("setClaimOrIncident_AUTOMOBILE_CLAiM", equipment);
+    set_Claim_id_automobileclaim_SetterAction({ commit }, claim_id) {
+      commit("setclaim_id_AUTOMOBILE_CLAiM", claim_id);
     },
     set_automobile_claim_SetterAction({ commit }, equipment) {
       commit("setAUTOMOBILE_CLAiM", equipment);

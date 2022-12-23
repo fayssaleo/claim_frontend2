@@ -6,8 +6,7 @@ const claimsEquipmentModule = {
     claims: [],
     editedOrSavedClaimEquipment: {
       id: 0,
-      status: "",
-      claim_id:0,
+      claim_id: 0,
       categorie_of_equipment: "",
       concerned_internal_department: "",
       equipement_registration: "",
@@ -40,6 +39,7 @@ const claimsEquipmentModule = {
       liability_letterFile: null,
       insurance_declaration: null,
       insurance_declarationFile: null,
+      ClaimOrIncident: "",
       type_of_equipment: {
         id: 0,
         name: "",
@@ -83,7 +83,8 @@ const claimsEquipmentModule = {
         return c;
       });
     },
-    setClaimOrIncident_EQUIPMENT_CLAiM(state, ClaimOrIncident) {
+    setClaim_id_EQUIPMENT_CLAiM(state, claim_id) {
+      state.editedOrSavedClaimEquipment.claim_id = claim_id;
     },
     setEQUIPMENT_CLAiM(state, equipment) {
       state.editedOrSavedClaimEquipment.type_of_equipment.id =
@@ -220,7 +221,7 @@ const claimsEquipmentModule = {
       // estimation
       state.editedOrSavedClaimEquipment.estimate = EquipmentClaim.estimate;
       // date
-    
+
       state.editedOrSavedClaimEquipment.date_of_declaration =
         EquipmentClaim.date_of_declaration;
       state.editedOrSavedClaimEquipment.date_of_feedback =
@@ -293,6 +294,7 @@ const claimsEquipmentModule = {
       state.editedOrSavedClaimEquipment.thirdparty_Activity_comments = "";
       state.editedOrSavedClaimEquipment.Indemnification_date = "";
     },
+   
   },
   actions: {
     setClaimsAction({ commit }) {
@@ -308,9 +310,9 @@ const claimsEquipmentModule = {
           });
       });
     },
-    setEquipmentsAllClaimAction({ commit }) {
+    setEquipmentsAction({ commit }, id) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.get("equipments/allClaim")
+        CustomizedAxios.get("equipments/" + id)
           .then((response) => {
             commit("SET_CLAiMS", response.data.payload);
             resolve(response);
@@ -338,9 +340,7 @@ const claimsEquipmentModule = {
 
         claimFormData.append("id", claim.id);
         claimFormData.append("claim_id", claim.claim_id);
-        claimFormData.append("status", NullTest(claim.status));
 
-       
         claimFormData.append(
           "categorie_of_equipment",
           NullTest(claim.categorie_of_equipment)
@@ -525,8 +525,8 @@ const claimsEquipmentModule = {
           });
       });
     },
-    set_ClaimOrIncident_claim_SetterAction({ commit }, equipment) {
-      commit("setClaimOrIncident_EQUIPMENT_CLAiM", equipment);
+    setClaim_id_EQUIPMENT_claim_SetterAction({ commit }, equipment) {
+      commit("setClaim_id_EQUIPMENT_CLAiM", equipment);
     },
     set_equipment_claim_SetterAction({ commit }, equipment) {
       commit("setEQUIPMENT_CLAiM", equipment);
@@ -546,6 +546,7 @@ const claimsEquipmentModule = {
     emptyAll_Attr_EQUIPMENT_CLAiMAction({ commit }) {
       commit("emptyAll_Attr_EQUIPMENT_CLAiM");
     },
+    
   },
   getters: {
     getEquipmentclaims: (state) => {

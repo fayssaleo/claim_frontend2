@@ -24,7 +24,7 @@
             </template>
             <v-card>
               <v-toolbar dark color="primary">
-                <v-btn icon dark @click="dialog = false">
+                <v-btn icon dark @click="closeDialoge">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
                 <v-toolbar-title>Settings</v-toolbar-title>
@@ -60,44 +60,36 @@
                       </v-card>
                     </v-col>
                     <v-col class="d-flex" cols="12" sm="4">
+                      <v-file-input
+                        v-if="editedItem.fileName == null"
+                        outlined
+                        v-model="editedItem.file"
+                        label="File input"
+                        class="mt-2"
+                      ></v-file-input>
+                      <div v-if="editedItem.fileName != null" class="d-flex">
+                        <span class="fileNameEstimate">
+                          {{ editedItem.fileName }}
+                        </span>
 
-
-
-
-                        <v-file-input
-                          v-if="editedItem.file_estimates == null"
-                          outlined
-                          v-model="file"
-                          label="File input"
-                          class="mt-2"
-                        ></v-file-input>
-                        <div v-if="editedItem.file_estimates != null" class="d-flex flex-column">
-                          <v-btn
-                            
-                            class="white--text btnFile"
-                            color="teal"
-                          >
-                            <a
-                              class="downloadpicture"
-                              :href="`${URL}/${editedItem.file_estimates.filename}`"
-                              download
-                              target="_blank"
-                            >
-                              <v-icon medium >
-                                mdi-download-circle-outline
-                              </v-icon>
-                            </a>
-                          </v-btn>
-                          <v-btn
-                            class="btnFile white--text"
-                            color="red"
-                            @click="deleteFile()"
-                          >                         
-                              <v-icon medium >
-                                mdi-delete
-                              </v-icon>                          
-                          </v-btn>
-                        </div>
+                        <a
+                          class="downloadpicture white--text bg-teal btnFile"
+                          :href="`${URL}/${editedItem.fileName}`"
+                          download
+                          target="_blank"
+                        >
+                          <v-icon color="white" medium>
+                            mdi-download-circle-outline
+                          </v-icon>
+                        </a>
+                        <v-btn
+                          class="btnFile white--text"
+                          color="red"
+                          @click="deleteFile()"
+                        >
+                          <v-icon medium> mdi-delete </v-icon>
+                        </v-btn>
+                      </div>
                     </v-col>
                     <v-col class="d-flex" cols="12" sm="4">
                       <v-card
@@ -165,12 +157,25 @@
                         outlined
                       ></v-text-field>
                     </v-col>
-                    <Inputs
-                      v-for="item in textFields"
-                      :key="item.id"
-                      :refreshInputEstimate="refreshInputEstimate"
-                      :input_item="item"
-                    />
+
+                    <div v-if="estimateUpdate.estimate.customedFields != null">
+                      <Inputs
+                        v-for="item in estimateUpdate.estimate.customedFields"
+                        :key="item.id"
+                        :addToListTextFields="addToListTextFields"
+                        :refreshInputEstimate="refreshInputEstimate"
+                        :input_item="item"
+                      />
+                    </div>
+                    <div v-else>
+                      <Inputs
+                        v-for="item in estimateUpdate.estimate.customedFields"
+                        :key="item.id"
+                        :addToListTextFields="addToListTextFields"
+                        :refreshInputEstimate="refreshInputEstimate"
+                        :input_item="item"
+                      />
+                    </div>
                   </v-row>
                   <v-row class="pa-4 ma-2">
                     <h3>Others :</h3>
@@ -251,9 +256,11 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import Inputs from "./Inputs.vue";
+import LoadingPage from "@/components/LoadingPage.vue";
 export default {
   components: {
     Inputs,
+    LoadingPage,
   },
 
   data: () => ({
@@ -276,16 +283,31 @@ export default {
     estimates: [],
     editedIndex: -1,
     estimateDelete: null,
-    estimateUpdate: null,
+    estimateUpdate: {
+      estimate: {
+        id: null,
+        temporary_or_permanent: "",
+        currency_estimate: "",
+        fileName: "",
+        equipment_purchase_costs: 0,
+        installation_and_facilities_costs: 0,
+        rransportation_costs: 0,
+        vessel_id: null,
+        customedFields: [],
+      },
+      estimate_amount: 0,
+    },
     editedItem: {
-      id: 0,
+      id: null,
       temporary_or_permanent: "Temporary",
+      currency_estimate: "",
+      fileName: "",
       equipment_purchase_costs: 0,
       installation_and_facilities_costs: 0,
       rransportation_costs: 0,
       vessel_id: null,
-      currency_estimate: "",
-      file_estimates: null,
+      customedFields: [],
+      file: "create",
     },
     defaultItem: {
       id: 0,
@@ -295,7 +317,8 @@ export default {
       vessel_id: null,
       currency_estimate: "",
       temporary_or_permanent: "Temporary",
-      file_estimates: null,
+      fileName: null,
+      file: "create",
     },
     isAdd: true,
     AmountList: [],
@@ -326,6 +349,7 @@ export default {
       { name: "Australian Dollar", code: "AUD", symbol: "$", id: 11 },
     ],
     URL: "http://127.0.0.1:8000/storage/cdn/fileEstimates",
+    deleteInputs: [],
   }),
   mounted() {
     document.title = "Claim";
@@ -349,7 +373,8 @@ export default {
           rransportation_costs: 0,
           vessel_id: null,
           currency_estimate: "",
-          file_estimates: null,
+          fileName: null,
+          file: "create",
         };
       }
       val || this.close();
@@ -366,10 +391,23 @@ export default {
         this.TotalAmount();
       },
     },
-    textFields: {
+    estimateUpdate: {
       deep: true,
       handler(newValue, oldvalue) {
-        this.SUM();
+        this.TotalAmount();
+      },
+    },
+    editedItem: {
+      deep: true,
+      handler(newValue, oldvalue) {
+        this.TotalAmount();
+      },
+    },
+    isAdd: {
+      handler(newValue, oldvalue) {
+        if (newValue) {
+          this.estimateUpdate.estimate.customedFields = [];
+        }
       },
     },
   },
@@ -378,18 +416,20 @@ export default {
   },
   methods: {
     initialize() {
-      this.setestimatesVesselAction(this.geteditedOrSavedClaimVessel.id).then(() => {
+      this.setestimatesVesselAction(
+        this.geteditedOrSavedClaimVessel.id
+      ).then(() => {
         this.estimates = [...this.getestimates];
       });
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
     },
     ...mapActions([
       "setestimatesVesselAction",
-      "editestimateAction",
+      "editestimateVesselAction",
       "deleteestimateAction",
-      "addestimateAction",
+      "addestimateVesselAction",
       "addFileAction",
-      "deleteFileAction"
+      "deleteFileAction",
     ]),
     TotalAmount() {
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
@@ -405,9 +445,15 @@ export default {
       this.AmountList.push(
         numOr0(parseFloat(this.editedItem.rransportation_costs))
       );
-      this.textFields.map((x) => {
-        this.AmountList.push(numOr0(parseFloat(x.value)));
-      });
+
+      if (this.estimateUpdate != null) {
+        if (this.estimateUpdate.estimate.customedFields != null) {
+          this.estimateUpdate.estimate.customedFields.map((x) => {
+            this.AmountList.push(numOr0(parseFloat(x.value)));
+          });
+        }
+      }
+
       this.SUM();
     },
     SUM() {
@@ -416,6 +462,10 @@ export default {
       this.AmountList.map((x) => {
         this.totalAmount = x + this.totalAmount;
       });
+    },
+    addToListTextFields(data) {
+      this.textFields.push(data);
+      console.info("this.textFields", this.textFields);
     },
     TemporaryOrPermanent() {
       if (this.switch1 == false) {
@@ -427,12 +477,13 @@ export default {
     addEstimate() {
       this.editedItem.vessel_id = this.geteditedOrSavedClaimVessel.id;
       this.TemporaryOrPermanent();
-      this.addestimateAction(this.editedItem).then((resolve) => {
-        this.editedItem.id=resolve.estimate.id;
-
-        if (this.file != null) {
-          this.addFile();
-        }
+      this.editedItem.customedFields =
+        this.estimateUpdate.estimate.customedFields;
+      console.log("estimate file test", this.editedItem);
+      this.addestimateVesselAction(this.editedItem).then((resolve) => {
+        this.editedItem.id = resolve.estimate.id;
+        this.estimateUpdate = resolve;
+        this.estimateUpdate.estimate.customedFields = [];
 
         this.estimates = [...this.getestimates];
         this.editedItem.equipment_purchase_costs = "";
@@ -441,11 +492,17 @@ export default {
         this.editedItem.vessel_id = null;
         this.editedItem.currency_estimate = "";
         this.editedItem.id = 0;
+        this.editedItem.file = "";
       });
+      this.close();
     },
     updateEstimate() {
       this.editedItem.vessel_id = this.geteditedOrSavedClaimVessel.id;
+      this.editedItem.customedFields =
+        this.estimateUpdate.estimate.customedFields;
+
       this.TemporaryOrPermanent();
+      console.info("this.editedItem", this.editedItem);
       var modelUpdate = {
         estimate: {
           id: this.editedItem.id,
@@ -456,16 +513,16 @@ export default {
           rransportation_costs: this.editedItem.rransportation_costs,
           vessel_id: this.editedItem.vessel_id,
           currency_estimate: this.editedItem.currency_estimate,
-          file_estimates:this.editedItem.file_estimates,
+          fileName: this.editedItem.fileName,
+          customedFields: this.editedItem.customedFields,
+          file: this.editedItem.file,
         },
         estimate_amount: this.totalAmount,
+        deleteInputs: this.deleteInputs,
       };
+      //console.log('modelUpdate', modelUpdate);
 
-      this.editestimateAction(modelUpdate).then(() => {
-        if (this.file != null) {
-          this.addFile();
-        }
-
+      this.editestimateVesselAction(modelUpdate).then((resolve) => {
         setTimeout(() => {
           this.estimates = [...this.getestimates];
         }, 1000);
@@ -475,6 +532,15 @@ export default {
         this.editedItem.vessel_id = null;
         this.editedItem.currency_estimate = "";
         this.editedItem.id = 0;
+        this.editedItem.customedFields = [];
+        this.estimateUpdate.estimate.customedFields = [];
+        this.editedItem.file = "";
+
+        this.estimates = this.estimates.map((c) => {
+          if (c.estimate.id == resolve.estimate.id) return resolve;
+          return c;
+        });
+        //this.estimates = [...this.getestimates];
       });
       this.dialog = false;
 
@@ -489,7 +555,18 @@ export default {
         this.switch1 = true;
       }
 
+      console.log("item update customed_field", item);
       this.estimateUpdate = item;
+
+      // debugger;
+      if (typeof item.estimate.customed_field !== "undefined") {
+        this.estimateUpdate.estimate.customedFields =
+          item.estimate.customed_field;
+      } else {
+        //this.estimateUpdate.estimate.customedFields = [];
+      }
+
+      //
       this.editedItem.equipment_purchase_costs =
         item.estimate.equipment_purchase_costs;
       this.editedItem.installation_and_facilities_costs =
@@ -500,8 +577,9 @@ export default {
       this.editedItem.temporary_or_permanent =
         item.estimate.temporary_or_permanent;
       this.editedItem.id = item.estimate.id;
-      //this.editedItem.file_estimates = this.URL+"/"+item.estimate.file_estimates.filename;
-      this.editedItem.file_estimates = item.estimate.file_estimates;
+      //this.editedItem.fileName = this.URL+"/"+item.estimate.fileName.filename;
+      this.editedItem.fileName = item.estimate.fileName;
+      this.editedItem.customedFields = item.estimate.customedFields;
 
       this.dialog = true;
       this.isAdd = false;
@@ -546,7 +624,7 @@ export default {
     },
     save() {
       if (this.isAdd == true) {
-        this.addeItem();
+        //this.addeItem();
         this.isAdd = false;
         console.log("add", "");
         setTimeout(() => {
@@ -554,7 +632,7 @@ export default {
         }, 2000);
         //this.closeAddSaveDialog();
       } else {
-        this.updateEstimate();
+        // this.updateEstimate();
 
         console.log("update", "");
         //this.LoadingPage = true;
@@ -568,8 +646,16 @@ export default {
       this.close();
     },
     refreshInputEstimate(id) {
-      this.textFields = this.textFields.filter((c) => c.id != id);
-      console.table(this.textFields);
+      this.deleteInputs = [];
+      this.estimateUpdate.estimate.customedFields =
+        this.estimateUpdate.estimate.customedFields.filter((c) => {
+          if (c.id == id) {
+            this.deleteInputs.push(c);
+          }
+          return c.id != id;
+        });
+      console.info("delete array", this.deleteInputs);
+      //console.table(this.estimateUpdate.estimate.customedFields);
       this.TotalAmount();
     },
     addOthers() {
@@ -578,11 +664,12 @@ export default {
       this.incrument = parseInt(this.incrument + 1);
       var model = {
         id: this.incrument,
+        estimate_id: 2,
         name: this.textFieldModel.name,
         value: this.textFieldModel.value,
       };
       this.AmountList.push(numOr0(parseFloat(this.textFieldModel.value)));
-      this.textFields.push(model);
+      this.estimateUpdate.estimate.customedFields.push(model);
       this.textFieldModel.name = "";
       this.textFieldModel.value = "";
     },
@@ -593,15 +680,6 @@ export default {
 
       this.addFileAction(formData)
         .then((resolve) => {
-          /* 
-
-            this.LoadingPage = true;
-            setTimeout(() => {
-              this.LoadingPage = false;
-              swal("Good job!", "success", "success");
-            }, 2000); 
-
-          */
           console.info("file done");
         })
         .catch(() => {
@@ -611,10 +689,34 @@ export default {
 
       this.dialogimage = false;
     },
-    downloadFile() {},
+    closeDialoge() {
+      this.isAdd = true;
+      this.dialog = false;
+    },
     deleteFile() {
-      this.deleteFileAction(this.editedItem.file_estimates).then(() => {
-      });
+      this.editedItem.vessel_id = this.geteditedOrSavedClaimVessel.id;
+      this.editedItem.customedFields =
+        this.estimateUpdate.estimate.customedFields;
+      this.editedItem.fileName = null;
+
+      this.TemporaryOrPermanent();
+      var modelDelete = {
+        estimate: {
+          id: this.editedItem.id,
+          temporary_or_permanent: this.editedItem.temporary_or_permanent,
+          equipment_purchase_costs: this.editedItem.equipment_purchase_costs,
+          installation_and_facilities_costs:
+            this.editedItem.installation_and_facilities_costs,
+          rransportation_costs: this.editedItem.rransportation_costs,
+          vessel_id: this.editedItem.vessel_id,
+          currency_estimate: this.editedItem.currency_estimate,
+          fileName: null,
+          customedFields: this.editedItem.customedFields,
+          file: "delete",
+        },
+        estimate_amount: this.totalAmount,
+      };
+      this.editestimateVesselAction(modelDelete).then(() => {});
     },
   },
 };

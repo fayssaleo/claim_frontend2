@@ -6,10 +6,7 @@ const claimsContainerModule = {
     claims: [],
     editedOrSavedClaimContainer: {
       id: 0,
-      status: "",
-      incident_date: "",
-      claim_date: "",
-      ClaimOrIncident: "",
+      claim_id: 0,
       containerID: 0,
       nombre_of_containers: 0,
       categorie_of_container: "",
@@ -88,8 +85,8 @@ const claimsContainerModule = {
         return c;
       });
     },
-    setClaimOrIncident_CONTAINER_CLAiM(state, ClaimOrIncident) {
-      state.editedOrSavedClaimContainer.ClaimOrIncident = ClaimOrIncident;
+    setclaim_id_CONTAINER_CLAiM(state, claim_id) {
+      state.editedOrSavedClaimContainer.claim_id = claim_id;
     },
     setCONTAINER_CLAiM(state, container) {
       state.editedOrSavedClaimContainer.categorie_of_container =
@@ -127,8 +124,7 @@ const claimsContainerModule = {
         container.department.join("|");
     },
     setDATE_CONTAINER_CLAiM(state, dateClaim) {
-      state.editedOrSavedClaimContainer.incident_date = dateClaim.incident_date;
-      state.editedOrSavedClaimContainer.claim_date = dateClaim.claim_date;
+  
       state.editedOrSavedClaimContainer.incident_reportFile =
         dateClaim.incident_reportFile;
       state.editedOrSavedClaimContainer.incident_report =
@@ -178,8 +174,8 @@ const claimsContainerModule = {
 
     setAll_Attr_CONTAINER_CLAiM(state, ContainerClaim) {
       state.editedOrSavedClaimContainer.id = ContainerClaim.id;
-      state.editedOrSavedClaimContainer.ClaimOrIncident =
-        ContainerClaim.ClaimOrIncident;
+      state.editedOrSavedClaimContainer.claim_id =
+        ContainerClaim.claim_id;
 
       state.editedOrSavedClaimContainer.containerID =
         ContainerClaim.containerID;
@@ -241,9 +237,7 @@ const claimsContainerModule = {
       // estimation
       state.editedOrSavedClaimContainer.estimate = ContainerClaim.estimate;
       // date
-      state.editedOrSavedClaimContainer.incident_date =
-        ContainerClaim.incident_date;
-      state.editedOrSavedClaimContainer.claim_date = ContainerClaim.claim_date;
+ 
       state.editedOrSavedClaimContainer.date_of_declaration =
         ContainerClaim.date_of_declaration;
       state.editedOrSavedClaimContainer.date_of_feedback =
@@ -270,7 +264,7 @@ const claimsContainerModule = {
     },
     emptyAll_Attr_CONTAINER_CLAiM(state) {
       state.editedOrSavedClaimContainer.id = 0;
-      //state.editedOrSavedClaimContainer.ClaimOrIncident = "";
+      state.editedOrSavedClaimContainer.claim_id = 0;
       state.editedOrSavedClaimContainer.containerID = 0;
       state.editedOrSavedClaimContainer.nombre_of_containers = 0;
       state.editedOrSavedClaimContainer.containerType = "";
@@ -314,8 +308,7 @@ const claimsContainerModule = {
       state.editedOrSavedClaimContainer.estimate = "";
 
       // date
-      state.editedOrSavedClaimContainer.incident_date = "";
-      state.editedOrSavedClaimContainer.claim_date = "";
+    
       state.editedOrSavedClaimContainer.date_of_declaration = "";
       state.editedOrSavedClaimContainer.date_of_feedback = "";
       state.editedOrSavedClaimContainer.thirdparty_Activity_comments = "";
@@ -337,9 +330,9 @@ const claimsContainerModule = {
           });
       });
     },
-    setContainersAllClaimAction({ commit }) {
+    setContainersAction({ commit },id) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.get("containers/allClaim")
+        CustomizedAxios.get("containers/"+id)
           .then((response) => {
             commit("SET_CLAiMS", response.data.payload);
             resolve(response);
@@ -366,17 +359,8 @@ const claimsContainerModule = {
         var claimFormData = new FormData();
 
         claimFormData.append("id", claim.id);
-        claimFormData.append("status", NullTest(claim.status));
-        claimFormData.append(
-          "incident_date",
-          toLaravelDatetime(claim.incident_date)
-        );
-        console.warn('toLaravelDatetime(claim.incident_date)', toLaravelDatetime(claim.incident_date));
-        claimFormData.append("claim_date", toLaravelDatetime(claim.claim_date));
-        claimFormData.append(
-          "ClaimOrIncident",
-          NullTest(claim.ClaimOrIncident)
-        );
+        claimFormData.append("claim_id", NullTest(claim.claim_id));
+        
         //
         claimFormData.append("containerID", NullTest(claim.containerID));
         claimFormData.append(
@@ -567,6 +551,9 @@ const claimsContainerModule = {
     },
     set_ClaimOrIncident_claim_SetterAction({ commit }, container) {
       commit("setClaimOrIncident_CONTAINER_CLAiM", container);
+    },
+    set_Claim_id_containerclaim_SetterAction({ commit }, claim_id) {
+      commit("setclaim_id_CONTAINER_CLAiM", claim_id);
     },
     set_container_claim_SetterAction({ commit }, container) {
       commit("setCONTAINER_CLAiM", container);

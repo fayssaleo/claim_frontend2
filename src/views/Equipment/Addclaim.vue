@@ -129,6 +129,7 @@ export default {
       "getnatureOfDamages",
       "getdepartements",
       "geteditedOrSavedClaimEquipment",
+      "geteditedOrSavedclaim"
     ]),
   },
   watch: {
@@ -149,6 +150,16 @@ export default {
         this.createdOrEdited = "Edit";
       }
 
+      this.setClaim_id_EQUIPMENT_claim_SetterAction(
+        this.geteditedOrSavedclaim.id
+      )
+        .then(() => {
+         // this.setModuleShowToFalseAction();
+          //console.log("save", "save");
+        })
+        .catch(() => {
+         // this.setModuleShowToFalseAction();
+        });
       // this.ClaimOrIncident();
     },
     ...mapActions([
@@ -157,6 +168,7 @@ export default {
       "editedOrSavedEquipmentClaimAction",
       "setModuleShowToTrueAction",
       "setModuleShowToFalseAction",
+      "setClaim_id_EQUIPMENT_claim_SetterAction"
     ]),
 
     ClaimOrIncident() {

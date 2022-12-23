@@ -18,34 +18,32 @@
           </v-stepper-step>
 
           <v-divider></v-divider>
-
-          <v-stepper-step editable :complete="e1 > 2" step="2">
-            Claim date
-          </v-stepper-step>
-
-          <v-divider></v-divider>
           <v-stepper-step
             :editable="
               this.geteditedOrSavedClaimContainer.damage_caused_by ==
-              'Thirdparty'
+              'Thirdparty' ||
+              this.geteditedOrSavedClaimContainer.damage_caused_by ==
+                'Outsourcer'
             "
-            :complete="e1 > 3"
+            :complete="e1 > 2"
             :class="{
               'd-none': !(
                 this.geteditedOrSavedClaimContainer.damage_caused_by ==
-                'Thirdparty'
+                'Thirdparty' ||
+              this.geteditedOrSavedClaimContainer.damage_caused_by ==
+                'Outsourcer'
               ),
             }"
-            step="3"
+            step="2"
           >
             Third party
           </v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step editable :complete="e1 > 4" step="4">
+          <v-stepper-step editable :complete="e1 > 3" step="3">
             Estimates of the claim
           </v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step editable step="5">
+          <v-stepper-step editable step="4">
             INSURANCE DECLARATION & FOLLOW UP
           </v-stepper-step>
         </v-stepper-header>
@@ -54,21 +52,15 @@
           <v-stepper-content step="1">
             <Container />
           </v-stepper-content>
+
           <v-stepper-content step="2">
-            <v-card class="mb-12" color="#f0f0f0cc" height="auto">
-              <template>
-                <Claimdate />
-              </template>
-            </v-card>
-          </v-stepper-content>
-          <v-stepper-content step="3">
             <v-card class="mb-12" color="#f0f0f0cc" height="auto">
               <template>
                 <Thirdparty />
               </template>
             </v-card>
           </v-stepper-content>
-          <v-stepper-content step="4">
+          <v-stepper-content step="3">
             <v-card class="mb-12" color="#f0f0f0cc" height="auto">
               <template>
                 <v-container fluid>
@@ -77,7 +69,7 @@
               </template>
             </v-card>
           </v-stepper-content>
-          <v-stepper-content step="5">
+          <v-stepper-content step="4">
             <v-card class="mb-12 pa-4" color="#f0f0f0cc" height="auto">
               <InsuranceFollowup />
             </v-card>
@@ -90,7 +82,7 @@
           <v-btn v-else color="gray" class="mx-4" @click="stepper_backward(e1)">
             backward
           </v-btn>
-          <v-btn v-if="e1==5" text >
+          <v-btn v-if="e1==4" text >
                 forward
               </v-btn>
               <v-btn v-else color="primary" @click="stepper_forward(e1)">
@@ -145,6 +137,7 @@ export default {
       "getnatureOfDamages",
       "getdepartements",
       "geteditedOrSavedClaimContainer",
+      "geteditedOrSavedclaim"
     ]),
   },
   watch: {
@@ -166,12 +159,24 @@ export default {
       } else {
         this.createdOrEdited = "Edit";
       }
+
+      this.set_Claim_id_containerclaim_SetterAction(
+        this.geteditedOrSavedclaim.id
+      )
+        .then(() => {
+         // this.setModuleShowToFalseAction();
+          //console.log("save", "save");
+        })
+        .catch(() => {
+         // this.setModuleShowToFalseAction();
+        });
      // this.ClaimOrIncident();
 
     },
     ...mapActions([
       "set_ClaimOrIncident_claim_SetterAction",
       "editedOrSavedContainerClaimAction",
+      "set_Claim_id_containerclaim_SetterAction"
     ]),
 
     ClaimOrIncident() {
@@ -192,15 +197,17 @@ export default {
     },
     stepper_backward() {
       if (
-        this.geteditedOrSavedClaimContainer.damage_caused_by == "Thirdparty"
+        this.geteditedOrSavedClaimContainer.damage_caused_by == "Thirdparty" ||
+              this.geteditedOrSavedClaimContainer.damage_caused_by ==
+                'Outsourcer'
       ) {
-        if (this.e1 == 3) {
+        if (this.e1 == 2) {
           this.e1 = parseInt(this.e1 + "") - 1;
         } else {
           this.e1 = parseInt(this.e1 + "") - 1;
         }
       } else {
-        if (this.e1 == 4) {
+        if (this.e1 == 3) {
           this.e1 = parseInt(this.e1 + "") - 2;
         } else {
           this.e1 = parseInt(this.e1 + "") - 1;
@@ -209,15 +216,17 @@ export default {
     },
     stepper_forward() {
       if (
-        this.geteditedOrSavedClaimContainer.damage_caused_by == "Thirdparty"
+        this.geteditedOrSavedClaimContainer.damage_caused_by == "Thirdparty" ||
+              this.geteditedOrSavedClaimContainer.damage_caused_by ==
+                'Outsourcer'
       ) {
-        if (this.e1 == 3) {
+        if (this.e1 == 2) {
           this.e1 = parseInt(this.e1 + "") + 1;
         } else {
           this.e1 = parseInt(this.e1 + "") + 1;
         }
       } else {
-        if (this.e1 == 2) {
+        if (this.e1 == 1) {
           this.e1 = parseInt(this.e1 + "") + 2;
         } else {
           this.e1 = parseInt(this.e1 + "") + 1;

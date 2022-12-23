@@ -13,6 +13,9 @@
         <tr class="">
           <td class="cursor">
             {{ item.id }}
+          </td>    
+          <td class="cursor" :style="[item.status == 'Treated'?{'color':'#FF5722'}:{'color':'#4CAF50'}]">
+            {{ item.status }}
           </td>
           <td class="cursor">{{ item.ClaimOrIncident }}</td>
           <td class="cursor">{{ item.incident_date }}</td>
@@ -28,11 +31,27 @@
               <v-icon medium class="mr-2"> mdi-pencil </v-icon>
             </v-btn>
             <v-btn
-              color="#f45"
+              color="red"
               @click="deleteItem(item)"
-              class="m-2 btnAction white--text"
+              class="m-2 mr-2 btnAction white--text"
             >
               <v-icon medium> mdi-delete </v-icon>
+            </v-btn>
+            <v-btn
+            v-if="item.status == 'Treated'"
+              color="green"
+              @click="closedDialogeF(item)"
+              class="m-2 mr-2 btnAction white--text"
+            >
+              <v-icon medium> mdi-lock-check </v-icon>
+            </v-btn>
+            <v-btn
+              v-if="item.status == 'Closed' || item.status == null"
+              color="deep-orange accent-3"
+              @click="treatedDialogeF(item)"
+              class="m-2  btnAction white--text"
+            >
+              <v-icon medium> mdi-lock-clock </v-icon>
             </v-btn>
           </td>
         </tr>
@@ -70,7 +89,7 @@
               </v-btn>
             </template>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-dialog v-model="dialogDelete" max-width="520px">
             <v-card>
               <v-card-title class="text-h5"
                 >Are you sure you want to delete this item?</v-card-title
@@ -87,11 +106,47 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-dialog v-model="closedDialog" max-width="520px">
+            <v-card>
+              <v-card-title class="text-h5"
+                >Are you sure you want to closed this item?</v-card-title
+              >
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closedDialog=false"
+                  >Cancel</v-btn
+                >
+                <v-btn color="blue darken-1" text @click="closedF()"
+                  >OK</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="treatedDialog" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5"
+                >Are you sure you want to treated this item?</v-card-title
+              >
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="treatedDialog = false"
+                  >Cancel</v-btn
+                >
+                <v-btn color="blue darken-1" text @click="treatedF()"
+                  >OK</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-toolbar>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+        <v-icon small @click="closedDialoge(item)"> mdi-lock-clock </v-icon>
+        <v-icon small @click="treatedDialoge(item)"> mdi-lock-check </v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize()"> Reset </v-btn>
@@ -106,18 +161,26 @@ export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
+    closedDialog: false,
+    treatedDialog: false,
     search: "",
     loading: false,
 
     headers: [
       { text: "Claim Serial", align: "start", value: "id", sortable: true },
+      { text: "Status", align: "start", value: "status", sortable: true },
       { text: "ClaimOrIncident", value: "ClaimOrIncident", sortable: true },
       { text: "Incident date", value: "incident_date", sortable: true },
       { text: "Claim date", value: "claim_date", sortable: true },     
       { text: "Actions", value: "actions", sortable: false },
     ],
     claims: [],
-
+    closed: {
+      id: 0,
+    },
+    treated: {
+      id: 0,
+    },
     editedIndex: -1,
     editedItem: {
       id: "",
@@ -140,7 +203,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New " : "Edit ";
     },
-    ...mapGetters(["getEquipmentclaims"]),
+    ...mapGetters(["getEquipmentclaims","getclaims"]),
   },
   watch: {
     dialog(val) {
@@ -164,8 +227,8 @@ export default {
     initialize() {
       this.claims = [];
       this.loading = true;
-      this.setEquipmentsAllIncidentAction().then(() => {
-        this.claims = [...this.getEquipmentclaims];
+      this.setindexIncidentsAction().then(() => {
+        this.claims = [...this.getclaims];
         this.loading = false;
       });
       this.colorShowClaim = "black";
@@ -176,35 +239,37 @@ export default {
       this.colorShowClaim = "orange darken-2";
       this.isClaim = true;
       this.loading = true;
-      this.setEquipmentsAllClaimAction().then(() => {
-        this.claims = [...this.getEquipmentclaims];
+      this.setindexClaimsAction().then(() => {
+        this.claims = [...this.getclaims];
         this.loading = false;
       });
     },
     ...mapActions([
       "setEquipmentsAction",
-      "setEquipmentsAllIncidentAction",
-      "setEquipmentsAllClaimAction",
+      "setindexIncidentsAction",
+      "setindexClaimsAction",
       "addDepartementAction",
-      "deleteEquipmentClaimAction",
-      "setAll_Attr_EQUIPMENT_CLAiMAction",
-      "emptyAll_Attr_EQUIPMENT_CLAiMAction",
+      "deleteClaimAction",
+      "set_attr_CLAiMAction",
+      "empty_attr_CLAiMAction",
       "setModuleShowToTrueAction",
       "setModuleShowToFalseAction",
+      "closedClaimAction",
+      "treatedClaimAction"
     ]),
 
     editItem(item) {
       // this.setModuleShowToTrueAction();
       this.editedIndex = this.claims.indexOf(item) + 1;
       this.editedItem = Object.assign({}, item);
-      this.setAll_Attr_EQUIPMENT_CLAiMAction(item)
+      this.set_attr_CLAiMAction(item)
         .then(() => {
           console.log("item", item);
           this.$router.push({ name: "CreateClaimOrIncident" });
         })
         .catch((e) => {});
 
-      // this.dialog = true;
+
     },
     deleteItem(item) {
       this.editedIndex = item.id;
@@ -213,16 +278,17 @@ export default {
     },
     deleteItemConfirm() {
       this.setModuleShowToTrueAction();
-      this.deleteEquipmentClaimAction(this.editedItem)
+      this.deleteClaimAction(this.editedItem)
         .then(() => {
-          this.claims = [...this.getEquipmentclaims];
-          this.setModuleShowToFalseAction();
+          this.claims = [...this.getclaims];
+          this.setModuleShowToTrueAction();
         })
         .catch(() => {
-          this.setModuleShowToFalseAction();
         });
 
       setTimeout(() => {
+        this.setModuleShowToFalseAction();
+
       }, 2000);
       this.closeDelete();
     },
@@ -239,8 +305,37 @@ export default {
     openSave() {
       this.confirmAddSave = true;
     },
+    closedDialogeF(item) {
+      this.closed.id=item.id;
+      console.log("closedDialogeF");
+      this.closedDialog = true;
+    },
+    treatedDialogeF(item) {
+      this.treated.id=item.id;
+
+      console.log("treatedDialogeF");
+
+      this.treatedDialog = true;
+    },
+    closedF() {
+      this.closedClaimAction(this.closed).then(() => {
+        this.claims = [...this.getclaims];
+
+      });
+
+      this.closedDialog = false;
+    },
+    treatedF() {
+      this.treatedClaimAction(this.treated).then(() => {
+        this.claims = [...this.getclaims];
+
+      });
+
+      this.treatedDialog = false;
+    },
+
     addclaimRoute() {
-      this.emptyAll_Attr_EQUIPMENT_CLAiMAction().then(() => {});
+      this.empty_attr_CLAiMAction().then(() => {});
       this.$router.push({ name: "CreateClaimOrIncident" });
     },
     save() {
@@ -248,9 +343,6 @@ export default {
         this.addDepartementAction(this.editedItem).then(() => {
           this.departements = [...this.getdepartements];
         });
-
-
-       
 
         setTimeout(() => {
         }, 2000);

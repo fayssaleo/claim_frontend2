@@ -14,9 +14,7 @@
           <td class="cursor">
             {{ item.id }}
           </td>
-          <td class="cursor">{{ item.ClaimOrIncident }}</td>
-          <td class="cursor">{{ item.incident_date }}</td>
-          <td class="cursor">{{ item.claim_date }}</td>
+          
           <td class="cursor">{{ item.damage_caused_by }}</td>
 
           <td class="cursor">
@@ -117,9 +115,7 @@ export default {
 
     headers: [
       { text: "Claim Serial", align: "start", value: "id", sortable: true },
-      { text: "ClaimOrIncident", value: "ClaimOrIncident", sortable: true },
-      { text: "Incident date", value: "incident_date", sortable: true },
-      { text: "Claim date", value: "claim_date", sortable: true },
+      
       { text: "Damage caused by", value: "damage_caused_by", sortable: true },
       {
         text: "Declared",
@@ -152,7 +148,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New " : "Edit ";
     },
-    ...mapGetters(["getVesselclaims"]),
+    ...mapGetters(["getVesselclaims","geteditedOrSavedclaim"]),
   },
   watch: {
     dialog(val) {
@@ -176,7 +172,7 @@ export default {
     initialize() {
       this.claims = [];
       this.loading = true;
-      this.setVesselsAllIncidentAction().then(() => {
+      this.setVesselsAction(this.geteditedOrSavedclaim.id).then(() => {
         this.claims = [...this.getVesselclaims];
         this.loading = false;
       });
@@ -195,7 +191,7 @@ export default {
     },
     ...mapActions([
       "setVesselsAction",
-      "setVesselsAllIncidentAction",
+      "setVesselsAction",
       "setVesselsAllClaimAction",
       "addDepartementAction",
       "deleteVesselClaimAction",
