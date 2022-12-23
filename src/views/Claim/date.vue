@@ -43,7 +43,7 @@
                 </vc-date-picker>
               </template>
             </v-col>
-            <v-col class="" cols="12" sm="8">
+            <v-col class="" cols="12" sm="7">
               <v-file-input
                 v-if="!showDownload"
                 outlined
@@ -72,8 +72,19 @@
                 <v-icon class="mr-2"> mdi-rotate-3d-variant </v-icon></span
               >
             </v-col>
+            <v-col cols="12" sm="5">
+              <v-card class="d-flex pa-4 mb-4" max-width="170" outlined>
+                <h5 class="green--text text--lighten-2">Claim</h5>
+                <v-switch
+                  color="deep-orange lighten-1"
+                  v-model="switch1"
+                  @change="ClaimOrIncident()"
+                ></v-switch>
+                <h5 class="deep-orange--text text--lighten-1">Incident</h5>
+              </v-card>
+            </v-col>
           </v-row>
-          <div class="d-flex justify-center mt-8 ">
+          <div class="d-flex justify-center mt-8">
             <v-btn color="ma-2  px-12  teal white--text" @click="saveDate()">
               save
             </v-btn>
@@ -100,6 +111,7 @@ export default {
       claimDate: new Date(),
       menu: false,
       menu1: false,
+      switch1: false,
       dateClaim: {
         id: 0,
         incident_date: null,
@@ -175,6 +187,13 @@ export default {
             ? true
             : false;
       }
+
+      if (this.geteditedOrSavedclaim.ClaimOrIncident == "Incident") {
+        this.switch1 = true;
+      } else {
+        this.switch1 = false;
+      }
+      this.ClaimOrIncident(); 
     },
     formatDate(date) {
       if (!date) return null;
@@ -204,6 +223,19 @@ export default {
           this.setModuleShowToFalseAction();
         }, 1500);
       });
+    },
+    ClaimOrIncident() {
+      if (this.switch1 == false) {
+        this.dateClaim.ClaimOrIncident = "Claim";
+      } else {
+        this.dateClaim.ClaimOrIncident = "Incident";
+      }
+      this.set_attr_ClaimOrIncident_CLAiMAction(
+        this.dateClaim.ClaimOrIncident
+      ).then(() => {});
+      this.set_attr_ClaimOrIncident_EQUIPMENTAction(
+        this.dateClaim.ClaimOrIncident
+      ).then(() => {});
     },
   },
 };

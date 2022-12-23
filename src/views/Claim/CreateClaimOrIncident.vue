@@ -96,7 +96,7 @@ export default {
       switch1: false,
       tab: null,
       createdOrEdited: "CREATING",
-      items: ["Date","Equipmemt", "Automobile", "Vessel", "Container"],
+      items: ["Claim or Incident","Equipmemt", "Automobile", "Vessel", "Container"],
       id_claim:0,
     };
   },
