@@ -139,9 +139,7 @@ export default {
       this.set_attr_ClaimOrIncident_CLAiMAction(
         this.ClaimOrIncidentValue
       ).then(() => {});
-      this.set_attr_ClaimOrIncident_EQUIPMENTAction(
-        this.ClaimOrIncidentValue
-      ).then(() => {});
+      
     },
     
   },

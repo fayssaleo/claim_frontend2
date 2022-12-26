@@ -235,9 +235,7 @@ export default {
       this.set_attr_ClaimOrIncident_CLAiMAction(
         this.dateClaim.ClaimOrIncident
       ).then(() => {});
-      this.set_attr_ClaimOrIncident_EQUIPMENTAction(
-        this.dateClaim.ClaimOrIncident
-      ).then(() => {});
+     
     },
   },
 };

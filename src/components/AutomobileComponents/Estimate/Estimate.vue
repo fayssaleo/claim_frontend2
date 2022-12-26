@@ -562,6 +562,10 @@ export default {
       if (typeof item.estimate.customed_field !== "undefined") {
         this.estimateUpdate.estimate.customedFields =
           item.estimate.customed_field;
+      } 
+      if (typeof item.estimate.customedField !== "undefined") {
+        this.estimateUpdate.estimate.customedFields =
+          item.estimate.customedField;
       } else {
         //this.estimateUpdate.estimate.customedFields = [];
       }

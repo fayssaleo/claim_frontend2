@@ -493,7 +493,7 @@ const claimsAutomobileModule = {
     },
     deleteAutomobileClaimAction({ commit }, automobile) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.post("containers/delete", automobile)
+        CustomizedAxios.post("automobiles/delete", automobile)
           .then((response) => {
             commit("DELETE_CLAiM", automobile);
             resolve(response.data);
