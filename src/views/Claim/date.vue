@@ -72,7 +72,8 @@
                 <v-icon class="mr-2"> mdi-rotate-3d-variant </v-icon></span
               >
             </v-col>
-            <v-col cols="12" sm="5">
+            <v-col cols="12" sm="1"> </v-col>
+            <v-col cols="12" sm="2">
               <v-card class="d-flex pa-4 mb-4" max-width="170" outlined>
                 <h5 class="green--text text--lighten-2">Claim</h5>
                 <v-switch
@@ -83,6 +84,7 @@
                 <h5 class="deep-orange--text text--lighten-1">Incident</h5>
               </v-card>
             </v-col>
+            <v-col  sm="2"> </v-col>
           </v-row>
           <div class="d-flex justify-center mt-8">
             <v-btn color="ma-2  px-12  teal white--text" @click="saveDate()">
@@ -193,7 +195,7 @@ export default {
       } else {
         this.switch1 = false;
       }
-      this.ClaimOrIncident(); 
+      this.ClaimOrIncident();
     },
     formatDate(date) {
       if (!date) return null;

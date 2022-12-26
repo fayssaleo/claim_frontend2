@@ -1,17 +1,9 @@
 <template>
   <div style="padding: 5px; padding-top: 1%">
-    <h3 class="text-uppercase" >{{createdOrEdited}} THE claim</h3>
+    <h3 class="text-uppercase ma-6" >{{createdOrEdited}} THE claim</h3>
 
     <template>
-      <v-card class="d-flex pa-4 mb-4" max-width="170" outlined>
-        <h5 class="green--text text--lighten-2">Claim</h5>
-        <v-switch
-          color="deep-orange lighten-1"
-          v-model="switch1"
-          @change="ClaimOrIncident()"
-        ></v-switch>
-        <h5 class="deep-orange--text text--lighten-1">Incident</h5>
-      </v-card>
+      
 
       <template>
         <div>
