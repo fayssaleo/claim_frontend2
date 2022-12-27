@@ -559,9 +559,7 @@ export default {
       console.log("item update customed_field", item);
       this.estimateUpdate = item;
 
-      this.setCustomedFieldByEstimateAction(item.estimate.id).then(() => {
-          this.estimateUpdate.estimate.customedFields = [...this.getcustomedFields];
-        });
+    
       // debugger;
       /* if (typeof item.estimate.customed_field !== "undefined") {
         this.setCustomedFieldByEstimateAction(item.id).then(() => {
@@ -594,6 +592,11 @@ export default {
       this.editedItem.id = item.estimate.id;
       //this.editedItem.fileName = this.URL+"/"+item.estimate.fileName.filename;
       this.editedItem.fileName = item.estimate.fileName;
+      this.setCustomedFieldByEstimateAction(item.estimate.id).then(() => {
+        this.estimateUpdate.estimate.customedFields=this.getcustomedFields;
+
+        this.editedItem.customedFields = this.getcustomedFields;
+        });
       this.editedItem.customedFields = item.estimate.customedFields;
 
       this.dialog = true;

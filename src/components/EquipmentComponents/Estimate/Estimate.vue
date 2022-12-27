@@ -560,14 +560,7 @@ export default {
       console.log("item update customed_field", item);
       this.estimateUpdate = item;
 
-      this.setCustomedFieldByEstimateAction(item.estimate.id).then(() => {
-        this.estimateUpdate.estimate.customedFields=this.getcustomedFields;
-
-        /* this.getcustomedFields.map((c) => {
-          this.estimateUpdate.estimate.customedFields.push(c);
-        }); */
-          //this.estimateUpdate.estimate.customedFields = this.getcustomedFields;
-        });
+    
 
       /* // debugger;
       if (typeof item.estimate.customed_field !== "undefined") {

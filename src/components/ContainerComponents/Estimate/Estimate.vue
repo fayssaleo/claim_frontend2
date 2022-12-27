@@ -360,7 +360,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New Department" : "Edit Department";
     },
-    ...mapGetters(["getestimates", "geteditedOrSavedClaimContainer"]),
+    ...mapGetters(["getestimates", "geteditedOrSavedClaimContainer","getcustomedFields"]),
   },
   watch: {
     dialog(val) {
@@ -430,6 +430,8 @@ export default {
       "addestimateContainerAction",
       "addFileAction",
       "deleteFileAction",
+      "setCustomedFieldByEstimateAction"
+
     ]),
     TotalAmount() {
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
@@ -558,13 +560,14 @@ export default {
       console.log("item update customed_field", item);
       this.estimateUpdate = item;
 
-      // debugger;
-      if (typeof item.estimate.customed_field !== "undefined") {
-        this.estimateUpdate.estimate.customedFields =
-          item.estimate.customed_field;
-      } else {
-        //this.estimateUpdate.estimate.customedFields = [];
-      }
+
+
+      this.setCustomedFieldByEstimateAction(item.estimate.id).then(() => {
+        this.estimateUpdate.estimate.customedFields=this.getcustomedFields;
+
+        this.editedItem.customedFields = this.getcustomedFields;
+        });      
+
 
       //
       this.editedItem.equipment_purchase_costs =
