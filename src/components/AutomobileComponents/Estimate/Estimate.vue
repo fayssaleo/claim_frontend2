@@ -360,7 +360,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New Department" : "Edit Department";
     },
-    ...mapGetters(["getestimates", "geteditedOrSavedClaimAutomobile"]),
+    ...mapGetters(["getestimates", "geteditedOrSavedClaimAutomobile","getcustomedFields"]),
   },
   watch: {
     dialog(val) {
@@ -430,6 +430,7 @@ export default {
       "addestimateAutomobileAction",
       "addFileAction",
       "deleteFileAction",
+      "setCustomedFieldByEstimateAction"
     ]),
     TotalAmount() {
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
@@ -558,17 +559,27 @@ export default {
       console.log("item update customed_field", item);
       this.estimateUpdate = item;
 
+      this.setCustomedFieldByEstimateAction(item.estimate.id).then(() => {
+          this.estimateUpdate.estimate.customedFields = [...this.getcustomedFields];
+        });
       // debugger;
-      if (typeof item.estimate.customed_field !== "undefined") {
-        this.estimateUpdate.estimate.customedFields =
-          item.estimate.customed_field;
+      /* if (typeof item.estimate.customed_field !== "undefined") {
+        this.setCustomedFieldByEstimateAction(item.id).then(() => {
+          this.estimateUpdate.estimate.customedFields = [...this.getcustomedFields];
+        });
+        //this.estimateUpdate.estimate.customedFields =
+         // item.estimate.customed_field;
       } 
       if (typeof item.estimate.customedField !== "undefined") {
-        this.estimateUpdate.estimate.customedFields =
-          item.estimate.customedField;
+
+        this.setCustomedFieldByEstimateAction(item.id).then(() => {
+          this.estimateUpdate.estimate.customedFields = [...this.getcustomedFields];
+        });
+        //this.estimateUpdate.estimate.customedFields =
+        //  item.estimate.customedFields;
       } else {
         //this.estimateUpdate.estimate.customedFields = [];
-      }
+      } */
 
       //
       this.editedItem.equipment_purchase_costs =
@@ -600,9 +611,8 @@ export default {
     },
     deleteItemConfirm() {
       console.log("estimateDelete", this.estimateDelete);
-      this.deleteestimateAction(this.estimateDelete).then(() => {
-        this.estimates = [...this.getestimates];
-      });
+      
+      
       // this.LoadingPage = true;
 
       setTimeout(() => {

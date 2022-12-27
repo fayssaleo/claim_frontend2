@@ -360,7 +360,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New Department" : "Edit Department";
     },
-    ...mapGetters(["getestimates", "geteditedOrSavedClaimEquipment"]),
+    ...mapGetters(["getestimates", "geteditedOrSavedClaimEquipment","getcustomedFields"]),
   },
   watch: {
     dialog(val) {
@@ -430,6 +430,8 @@ export default {
       "addestimateAction",
       "addFileAction",
       "deleteFileAction",
+      "setCustomedFieldByEstimateAction"
+
     ]),
     TotalAmount() {
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
@@ -558,13 +560,22 @@ export default {
       console.log("item update customed_field", item);
       this.estimateUpdate = item;
 
-      // debugger;
+      this.setCustomedFieldByEstimateAction(item.estimate.id).then(() => {
+        this.estimateUpdate.estimate.customedFields=this.getcustomedFields;
+
+        /* this.getcustomedFields.map((c) => {
+          this.estimateUpdate.estimate.customedFields.push(c);
+        }); */
+          //this.estimateUpdate.estimate.customedFields = this.getcustomedFields;
+        });
+
+      /* // debugger;
       if (typeof item.estimate.customed_field !== "undefined") {
         this.estimateUpdate.estimate.customedFields =
           item.estimate.customed_field;
       } else {
         //this.estimateUpdate.estimate.customedFields = [];
-      }
+      } */
 
       //
       this.editedItem.equipment_purchase_costs =
@@ -579,6 +590,11 @@ export default {
       this.editedItem.id = item.estimate.id;
       //this.editedItem.fileName = this.URL+"/"+item.estimate.fileName.filename;
       this.editedItem.fileName = item.estimate.fileName;
+      this.setCustomedFieldByEstimateAction(item.estimate.id).then(() => {
+        this.estimateUpdate.estimate.customedFields=this.getcustomedFields;
+
+        this.editedItem.customedFields = this.getcustomedFields;
+        });
       this.editedItem.customedFields = item.estimate.customedFields;
 
       this.dialog = true;

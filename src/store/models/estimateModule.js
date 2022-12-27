@@ -3,10 +3,14 @@ import CustomizedAxios from "../../plugins/axios";
 const estimateModule = {
   state: {
     estimates: [],
+    customedFields:[],
   },
   mutations: {
     SET_ESTIMATES(state, estimates) {
       state.estimates = estimates;
+    },
+    SET_CUSTOMEDFIELDS(state, customedFields) {
+      state.customedFields = customedFields;
     },
     ADD_ESTIMATE(state, estimate) {
       state.estimates.push(estimate);
@@ -25,6 +29,18 @@ const estimateModule = {
     },
   },
   actions: {
+    setCustomedFieldByEstimateAction({ commit }, id) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("estimates/CustomedField/" + id)
+          .then((response) => {
+            commit("SET_CUSTOMEDFIELDS", response.data.payload);
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
     setestimatesEquipmentAction({ commit }, id) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("estimates/indexEquipment/" + id)
@@ -631,6 +647,9 @@ const estimateModule = {
   getters: {
     getestimates: (state) => {
       return state.estimates;
+    },
+    getcustomedFields: (state) => {
+      return state.customedFields;
     },
   },
 };
