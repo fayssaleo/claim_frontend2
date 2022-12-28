@@ -35,6 +35,32 @@ const brandModule = {
           });
       });
     },
+    setbrandsEquipmentsAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("brand/index/equipment")
+          .then((response) => {
+            commit("SET_brand", response.data.payload);
+
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    setbrandsAutomobilesAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("brand/index/automobile")
+          .then((response) => {
+            commit("SET_brand", response.data.payload);
+
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
     setbrandbyIDAction({ commit }, id) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("brand/" + id)

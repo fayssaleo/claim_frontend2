@@ -408,7 +408,7 @@ export default {
       };
       this.typeOfEquipments.push(model);
     });
-    this.setbrandsAction().then(() => {
+    this.setbrandsEquipmentsAction().then(() => {
       this.brands = [...this.getbrands];
       var model = {
         id: 0,
@@ -507,7 +507,7 @@ export default {
     },
     ...mapActions([
       "setTypeOfEquipmentsByEquipmentAction",
-      "setbrandsAction",
+      "setbrandsEquipmentsAction",
       "setnatureOfDamagesAction",
       "setDepartementsAction",
       "set_equipment_claim_SetterAction",
