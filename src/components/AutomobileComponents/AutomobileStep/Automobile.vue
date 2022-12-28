@@ -407,7 +407,7 @@ export default {
 
   mounted() {
     document.title = "Claim";
-    this.setTypeOfEquipmentsAction().then(() => {
+    this.setTypeOfEquipmentsByAutomobileAction().then(() => {
       this.typeOfEquipments = [...this.getTypeOfEquipments];
       var model = {
         id: 0,
@@ -513,7 +513,7 @@ export default {
       }
     },
     ...mapActions([
-      "setTypeOfEquipmentsAction",
+      "setTypeOfEquipmentsByAutomobileAction",
       "setbrandsAction",
       "setnatureOfDamagesAction",
       "setDepartementsAction",

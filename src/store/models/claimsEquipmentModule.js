@@ -546,7 +546,9 @@ const claimsEquipmentModule = {
     emptyAll_Attr_EQUIPMENT_CLAiMAction({ commit }) {
       commit("emptyAll_Attr_EQUIPMENT_CLAiM");
     },
-    
+    set_attr_ClaimOrIncident_EQUIPMENTAction({ commit }, ClaimOrIncident) {
+      commit("set_attr_ClaimOrIncident_EQUIPMENT", ClaimOrIncident);
+    },
   },
   getters: {
     getEquipmentclaims: (state) => {
