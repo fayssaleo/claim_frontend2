@@ -3,7 +3,14 @@
     <h3 class="text-uppercase ma-6" >{{createdOrEdited}} THE claim</h3>
 
     <template>
-      
+      <v-icon
+        large
+        class="mx-2 ma-2"
+        color="blue darken-2"
+        @click="back()"
+      >
+      mdi-arrow-left
+    </v-icon>
 
       <template>
         <div>
@@ -141,7 +148,9 @@ export default {
       ).then(() => {});
       
     },
-    
+    back() {
+      this.$router.push({ name: "Claim" });
+    },
   },
 };
 </script>

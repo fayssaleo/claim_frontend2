@@ -360,7 +360,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New Department" : "Edit Department";
     },
-    ...mapGetters(["getestimates", "geteditedOrSavedClaimVessel","getcustomedFields"]),
+    ...mapGetters(["getestimates","geteditedOrSavedClaimVessel","getcustomedFields"]),
   },
   watch: {
     dialog(val) {
@@ -430,8 +430,7 @@ export default {
       "addestimateVesselAction",
       "addFileAction",
       "deleteFileAction",
-      "setCustomedFieldByEstimateAction"
-
+      "setCustomedFieldByEstimateAction",
     ]),
     TotalAmount() {
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
