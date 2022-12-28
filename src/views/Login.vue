@@ -98,13 +98,12 @@ export default {
       this.LoginAction(userLogin)
         .then((resolve) => {
           this.$router.push({
-            name: "Equipment",
+            name: "Claim",
           });
          // console.error('ddddd', 'ddddd');
           window.location.reload();
         })
         .catch(() => {
-          console.log('ddddd', 'ddddd');
           this.failedAuth = true;
         });
     },

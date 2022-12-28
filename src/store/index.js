@@ -12,7 +12,9 @@ import claimsAutomobileModule from "./models/claimsAutomobileModule";
 import claimsVesselModule from "./models/claimsVesselModule";
 import claimsContainerModule from "./models/claimsContainerModule";
 import estimateModule from "./models/estimateModule";
+import shippingLineModule from "./models/shippingLineModule";
 import loadingModule from "./models/loadingModule";
+import claimsModule from "./models/claimsModule";
 
 import VuexPersist from "vuex-persist";
 
@@ -30,6 +32,7 @@ Vue.use(Vuex);
     claimsAutomobileModule: state.claimsAutomobileModule,
     claimsVesselModule: state.claimsVesselModule,
     claimsContainerModule: state.claimsContainerModule,
+    claimsModule: state.claimsModule,
 
   }),
   filter: mutation => (true),
@@ -51,7 +54,9 @@ export default function () {
       estimateModule,
       claimsAutomobileModule,
       claimsVesselModule,
-      claimsContainerModule
+      claimsContainerModule,
+      shippingLineModule,
+      claimsModule
     },
     state: {},
     mutations: {},

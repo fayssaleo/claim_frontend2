@@ -50,7 +50,7 @@
         <v-file-input
           v-if="!showDownload"
           outlined
-          label="Incident report"
+          label="Insurance declaration"
           v-model="insurance_followup.insurance_declarationFile"
         ></v-file-input>
         <a
@@ -152,11 +152,9 @@ export default {
       )
         .toISOString()
         .substr(0, 10),
-
       menu2: false,
       menu3: false,
       menu4: false,
-
       insurance_followup: {
         date_of_declaration: null,
         date_of_feedback: "",

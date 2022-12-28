@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mb-12" color="#f0f0f0cc" height="300px">
+    <v-card class="mx-6 ma-10 pt-4" color="#f0f0f0cc" height="340px">
       <template>
         <v-container fluid>
           <v-row align="center">
@@ -32,7 +32,7 @@
                 >
                   <template v-slot="{ inputEvents }">
                     <v-text-field
-                      label="Incident Date"
+                      label="Claim Date"
                       outlined
                       :value="dateClaim.claim_date"
                       v-on="inputEvents"
@@ -43,7 +43,7 @@
                 </vc-date-picker>
               </template>
             </v-col>
-            <v-col class="" cols="12" sm="6">
+            <v-col class="" cols="12" sm="7">
               <v-file-input
                 v-if="!showDownload"
                 outlined
@@ -53,9 +53,10 @@
               <a
                 class="download mr-4"
                 color="white"
+                target="_blank"
                 v-if="showDownload"
                 :href="
-                  'http://127.0.0.1:8000/storage/cdn/automobiles/incident_report/' +
+                  'http://127.0.0.1:8000/storage/cdn/claim/incident_report/' +
                   dateClaim.incident_report
                 "
                 download="proposed_file_name"
@@ -71,7 +72,25 @@
                 <v-icon class="mr-2"> mdi-rotate-3d-variant </v-icon></span
               >
             </v-col>
+            <v-col cols="12" sm="1"> </v-col>
+            <v-col cols="12" sm="2">
+              <v-card class="d-flex pa-4 mb-4" max-width="170" outlined>
+                <h5 class="green--text text--lighten-2">Claim</h5>
+                <v-switch
+                  color="deep-orange lighten-1"
+                  v-model="switch1"
+                  @change="ClaimOrIncident()"
+                ></v-switch>
+                <h5 class="deep-orange--text text--lighten-1">Incident</h5>
+              </v-card>
+            </v-col>
+            <v-col  sm="2"> </v-col>
           </v-row>
+          <div class="d-flex justify-center mt-8">
+            <v-btn color="ma-2  px-12  teal white--text" @click="saveDate()">
+              save
+            </v-btn>
+          </div>
         </v-container>
       </template>
     </v-card>
@@ -83,7 +102,7 @@ import { mapActions, mapGetters } from "vuex";
 import {
   formatToSimpleFormatDD_MM_YYYY,
   FormatDateStringToISOSimpleEnglishDate,
-} from "../../../helpers/helpers.js";
+} from "../../helpers/helpers.js";
 
 export default {
   components: {},
@@ -94,9 +113,13 @@ export default {
       claimDate: new Date(),
       menu: false,
       menu1: false,
+      switch1: false,
       dateClaim: {
+        id: 0,
         incident_date: null,
         claim_date: null,
+        status: "",
+        ClaimOrIncident: "Claim",
         incident_report: "",
         incident_reportFile: "",
       },
@@ -111,20 +134,13 @@ export default {
       return this.formatDate(this.date);
     },
     formTitle() {},
-    ...mapGetters([
-      "geteditedOrSavedClaimAutomobile",
-      "getTypeOfEquipments",
-      "getbrands",
-      "getnatureOfDamages",
-      "getdepartements",
-      "geteditedOrSavedClaimAutomobile",
-    ]),
+    ...mapGetters(["geteditedOrSavedclaim"]),
   },
   watch: {
     dateClaim: {
       deep: true,
       handler(newValue, oldvalue) {
-        this.set_date_automobile_claim_SetterAction(newValue);
+        this.set_attr_CLAiMAction(newValue);
       },
     },
     date: {
@@ -137,17 +153,25 @@ export default {
     // this.initialize();
   },
   methods: {
-    ...mapActions(["set_date_automobile_claim_SetterAction"]),
+    ...mapActions([
+      "addClaimAction",
+      "set_attr_CLAiMAction",
+      "set_attr_ClaimOrIncident_CLAiMAction",
+      "setModuleShowToTrueAction",
+      "setModuleShowToFalseAction",
+    ]),
     initialize() {
-      if (this.geteditedOrSavedClaimAutomobile.id > 0) {
-        this.dateClaim.incident_date =
-          this.geteditedOrSavedClaimAutomobile.incident_date;
-        this.dateClaim.claim_date =
-          this.geteditedOrSavedClaimAutomobile.claim_date;
+      if (this.geteditedOrSavedclaim.id > 0) {
+        this.dateClaim.id = this.geteditedOrSavedclaim.id;
+        this.dateClaim.incident_date = this.geteditedOrSavedclaim.incident_date;
+        this.dateClaim.status = this.geteditedOrSavedclaim.status;
+        this.dateClaim.ClaimOrIncident =
+          this.geteditedOrSavedclaim.ClaimOrIncident;
+        this.dateClaim.claim_date = this.geteditedOrSavedclaim.claim_date;
         this.dateClaim.incident_report =
-          this.geteditedOrSavedClaimAutomobile.incident_report;
+          this.geteditedOrSavedclaim.incident_report;
         this.dateClaim.incident_reportFile =
-          this.geteditedOrSavedClaimAutomobile.incident_reportFile;
+          this.geteditedOrSavedclaim.incident_reportFile;
         if (
           this.dateClaim.incident_date != "" &&
           this.dateClaim.incident_date != null
@@ -160,11 +184,18 @@ export default {
           this.claimDate = new Date(this.dateClaim.claim_date);
 
         this.showDownload =
-          this.geteditedOrSavedClaimAutomobile.incident_report != null &&
-          this.geteditedOrSavedClaimAutomobile.incident_report != ""
+          this.geteditedOrSavedclaim.incident_report != null &&
+          this.geteditedOrSavedclaim.incident_report != ""
             ? true
             : false;
       }
+
+      if (this.geteditedOrSavedclaim.ClaimOrIncident == "Incident") {
+        this.switch1 = true;
+      } else {
+        this.switch1 = false;
+      }
+      this.ClaimOrIncident();
     },
     formatDate(date) {
       if (!date) return null;
@@ -186,6 +217,25 @@ export default {
     },
     clickOnChange() {
       this.showDownload = false;
+    },
+    saveDate() {
+      this.addClaimAction(this.geteditedOrSavedclaim).then(() => {
+        this.setModuleShowToTrueAction();
+        setTimeout(() => {
+          this.setModuleShowToFalseAction();
+        }, 1500);
+      });
+    },
+    ClaimOrIncident() {
+      if (this.switch1 == false) {
+        this.dateClaim.ClaimOrIncident = "Claim";
+      } else {
+        this.dateClaim.ClaimOrIncident = "Incident";
+      }
+      this.set_attr_ClaimOrIncident_CLAiMAction(
+        this.dateClaim.ClaimOrIncident
+      ).then(() => {});
+     
     },
   },
 };

@@ -39,6 +39,33 @@ const typeOfEquipmentModel = {
           });
       });
     },
+    setTypeOfEquipmentsByEquipmentAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("TypeOfEquipment/index/equipment")
+          .then((response) => {
+            commit("SET_TypeOfEquipment", response.data.payload);
+
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    setTypeOfEquipmentsByAutomobileAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("TypeOfEquipment/index/automobile")
+          .then((response) => {
+            commit("SET_TypeOfEquipment", response.data.payload);
+
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+ 
     setTypeOfEquipmentbyIDAction({ commit }, id) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("TypeOfEquipment/" + id)

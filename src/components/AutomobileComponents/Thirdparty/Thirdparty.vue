@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mb-12" color="#f0f0f0cc" height="auto">
+    <v-card class="mb-12" color="#f0f0f0cc" height="490px">
       <template>
         <v-container fluid>
           <v-row align="center">
@@ -11,7 +11,6 @@
                 outlined
               ></v-text-field>
             </v-col>
-
             <v-col class="d-flex" cols="12" sm="4">
               <v-select
                 :items="currency_list"
@@ -31,41 +30,25 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="4"> </v-col>
-            <v-col class="d-flex" cols="12" sm="4">
-              <v-dialog
-                ref="dialog"
-                v-model="modal"
-                :return-value.sync="date"
-                persistent
-                width="300px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="thirdparty.date_of_reimbursement"
-                    label="Date of reimbursement :"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="thirdparty.date_of_reimbursement"
-                  scrollable
+            <v-col cols="12" sm="4">
+              <template>
+                <vc-date-picker
+                  v-model="date_of_reimbursementDate"
+                  mode="date"
+                  @input="date_of_reimbursementDateChange"
                 >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="modal = false">
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.dialog.save(thirdparty.date_of_reimbursement)"
-                  >
-                    OK
-                  </v-btn>
-                </v-date-picker>
-              </v-dialog>
+                  <template v-slot="{ inputEvents }">
+                    <v-text-field
+                      label="Incident Date"
+                      outlined
+                      :value="thirdparty.date_of_reimbursement"
+                      v-on="inputEvents"
+                      class="claimDateInputField"
+                    >
+                    </v-text-field>
+                  </template>
+                </vc-date-picker>
+              </template>
             </v-col>
             <v-col cols="12" sm="4"> </v-col>
             <v-col class="d-flex" cols="12" sm="4">
@@ -75,7 +58,6 @@
                 outlined
               ></v-text-field>
             </v-col>
-
             <v-col class="d-flex" cols="12" sm="4">
               <v-text-field
                 v-model="thirdparty.Invoice_number"
@@ -90,11 +72,33 @@
                 outlined
               ></v-text-field>
             </v-col>
-            <v-col class="d-flex" cols="12" sm="4">
+            <v-col class="d-flex" cols="12">
               <v-file-input
+                v-if="!showDownload"
+                outlined
                 label="Liability letter"
-                v-model="model_Liabilityletter.Liabilityletter"
+                v-model="thirdparty.liability_letterFile"
               ></v-file-input>
+              <a
+                class="download mr-4"
+                color="white"
+                v-if="showDownload"
+                :href="
+                  'http://127.0.0.1:8000/storage/cdn/automobiles/liability_letter/' +
+                  thirdparty.liability_letter
+                "
+                download="proposed_file_name"
+                >DOWNLOAD LIABILITY LETTER
+                <v-icon class="mr-2"> mdi-download </v-icon></a
+              >
+              <span
+                class="change"
+                color="white"
+                v-if="showDownload"
+                @click="clickOnChange"
+                >CHANGE LIABILITY LETTER
+                <v-icon class="mr-2"> mdi-rotate-3d-variant </v-icon></span
+              >
             </v-col>
           </v-row>
         </v-container>
@@ -104,6 +108,7 @@
 </template>
 
 <script>
+import { formatToSimpleFormatDD_MM_YYYY } from "@/helpers/helpers";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -111,6 +116,8 @@ export default {
 
   data() {
     return {
+      date_of_reimbursementDate: new Date(),
+      showDownload: false,
       currency_list: [
         { name: "Moroccan Dirham", code: "MAD", symbol: "MAD", id: 1 },
         { name: "British Pound Sterling", code: "GBP", symbol: "£", id: 2 },
@@ -136,10 +143,8 @@ export default {
         date_of_reimbursement: null,
         Invoice_number: null,
         reimbursed_amount: null,
-      },
-      model_Liabilityletter: {
-        claim_id: null,
-        Liabilityletter: null,
+        liability_letter: null,
+        liability_letterFile: null,
       },
     };
   },
@@ -157,13 +162,14 @@ export default {
       "getbrands",
       "getnatureOfDamages",
       "getdepartements",
+      "geteditedOrSavedClaimAutomobile",
     ]),
   },
   watch: {
     thirdparty: {
       deep: true,
       handler(newValue, oldvalue) {
-        this.set_thirdparty_automobile_claim_SetterAction(newValue).then(() => {});
+        this.set_thirdparty_claim_SetterAction(newValue).then(() => {});
       },
     },
   },
@@ -185,37 +191,25 @@ export default {
           this.geteditedOrSavedClaimAutomobile.Invoice_number;
         this.thirdparty.reimbursed_amount =
           this.geteditedOrSavedClaimAutomobile.reimbursed_amount;
+
+        this.thirdparty.liability_letter =
+          this.geteditedOrSavedClaimAutomobile.liability_letter;
+
+        this.showDownload =
+          this.geteditedOrSavedClaimAutomobile.liability_letter != null &&
+          this.geteditedOrSavedClaimAutomobile.liability_letter != ""
+            ? true
+            : false;
       }
     },
-    sendLiabilityletter() {
-      this.photo.foreman_id = this.getUserActive.id;
-
-      var formData = new FormData();
-      formData.append(
-        "claim_id",
-        parseFloat(this.model_Liabilityletter.claim_id)
-      );
-      formData.append(
-        "Liabilityletter",
-        this.model_Liabilityletter.Liabilityletter
-      );
-
-      this.sendDamagePhotosStoragePathAction(formData)
-        .then((resolve) => {
-          this.LoadingPage = true;
-
-          setTimeout(() => {
-            this.LoadingPage = false;
-            swal("Good job!", "success", "success");
-          }, 2000);
-        })
-        .catch(() => {
-          swal("Error", "", "error");
-        });
-
-      this.dialogimage = false;
+    ...mapActions(["set_thirdparty_claim_SetterAction"]),
+    clickOnChange() {
+      this.showDownload = false;
     },
-    ...mapActions(["set_thirdparty_automobile_claim_SetterAction"]),
+    date_of_reimbursementDateChange(input) {
+      this.thirdparty.date_of_reimbursement =
+        formatToSimpleFormatDD_MM_YYYY(input);
+    },
   },
 };
 </script>

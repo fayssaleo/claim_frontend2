@@ -6,10 +6,7 @@ const claimsEquipmentModule = {
     claims: [],
     editedOrSavedClaimEquipment: {
       id: 0,
-      status: "",
-      incident_date: "",
-      claim_date: "",
-      ClaimOrIncident: "",
+      claim_id: 0,
       categorie_of_equipment: "",
       concerned_internal_department: "",
       equipement_registration: "",
@@ -42,6 +39,7 @@ const claimsEquipmentModule = {
       liability_letterFile: null,
       insurance_declaration: null,
       insurance_declarationFile: null,
+      ClaimOrIncident: "",
       type_of_equipment: {
         id: 0,
         name: "",
@@ -85,8 +83,8 @@ const claimsEquipmentModule = {
         return c;
       });
     },
-    setClaimOrIncident_EQUIPMENT_CLAiM(state, ClaimOrIncident) {
-      state.editedOrSavedClaimEquipment.ClaimOrIncident = ClaimOrIncident;
+    setClaim_id_EQUIPMENT_CLAiM(state, claim_id) {
+      state.editedOrSavedClaimEquipment.claim_id = claim_id;
     },
     setEQUIPMENT_CLAiM(state, equipment) {
       state.editedOrSavedClaimEquipment.type_of_equipment.id =
@@ -123,8 +121,6 @@ const claimsEquipmentModule = {
         equipment.department.join("|");
     },
     setDATE_EQUIPMENT_CLAiM(state, dateClaim) {
-      state.editedOrSavedClaimEquipment.incident_date = dateClaim.incident_date;
-      state.editedOrSavedClaimEquipment.claim_date = dateClaim.claim_date;
       state.editedOrSavedClaimEquipment.incident_reportFile =
         dateClaim.incident_reportFile;
       state.editedOrSavedClaimEquipment.incident_report =
@@ -171,8 +167,8 @@ const claimsEquipmentModule = {
     },
     setAll_Attr_EQUIPMENT_CLAiM(state, EquipmentClaim) {
       state.editedOrSavedClaimEquipment.id = EquipmentClaim.id;
-      state.editedOrSavedClaimEquipment.ClaimOrIncident =
-        EquipmentClaim.ClaimOrIncident;
+      state.editedOrSavedClaimEquipment.claim_id = EquipmentClaim.claim_id;
+
       state.editedOrSavedClaimEquipment.categorie_of_equipment =
         EquipmentClaim.categorie_of_equipment;
       state.editedOrSavedClaimEquipment.Deductible_charge_TAT =
@@ -225,9 +221,7 @@ const claimsEquipmentModule = {
       // estimation
       state.editedOrSavedClaimEquipment.estimate = EquipmentClaim.estimate;
       // date
-      state.editedOrSavedClaimEquipment.incident_date =
-        EquipmentClaim.incident_date;
-      state.editedOrSavedClaimEquipment.claim_date = EquipmentClaim.claim_date;
+
       state.editedOrSavedClaimEquipment.date_of_declaration =
         EquipmentClaim.date_of_declaration;
       state.editedOrSavedClaimEquipment.date_of_feedback =
@@ -253,7 +247,7 @@ const claimsEquipmentModule = {
     },
     emptyAll_Attr_EQUIPMENT_CLAiM(state) {
       state.editedOrSavedClaimEquipment.id = 0;
-      state.editedOrSavedClaimEquipment.ClaimOrIncident = "";
+      state.editedOrSavedClaimEquipment.claim_id = 0;
       state.editedOrSavedClaimEquipment.categorie_of_equipment = "";
       state.editedOrSavedClaimEquipment.Deductible_charge_TAT = "";
       state.editedOrSavedClaimEquipment.categorie_of_equipment = "";
@@ -295,13 +289,12 @@ const claimsEquipmentModule = {
       state.editedOrSavedClaimEquipment.estimate = "";
 
       // date
-      state.editedOrSavedClaimEquipment.incident_date = "";
-      state.editedOrSavedClaimEquipment.claim_date = "";
       state.editedOrSavedClaimEquipment.date_of_declaration = "";
       state.editedOrSavedClaimEquipment.date_of_feedback = "";
       state.editedOrSavedClaimEquipment.thirdparty_Activity_comments = "";
       state.editedOrSavedClaimEquipment.Indemnification_date = "";
     },
+   
   },
   actions: {
     setClaimsAction({ commit }) {
@@ -317,9 +310,9 @@ const claimsEquipmentModule = {
           });
       });
     },
-    setEquipmentsAllClaimAction({ commit }) {
+    setEquipmentsAction({ commit }, id) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.get("equipments/allClaim")
+        CustomizedAxios.get("equipments/" + id)
           .then((response) => {
             commit("SET_CLAiMS", response.data.payload);
             resolve(response);
@@ -346,16 +339,8 @@ const claimsEquipmentModule = {
         var claimFormData = new FormData();
 
         claimFormData.append("id", claim.id);
-        claimFormData.append("status", NullTest(claim.status));
-        claimFormData.append(
-          "incident_date",
-          toLaravelDatetime(claim.incident_date)
-        );
-        claimFormData.append("claim_date", toLaravelDatetime(claim.claim_date));
-        claimFormData.append(
-          "ClaimOrIncident",
-          NullTest(claim.ClaimOrIncident)
-        );
+        claimFormData.append("claim_id", claim.claim_id);
+
         claimFormData.append(
           "categorie_of_equipment",
           NullTest(claim.categorie_of_equipment)
@@ -518,7 +503,7 @@ const claimsEquipmentModule = {
     },
     deleteEquipmentClaimAction({ commit }, claim) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.post("containers/delete", claim)
+        CustomizedAxios.post("equipments/delete", claim)
           .then((response) => {
             commit("DELETE_CLAiM", claim);
             resolve(response.data);
@@ -540,8 +525,8 @@ const claimsEquipmentModule = {
           });
       });
     },
-    set_ClaimOrIncident_claim_SetterAction({ commit }, equipment) {
-      commit("setClaimOrIncident_EQUIPMENT_CLAiM", equipment);
+    setClaim_id_EQUIPMENT_claim_SetterAction({ commit }, equipment) {
+      commit("setClaim_id_EQUIPMENT_CLAiM", equipment);
     },
     set_equipment_claim_SetterAction({ commit }, equipment) {
       commit("setEQUIPMENT_CLAiM", equipment);
@@ -560,6 +545,9 @@ const claimsEquipmentModule = {
     },
     emptyAll_Attr_EQUIPMENT_CLAiMAction({ commit }) {
       commit("emptyAll_Attr_EQUIPMENT_CLAiM");
+    },
+    set_attr_ClaimOrIncident_EQUIPMENTAction({ commit }, ClaimOrIncident) {
+      commit("set_attr_ClaimOrIncident_EQUIPMENT", ClaimOrIncident);
     },
   },
   getters: {
