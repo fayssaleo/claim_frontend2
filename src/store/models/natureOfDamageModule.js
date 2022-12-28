@@ -37,6 +37,58 @@ const natureOfDamageModule = {
           });
       });
     },
+    setnatureOfDamagesByEquipmentsAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("NatureOfDamage/index/equipment")
+          .then((response) => {
+            commit("SET_natureOfDamage", response.data.payload);
+
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    setnatureOfDamagesByAutomobilesAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("NatureOfDamage/index/automobile")
+          .then((response) => {
+            commit("SET_natureOfDamage", response.data.payload);
+
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    setnatureOfDamagesByVesselsAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("NatureOfDamage/index/vessel")
+          .then((response) => {
+            commit("SET_natureOfDamage", response.data.payload);
+
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    setnatureOfDamagesByContainersAction({ commit }) {
+      return new Promise((resolve, reject) => {
+        CustomizedAxios.get("NatureOfDamage/index/container")
+          .then((response) => {
+            commit("SET_natureOfDamage", response.data.payload);
+
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
     setnatureOfDamagebyIDAction({ commit }, id) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("NatureOfDamage/" + id)

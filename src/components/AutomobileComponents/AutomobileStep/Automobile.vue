@@ -423,7 +423,7 @@ export default {
       };
       this.brands.push(model);
     });
-    this.setnatureOfDamagesAction().then(() => {
+    this.setnatureOfDamagesByEquipmentsAction().then(() => {
       this.natureOfDamages = [...this.getnatureOfDamages];
       var model = {
         id: 0,
@@ -515,7 +515,7 @@ export default {
     ...mapActions([
       "setTypeOfEquipmentsByAutomobileAction",
       "setbrandsAutomobilesAction",
-      "setnatureOfDamagesAction",
+      "setnatureOfDamagesByEquipmentsAction",
       "setDepartementsAction",
       "set_automobile_claim_SetterAction",
       "setModuleShowToFalseAction",

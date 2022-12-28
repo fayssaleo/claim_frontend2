@@ -353,7 +353,7 @@ export default {
       };
       this.shippingLines.push(model);
     });
-    this.setnatureOfDamagesAction().then(() => {
+    this.setnatureOfDamagesByVesselsAction().then(() => {
       this.natureOfDamages = [...this.getnatureOfDamages];
       var model = {
         id: 0,
@@ -442,7 +442,7 @@ export default {
     ...mapActions([
       "setTypeOfVesselsAction",
       "setbrandsAction",
-      "setnatureOfDamagesAction",
+      "setnatureOfDamagesByVesselsAction",
       "setDepartementsAction",
       "setModuleShowToFalseAction",
       "set_vessel_claim_SetterAction",
