@@ -62,6 +62,7 @@
                 class="mr-2"
               ></v-text-field>
             </v-col>
+           
             <!---------------------------------------------------------------------------------------------------------------->
             <v-col
               class="d-flex"
@@ -124,6 +125,18 @@
                 outlined
                 v-model="EquipmentModel.equipement_registration"
               ></v-text-field>
+            </v-col>
+            <v-col class="d-flex" cols="12" sm="6">
+              <v-select
+                :items="departments"
+                item-text="name"
+                item-value="id"
+                v-model="EquipmentModel.department_id"
+                label="Department :"
+                dense
+                outlined
+              ></v-select>
+              
             </v-col>
             <v-col cols="12"><v-divider></v-divider></v-col>
             <!---------------------------------------------------------------------------------------------------------------->
@@ -371,6 +384,7 @@ export default {
         categorie_of_equipment: "",
         equipement_registration: "",
         nature_of_damage_comment: "",
+        department_id:"",
         cause_damage: "",
         damage_caused_by: "",
         type_of_equipment: {
@@ -473,6 +487,8 @@ export default {
 
         this.EquipmentModel.damage_caused_by =
           this.geteditedOrSavedClaimEquipment.damage_caused_by;
+        this.EquipmentModel.department_id =
+          this.geteditedOrSavedClaimEquipment.department_id;
 
         this.EquipmentModel.thirdparty_company_name =
           this.geteditedOrSavedClaimEquipment.thirdparty_company_name;
@@ -535,6 +551,9 @@ export default {
     deletePerson(index) {
       this.EquipmentModel.TAT_name_persons =
         this.EquipmentModel.TAT_name_persons.filter((e) => e != index);
+    },
+    changedepartmentSELECT() {
+      //this.this.EquipmentModel.concerned_internal_department=
     },
   },
 };

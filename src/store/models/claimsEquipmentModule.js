@@ -7,8 +7,10 @@ const claimsEquipmentModule = {
     editedOrSavedClaimEquipment: {
       id: 0,
       claim_id: 0,
+      department_id: 0,
       categorie_of_equipment: "",
       concerned_internal_department: "",
+      department: 0,
       equipement_registration: "",
       cause_damage: "",
       Liability_letter_number: "",
@@ -92,6 +94,7 @@ const claimsEquipmentModule = {
       state.editedOrSavedClaimEquipment.type_of_equipment.name =
         equipment.type_of_equipment.name;
 
+      state.editedOrSavedClaimEquipment.department_id = equipment.department_id;
       state.editedOrSavedClaimEquipment.brand.id = equipment.brand.id;
       state.editedOrSavedClaimEquipment.brand.name = equipment.brand.name;
 
@@ -168,6 +171,7 @@ const claimsEquipmentModule = {
     setAll_Attr_EQUIPMENT_CLAiM(state, EquipmentClaim) {
       state.editedOrSavedClaimEquipment.id = EquipmentClaim.id;
       state.editedOrSavedClaimEquipment.claim_id = EquipmentClaim.claim_id;
+      state.editedOrSavedClaimEquipment.department_id = EquipmentClaim.department_id;
 
       state.editedOrSavedClaimEquipment.categorie_of_equipment =
         EquipmentClaim.categorie_of_equipment;
@@ -248,6 +252,7 @@ const claimsEquipmentModule = {
     emptyAll_Attr_EQUIPMENT_CLAiM(state) {
       state.editedOrSavedClaimEquipment.id = 0;
       state.editedOrSavedClaimEquipment.claim_id = 0;
+      state.editedOrSavedClaimEquipment.department_id = 0;
       state.editedOrSavedClaimEquipment.categorie_of_equipment = "";
       state.editedOrSavedClaimEquipment.Deductible_charge_TAT = "";
       state.editedOrSavedClaimEquipment.categorie_of_equipment = "";
@@ -340,6 +345,7 @@ const claimsEquipmentModule = {
 
         claimFormData.append("id", claim.id);
         claimFormData.append("claim_id", claim.claim_id);
+        claimFormData.append("department_id", claim.department_id);
 
         claimFormData.append(
           "categorie_of_equipment",
