@@ -63,7 +63,7 @@ export default {
           fonction: {
             id: null,
             name: "",
-            department_id: null,
+            department_id: "",
             created_at: "",
             updated_at: "",
             department: {
@@ -100,7 +100,7 @@ export default {
           this.$router.push({
             name: "Claim",
           });
-         // console.error('ddddd', 'ddddd');
+          // console.error('ddddd', 'ddddd');
           window.location.reload();
         })
         .catch(() => {

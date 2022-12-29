@@ -233,7 +233,9 @@ export default {
       } else {
         this.dateClaim.ClaimOrIncident = "Incident";
       }
-      this.set_attr_ClaimOrIncident_CLAiMAction(this.dateClaim).then(() => {});
+      this.set_attr_ClaimOrIncident_CLAiMAction(
+        this.dateClaim.ClaimOrIncident
+      ).then(() => {});
     },
   },
 };

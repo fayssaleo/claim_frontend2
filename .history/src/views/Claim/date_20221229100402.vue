@@ -165,7 +165,6 @@ export default {
       "set_attr_ClaimOrIncident_CLAiMAction",
       "setModuleShowToTrueAction",
       "setModuleShowToFalseAction",
-      "set_incident_report_to_null_SetterAction",
     ]),
     initialize() {
       if (this.geteditedOrSavedclaim.id > 0) {
@@ -217,7 +216,7 @@ export default {
       this.dateClaim.claim_date = formatToSimpleFormatDD_MM_YYYY(input);
     },
     clickOnChange() {
-      this.set_incident_report_to_null_SetterAction();
+      this.showDownload = false;
     },
     saveDate() {
       this.addClaimAction(this.geteditedOrSavedclaim).then(() => {
@@ -233,7 +232,9 @@ export default {
       } else {
         this.dateClaim.ClaimOrIncident = "Incident";
       }
-      this.set_attr_ClaimOrIncident_CLAiMAction(this.dateClaim).then(() => {});
+      this.set_attr_ClaimOrIncident_CLAiMAction(
+        this.dateClaim.ClaimOrIncident
+      ).then(() => {});
     },
   },
 };

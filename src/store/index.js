@@ -19,7 +19,7 @@ import claimsModule from "./models/claimsModule";
 import VuexPersist from "vuex-persist";
 
 Vue.use(Vuex);
- const vuexLocalStorage = new VuexPersist({
+const vuexLocalStorage = new VuexPersist({
   key: "ClaimCach",
   storage: window.localStorage, // or window.sessionStorage or localForage
   // Function that passes the state and returns the state with only the objects you want to store.
@@ -33,10 +33,9 @@ Vue.use(Vuex);
     claimsVesselModule: state.claimsVesselModule,
     claimsContainerModule: state.claimsContainerModule,
     claimsModule: state.claimsModule,
-
   }),
-  filter: mutation => (true),
-}); 
+  filter: (mutation) => true,
+});
 
 let store = null;
 
@@ -56,7 +55,7 @@ export default function () {
       claimsVesselModule,
       claimsContainerModule,
       shippingLineModule,
-      claimsModule
+      claimsModule,
     },
     state: {},
     mutations: {},

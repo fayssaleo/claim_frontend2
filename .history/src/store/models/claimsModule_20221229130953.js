@@ -34,12 +34,13 @@ const claimsModule = {
       });
     },
     set_attr_ClaimOrIncident_CLAiM(state, ClaimOrIncident) {
-      state.editedOrSavedclaim.id = ClaimOrIncident.id;
-      state.editedOrSavedclaim.status = ClaimOrIncident.status;
-      state.editedOrSavedclaim.claim_date = ClaimOrIncident.claim_date;
-      state.editedOrSavedclaim.ClaimOrIncident =
+      state.editedOrSavedclaim.ClaimOrIncident.id = ClaimOrIncident.id;
+      state.editedOrSavedclaim.ClaimOrIncident.status = ClaimOrIncident.status;
+      state.editedOrSavedclaim.ClaimOrIncident.claim_date =
+        ClaimOrIncident.claim_date;
+      state.editedOrSavedclaim.ClaimOrIncident.ClaimOrIncident =
         ClaimOrIncident.ClaimOrIncident;
-      state.editedOrSavedclaim.incident_report =
+      state.editedOrSavedclaim.ClaimOrIncident.incident_report =
         ClaimOrIncident.incident_report;
     },
     set_attr_without_CLAiM(state, claim) {
@@ -68,14 +69,8 @@ const claimsModule = {
       state.editedOrSavedclaim.incident_report = null;
       state.editedOrSavedclaim.incident_reportFile = null;
     },
-    setIncidentReportToNull(state) {
-      state.editedOrSavedclaim.incident_report = "";
-    },
   },
   actions: {
-    set_incident_report_to_null_SetterAction({ commit }) {
-      commit("setIncidentReportToNull");
-    },
     setindexClaimsAction({ commit }) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("claims/indexClaims")

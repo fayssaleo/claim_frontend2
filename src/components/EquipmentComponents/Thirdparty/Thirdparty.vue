@@ -117,7 +117,6 @@ export default {
   data() {
     return {
       date_of_reimbursementDate: new Date(),
-      showDownload: false,
       currency_list: [
         { name: "Moroccan Dirham", code: "MAD", symbol: "MAD", id: 1 },
         { name: "British Pound Sterling", code: "GBP", symbol: "£", id: 2 },
@@ -156,6 +155,12 @@ export default {
   },
   computed: {
     formTitle() {},
+    showDownload() {
+      return this.geteditedOrSavedClaimEquipment.liability_letter != null &&
+        this.geteditedOrSavedClaimEquipment.liability_letter != ""
+        ? true
+        : false;
+    },
     ...mapGetters([
       "geteditedOrSavedClaimEquipment",
       "getTypeOfEquipments",
@@ -194,17 +199,14 @@ export default {
 
         this.thirdparty.liability_letter =
           this.geteditedOrSavedClaimEquipment.liability_letter;
-
-        this.showDownload =
-          this.geteditedOrSavedClaimEquipment.liability_letter != null &&
-          this.geteditedOrSavedClaimEquipment.liability_letter != ""
-            ? true
-            : false;
       }
     },
-    ...mapActions(["set_thirdparty_claim_SetterAction"]),
+    ...mapActions([
+      "set_thirdparty_claim_SetterAction",
+      "set_liability_letter_to_null_SetterAction",
+    ]),
     clickOnChange() {
-      this.showDownload = false;
+      this.set_liability_letter_to_null_SetterAction();
     },
     date_of_reimbursementDateChange(input) {
       this.thirdparty.date_of_reimbursement =

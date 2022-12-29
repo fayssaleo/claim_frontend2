@@ -136,7 +136,6 @@ export default {
 
   data() {
     return {
-      showDownload: false,
       declarationDate: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
       )
@@ -191,6 +190,12 @@ export default {
   computed: {
     formTitle() {},
     ...mapGetters(["geteditedOrSavedClaimEquipment"]),
+    showDownload() {
+      return this.geteditedOrSavedClaimEquipment.insurance_declaration !=
+        null && this.geteditedOrSavedClaimEquipment.insurance_declaration != ""
+        ? true
+        : false;
+    },
   },
   watch: {
     insurance_followup: {
@@ -230,12 +235,6 @@ export default {
           this.geteditedOrSavedClaimEquipment.insurance_declaration;
         this.insurance_followup.Indemnification_date =
           this.geteditedOrSavedClaimEquipment.Indemnification_date;
-
-        this.showDownload =
-          this.geteditedOrSavedClaimEquipment.insurance_declaration != null &&
-          this.geteditedOrSavedClaimEquipment.insurance_declaration != ""
-            ? true
-            : false;
       }
     },
     declarationDateChange(input) {
@@ -250,9 +249,12 @@ export default {
       this.insurance_followup.Indemnification_date =
         formatToSimpleFormatDD_MM_YYYY(input);
     },
-    ...mapActions(["set_insurance_followup_claim_SetterAction"]),
+    ...mapActions([
+      "set_insurance_followup_claim_SetterAction",
+      "set_insurance_declaration_to_null_SetterAction",
+    ]),
     clickOnChange() {
-      this.showDownload = false;
+      this.set_insurance_declaration_to_null_SetterAction();
     },
   },
 };
