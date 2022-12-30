@@ -8,7 +8,6 @@ const typeOfEquipmentModel = {
     SET_TypeOfEquipment(state, typeOfEquipments) {
       state.typeOfEquipments = typeOfEquipments;
     },
-
     ADD_TypeOfEquipment(state, TypeOfEquipment) {
       state.typeOfEquipments.push(TypeOfEquipment);
     },
@@ -17,7 +16,6 @@ const typeOfEquipmentModel = {
         (c) => c.id != typeOfEquipment.id
       );
     },
-
     EDIT_TypeOfEquipment(state, TypeOfEquipment) {
       state.typeOfEquipment = state.typeOfEquipment.map((c) => {
         if (c.id == TypeOfEquipment.id) return TypeOfEquipment;
@@ -57,7 +55,6 @@ const typeOfEquipmentModel = {
         CustomizedAxios.get("TypeOfEquipment/index/automobile")
           .then((response) => {
             commit("SET_TypeOfEquipment", response.data.payload);
-
             resolve(response);
           })
           .catch((error) => {
@@ -65,7 +62,6 @@ const typeOfEquipmentModel = {
           });
       });
     },
- 
     setTypeOfEquipmentbyIDAction({ commit }, id) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("TypeOfEquipment/" + id)
@@ -79,7 +75,6 @@ const typeOfEquipmentModel = {
           });
       });
     },
-
     deleteTypeOfEquipmentAction({ commit }, TypeOfEquipment) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.post("TypeOfEquipment/delete", TypeOfEquipment)

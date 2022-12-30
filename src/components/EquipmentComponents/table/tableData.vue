@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 5px; padding-top: 3%;margin:10px">
+  <div style="padding: 5px; padding-top: 3%; margin: 10px">
     <v-data-table
       :headers="headers"
       :items="claims"
@@ -14,7 +14,7 @@
           <td class="cursor">
             {{ item.id }}
           </td>
-          
+
           <td class="cursor">{{ item.damage_caused_by }}</td>
 
           <td class="cursor">
@@ -80,11 +80,10 @@
           </v-dialog>
           <v-dialog
             v-model="dialogAdd"
-            
             hide-overlay
             transition="dialog-bottom-transition"
           >
-            <template v-slot:activator="{ }">
+            <template v-slot:activator="{}">
               <v-btn
                 color="teal"
                 class="mr-2 btn white--text"
@@ -94,7 +93,6 @@
                 Add
               </v-btn>
             </template>
-           
           </v-dialog>
         </v-toolbar>
       </template>
@@ -110,19 +108,19 @@
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
-import Addclaim from "../../../views/Equipment/Addclaim.vue"
+import Addclaim from "../../../views/Equipment/Addclaim.vue";
 export default {
-  components: {Addclaim},
+  components: { Addclaim },
   data: () => ({
     dialog: false,
     dialogDelete: false,
     search: "",
     loading: false,
     dialogAdd: false,
-    isAdd:false,
+    isAdd: false,
     headers: [
       { text: "Id", align: "start", value: "id", sortable: true },
-      
+
       { text: "Damage caused by", value: "damage_caused_by", sortable: true },
       {
         text: "Declared",
@@ -132,7 +130,6 @@ export default {
       { text: "Actions", value: "actions", sortable: false },
     ],
     claims: [],
-
     editedIndex: -1,
     editedItem: {
       id: 0,
@@ -197,73 +194,71 @@ export default {
   }),
   mounted() {
     document.title = "Claim";
-
     this.initialize();
   },
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New " : "Edit ";
     },
-    ...mapGetters(["getEquipmentclaims","geteditedOrSavedclaim"]),
+    ...mapGetters(["getEquipmentclaims", "geteditedOrSavedclaim"]),
   },
   watch: {
     dialog(val) {
       if (this.editedIndex == -1) {
         this.editedIndex = -1;
-        this.editedItem= {
-        id: 0,
-        status: "",
-        incident_date: "",
-        claim_date: "",
-        ClaimOrIncident: "",
-        categorie_of_equipment: "",
-        concerned_internal_department: "",
-        equipement_registration: "",
-        cause_damage: "",
-        Liability_letter_number: "",
-        amount: null,
-        currency: "",
-        comment_third_party: "",
-        reinvoiced: "",
-        currency_Insurance: "",
-        Invoice_number: null,
-        date_of_reimbursement: "",
-        reimbursed_amount: null,
-        date_of_declaration: null,
-        date_of_feedback: null,
-        comment_Insurance: null,
-        Indemnification_of_insurer: "",
-        Indemnification_date: "",
-        currency_indemnisation: "",
-        deductible_charge_TAT: 5000,
-        damage_caused_by: "",
-        TAT_name_persons: "",
-        outsourcer_company_name: null,
-        thirdparty_company_name: null,
-        thirdparty_Activity_comments: null,
-        categorie_of_equipment: "",
-        incident_report: null,
-        incident_reportFile: null,
-        liability_letter: null,
-        liability_letterFile: null,
-        insurance_declaration: null,
-        insurance_declarationFile: null,
-        type_of_equipment: {
+        this.editedItem = {
           id: 0,
-          name: "",
-        },
-        brand: {
-          id: 0,
-          name: "",
-        },
-        nature_of_damage: {
-          id: 0,
-          name: "",
-        },
-        department: [],
-        estimate: [],
-      }
-
+          status: "",
+          incident_date: "",
+          claim_date: "",
+          ClaimOrIncident: "",
+          categorie_of_equipment: "",
+          concerned_internal_department: "",
+          equipement_registration: "",
+          cause_damage: "",
+          Liability_letter_number: "",
+          amount: null,
+          currency: "",
+          comment_third_party: "",
+          reinvoiced: "",
+          currency_Insurance: "",
+          Invoice_number: null,
+          date_of_reimbursement: "",
+          reimbursed_amount: null,
+          date_of_declaration: null,
+          date_of_feedback: null,
+          comment_Insurance: null,
+          Indemnification_of_insurer: "",
+          Indemnification_date: "",
+          currency_indemnisation: "",
+          deductible_charge_TAT: 5000,
+          damage_caused_by: "",
+          TAT_name_persons: "",
+          outsourcer_company_name: null,
+          thirdparty_company_name: null,
+          thirdparty_Activity_comments: null,
+          categorie_of_equipment: "",
+          incident_report: null,
+          incident_reportFile: null,
+          liability_letter: null,
+          liability_letterFile: null,
+          insurance_declaration: null,
+          insurance_declarationFile: null,
+          type_of_equipment: {
+            id: 0,
+            name: "",
+          },
+          brand: {
+            id: 0,
+            name: "",
+          },
+          nature_of_damage: {
+            id: 0,
+            name: "",
+          },
+          department: [],
+          estimate: [],
+        };
       }
       val || this.close();
     },
@@ -304,7 +299,6 @@ export default {
       "setModuleShowToTrueAction",
       "setModuleShowToFalseAction",
     ]),
-
     editItem(item) {
       this.setModuleShowToTrueAction();
       this.editedIndex = this.claims.indexOf(item) + 1;
@@ -356,43 +350,28 @@ export default {
       this.confirmAddSave = true;
     },
     closeDialoge() {
-      this.emptyAll_Attr_EQUIPMENT_CLAiMAction().then(() => {
-       
-       // console.log("ccccc");
-      });
+      this.emptyAll_Attr_EQUIPMENT_CLAiMAction().then(() => {});
       this.dialogAdd = false;
     },
     addclaimRoute() {
       this.emptyAll_Attr_EQUIPMENT_CLAiMAction().then(() => {
-       // this.dialogAdd=true;
-      
         this.$router.push({ name: "Addclaim" });
       });
-
     },
     save() {
       if (this.editedIndex == -1) {
         this.addDepartementAction(this.editedItem).then(() => {
           this.departements = [...this.getdepartements];
         });
-           //  this.LoadingPage = true;
-
-        setTimeout(() => {
-          //this.LoadingPage = false;
-        }, 2000);
+        setTimeout(() => {}, 2000);
         this.closeAddSaveDialog();
       } else {
         this.editDepartementAction(this.editedItem).then(() => {
           this.departements = [...this.getdepartements];
         });
-          //this.LoadingPage = true;
-
-        setTimeout(() => {
-          //this.LoadingPage = false;
-        }, 2000);
+        setTimeout(() => {}, 2000);
         this.closeAddSaveDialog();
       }
-
       this.close();
     },
   },

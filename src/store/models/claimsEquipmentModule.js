@@ -272,7 +272,6 @@ const claimsEquipmentModule = {
       state.editedOrSavedClaimEquipment.claim_id = 0;
       state.editedOrSavedClaimEquipment.department_id = 0;
       state.editedOrSavedClaimEquipment.categorie_of_equipment = "";
-      state.editedOrSavedClaimEquipment.Deductible_charge_TAT = "";
       state.editedOrSavedClaimEquipment.categorie_of_equipment = "";
       state.editedOrSavedClaimEquipment.cause_damage = "";
       state.editedOrSavedClaimEquipment.damage_caused_by = "";
@@ -284,6 +283,7 @@ const claimsEquipmentModule = {
       state.editedOrSavedClaimEquipment.Complementary_indemnification = "";
       state.editedOrSavedClaimEquipment.Indemnification_of_insurer = "";
       state.editedOrSavedClaimEquipment.currency_indemnisation = "";
+      state.editedOrSavedClaimEquipment.comment_Insurance = "";
       // object
       state.editedOrSavedClaimEquipment.type_of_equipment.id = 0;
       state.editedOrSavedClaimEquipment.brand.id = 0;
@@ -316,6 +316,7 @@ const claimsEquipmentModule = {
       state.editedOrSavedClaimEquipment.date_of_feedback = "";
       state.editedOrSavedClaimEquipment.thirdparty_Activity_comments = "";
       state.editedOrSavedClaimEquipment.Indemnification_date = "";
+      state.editedOrSavedClaimEquipment.date_of_reimbursement = "";
     },
     setLiabilityLetterToNull(state) {
       state.editedOrSavedClaimEquipment.liability_letter = "";

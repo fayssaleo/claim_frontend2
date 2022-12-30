@@ -190,7 +190,10 @@ export default {
         )
           this.claimDate = new Date(this.dateClaim.claim_date);
       }
-
+      console.log(
+        "this.geteditedOrSavedclaim.ClaimOrIncident == ",
+        this.geteditedOrSavedclaim
+      );
       if (this.geteditedOrSavedclaim.ClaimOrIncident == "Incident") {
         this.switch1 = true;
       } else {
@@ -233,7 +236,9 @@ export default {
       } else {
         this.dateClaim.ClaimOrIncident = "Incident";
       }
-      this.set_attr_ClaimOrIncident_CLAiMAction(this.dateClaim).then(() => {});
+      this.set_attr_ClaimOrIncident_CLAiMAction(
+        this.dateClaim.ClaimOrIncident
+      ).then(() => {});
     },
   },
 };

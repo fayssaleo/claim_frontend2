@@ -13,14 +13,20 @@
         <tr class="">
           <td class="cursor">
             {{ item.id }}
-          </td>    
-          <td class="cursor" :style="[item.status == 'Treated'?{'color':'#FF5722'}:{'color':'#4CAF50'}]">
+          </td>
+          <td
+            class="cursor"
+            :style="[
+              item.status == 'Treated'
+                ? { color: '#FF5722' }
+                : { color: '#4CAF50' },
+            ]"
+          >
             {{ item.status }}
           </td>
           <td class="cursor">{{ item.ClaimOrIncident }}</td>
           <td class="cursor">{{ item.incident_date }}</td>
           <td class="cursor">{{ item.claim_date }}</td>
-          
 
           <td>
             <v-btn
@@ -38,7 +44,7 @@
               <v-icon medium> mdi-delete </v-icon>
             </v-btn>
             <v-btn
-            v-if="item.status == 'Treated'"
+              v-if="item.status == 'Treated'"
               color="green"
               @click="closedDialogeF(item)"
               class="m-2 mr-2 btnAction white--text"
@@ -49,7 +55,7 @@
               v-if="item.status == 'Closed' || item.status == null"
               color="deep-orange accent-3"
               @click="treatedDialogeF(item)"
-              class="m-2  btnAction white--text"
+              class="m-2 btnAction white--text"
             >
               <v-icon medium> mdi-lock-clock </v-icon>
             </v-btn>
@@ -113,12 +119,10 @@
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closedDialog=false"
+                <v-btn color="blue darken-1" text @click="closedDialog = false"
                   >Cancel</v-btn
                 >
-                <v-btn color="blue darken-1" text @click="closedF()"
-                  >OK</v-btn
-                >
+                <v-btn color="blue darken-1" text @click="closedF()">OK</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -133,9 +137,7 @@
                 <v-btn color="blue darken-1" text @click="treatedDialog = false"
                   >Cancel</v-btn
                 >
-                <v-btn color="blue darken-1" text @click="treatedF()"
-                  >OK</v-btn
-                >
+                <v-btn color="blue darken-1" text @click="treatedF()">OK</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -171,7 +173,7 @@ export default {
       { text: "Status", align: "start", value: "status", sortable: true },
       { text: "ClaimOrIncident", value: "ClaimOrIncident", sortable: true },
       { text: "Incident date", value: "incident_date", sortable: true },
-      { text: "Claim date", value: "claim_date", sortable: true },     
+      { text: "Claim date", value: "claim_date", sortable: true },
       { text: "Actions", value: "actions", sortable: false },
     ],
     claims: [],
@@ -203,7 +205,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New " : "Edit ";
     },
-    ...mapGetters(["getEquipmentclaims","getclaims"]),
+    ...mapGetters(["getEquipmentclaims", "getclaims"]),
   },
   watch: {
     dialog(val) {
@@ -255,21 +257,20 @@ export default {
       "setModuleShowToTrueAction",
       "setModuleShowToFalseAction",
       "closedClaimAction",
-      "treatedClaimAction"
+      "treatedClaimAction",
     ]),
 
     editItem(item) {
       // this.setModuleShowToTrueAction();
       this.editedIndex = this.claims.indexOf(item) + 1;
       this.editedItem = Object.assign({}, item);
+      console.log("this.set_attr_CLAiMAction(item)", item);
       this.set_attr_CLAiMAction(item)
         .then(() => {
           console.log("item", item);
           this.$router.push({ name: "CreateClaimOrIncident" });
         })
         .catch((e) => {});
-
-
     },
     deleteItem(item) {
       this.editedIndex = item.id;
@@ -283,12 +284,10 @@ export default {
           this.claims = [...this.getclaims];
           this.setModuleShowToTrueAction();
         })
-        .catch(() => {
-        });
+        .catch(() => {});
 
       setTimeout(() => {
         this.setModuleShowToFalseAction();
-
       }, 2000);
       this.closeDelete();
     },
@@ -306,12 +305,12 @@ export default {
       this.confirmAddSave = true;
     },
     closedDialogeF(item) {
-      this.closed.id=item.id;
+      this.closed.id = item.id;
       console.log("closedDialogeF");
       this.closedDialog = true;
     },
     treatedDialogeF(item) {
-      this.treated.id=item.id;
+      this.treated.id = item.id;
 
       console.log("treatedDialogeF");
 
@@ -320,7 +319,6 @@ export default {
     closedF() {
       this.closedClaimAction(this.closed).then(() => {
         this.claims = [...this.getclaims];
-
       });
 
       this.closedDialog = false;
@@ -328,7 +326,6 @@ export default {
     treatedF() {
       this.treatedClaimAction(this.treated).then(() => {
         this.claims = [...this.getclaims];
-
       });
 
       this.treatedDialog = false;
@@ -344,16 +341,14 @@ export default {
           this.departements = [...this.getdepartements];
         });
 
-        setTimeout(() => {
-        }, 2000);
+        setTimeout(() => {}, 2000);
         this.closeAddSaveDialog();
       } else {
         this.editDepartementAction(this.editedItem).then(() => {
           this.departements = [...this.getdepartements];
         });
 
-        setTimeout(() => {
-        }, 2000);
+        setTimeout(() => {}, 2000);
         this.closeAddSaveDialog();
       }
 

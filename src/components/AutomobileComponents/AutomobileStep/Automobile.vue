@@ -131,6 +131,17 @@
                 v-model="EquipmentModel.equipement_registration"
               ></v-text-field>
             </v-col>
+            <v-col class="d-flex" cols="12" sm="6">
+              <v-select
+                :items="departments"
+                item-text="name"
+                item-value="id"
+                v-model="EquipmentModel.department_id"
+                label="Department :"
+                dense
+                outlined
+              ></v-select>
+            </v-col>
             <v-col cols="12"><v-divider></v-divider></v-col>
             <!---------------------------------------------------------------------------------------------------------------->
             <v-col
@@ -212,7 +223,6 @@
               </v-row>
             </v-col>
             <!---------------------------------------------------------------------------------------------------------------->
-
             <v-col cols="12"><v-divider></v-divider></v-col>
             <v-col
               cols="12"
@@ -378,6 +388,7 @@ export default {
         categorie_of_equipment: "",
         equipement_registration: "",
         nature_of_damage_comment: "",
+        department_id: "",
         cause_damage: "",
         damage_caused_by: "",
         type_of_equipment: {
@@ -480,6 +491,8 @@ export default {
 
         this.EquipmentModel.damage_caused_by =
           this.geteditedOrSavedClaimAutomobile.damage_caused_by;
+        this.EquipmentModel.department_id =
+          this.geteditedOrSavedClaimAutomobile.department_id;
 
         this.EquipmentModel.thirdparty_company_name =
           this.geteditedOrSavedClaimAutomobile.thirdparty_company_name;

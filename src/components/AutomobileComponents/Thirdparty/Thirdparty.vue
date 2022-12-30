@@ -117,7 +117,6 @@ export default {
   data() {
     return {
       date_of_reimbursementDate: new Date(),
-      showDownload: false,
       currency_list: [
         { name: "Moroccan Dirham", code: "MAD", symbol: "MAD", id: 1 },
         { name: "British Pound Sterling", code: "GBP", symbol: "£", id: 2 },
@@ -156,6 +155,12 @@ export default {
   },
   computed: {
     formTitle() {},
+    showDownload() {
+      return this.geteditedOrSavedClaimAutomobile.liability_letter != null &&
+        this.geteditedOrSavedClaimAutomobile.liability_letter != ""
+        ? true
+        : false;
+    },
     ...mapGetters([
       "geteditedOrSavedClaimAutomobile",
       "getTypeOfEquipments",
@@ -180,7 +185,8 @@ export default {
     initialize() {
       if (this.geteditedOrSavedClaimAutomobile.id > 0) {
         this.thirdparty.amount = this.geteditedOrSavedClaimAutomobile.amount;
-        this.thirdparty.currency = this.geteditedOrSavedClaimAutomobile.currency;
+        this.thirdparty.currency =
+          this.geteditedOrSavedClaimAutomobile.currency;
         this.thirdparty.comment_third_party =
           this.geteditedOrSavedClaimAutomobile.comment_third_party;
         this.thirdparty.reinvoiced =
@@ -194,17 +200,14 @@ export default {
 
         this.thirdparty.liability_letter =
           this.geteditedOrSavedClaimAutomobile.liability_letter;
-
-        this.showDownload =
-          this.geteditedOrSavedClaimAutomobile.liability_letter != null &&
-          this.geteditedOrSavedClaimAutomobile.liability_letter != ""
-            ? true
-            : false;
       }
     },
-    ...mapActions(["set_thirdparty_claim_SetterAction"]),
+    ...mapActions([
+      "set_thirdparty_claim_SetterAction",
+      "set_liability_letter_to_null_SetterAction",
+    ]),
     clickOnChange() {
-      this.showDownload = false;
+      this.set_liability_letter_to_null_SetterAction();
     },
     date_of_reimbursementDateChange(input) {
       this.thirdparty.date_of_reimbursement =

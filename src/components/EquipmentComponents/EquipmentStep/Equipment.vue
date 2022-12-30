@@ -62,7 +62,7 @@
                 class="mr-2"
               ></v-text-field>
             </v-col>
-           
+
             <!---------------------------------------------------------------------------------------------------------------->
             <v-col
               class="d-flex"
@@ -136,7 +136,6 @@
                 dense
                 outlined
               ></v-select>
-              
             </v-col>
             <v-col cols="12"><v-divider></v-divider></v-col>
             <!---------------------------------------------------------------------------------------------------------------->
@@ -384,7 +383,7 @@ export default {
         categorie_of_equipment: "",
         equipement_registration: "",
         nature_of_damage_comment: "",
-        department_id:"",
+        department_id: "",
         cause_damage: "",
         damage_caused_by: "",
         type_of_equipment: {

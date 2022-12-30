@@ -34,16 +34,12 @@ const claimsModule = {
       });
     },
     set_attr_ClaimOrIncident_CLAiM(state, ClaimOrIncident) {
-      state.editedOrSavedclaim.id = ClaimOrIncident.id;
-      state.editedOrSavedclaim.status = ClaimOrIncident.status;
-      state.editedOrSavedclaim.claim_date = ClaimOrIncident.claim_date;
-      state.editedOrSavedclaim.ClaimOrIncident =
-        ClaimOrIncident.ClaimOrIncident;
-      state.editedOrSavedclaim.incident_report =
-        ClaimOrIncident.incident_report;
+      console.log("set_attr_ClaimOrIncident_CLAiM", ClaimOrIncident);
+      state.editedOrSavedclaim.ClaimOrIncident = ClaimOrIncident;
     },
     set_attr_without_CLAiM(state, claim) {
       state.editedOrSavedclaim.id = claim.id;
+
       state.editedOrSavedclaim.status = claim.status;
       state.editedOrSavedclaim.incident_date = claim.incident_date;
       state.editedOrSavedclaim.claim_date = claim.claim_date;
@@ -51,13 +47,16 @@ const claimsModule = {
       state.editedOrSavedclaim.incident_report = claim.incident_report;
     },
     set_attr_CLAiM(state, claim) {
-      state.editedOrSavedclaim.id = claim.id;
+      console.log("set_attr_CLAiM", claim);
+      state.editedOrSavedclaim.id =
+        claim.id == "" || claim.id == null || claim.id == 0
+          ? state.editedOrSavedclaim.id
+          : claim.id;
       state.editedOrSavedclaim.status = claim.status;
       state.editedOrSavedclaim.incident_date = claim.incident_date;
       state.editedOrSavedclaim.claim_date = claim.claim_date;
       state.editedOrSavedclaim.ClaimOrIncident = claim.ClaimOrIncident;
       state.editedOrSavedclaim.incident_reportFile = claim.incident_reportFile;
-      state.editedOrSavedclaim.incident_report = claim.incident_report;
     },
     empty_attr_CLAiM(state, claim) {
       state.editedOrSavedclaim.id = 0;
