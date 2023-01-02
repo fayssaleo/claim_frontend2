@@ -174,7 +174,9 @@ export default {
     thirdparty: {
       deep: true,
       handler(newValue, oldvalue) {
-        this.set_thirdparty_claim_SetterAction(newValue).then(() => {});
+        this.set_thirdparty_automobile_claim_SetterAction(newValue).then(
+          () => {}
+        );
       },
     },
   },
@@ -203,7 +205,7 @@ export default {
       }
     },
     ...mapActions([
-      "set_thirdparty_claim_SetterAction",
+      "set_thirdparty_automobile_claim_SetterAction",
       "set_liability_letter_to_null_SetterAction",
     ]),
     clickOnChange() {

@@ -2,15 +2,9 @@
   <div style="padding: 5px; padding-top: 1%">
     <h3 class="text-uppercase">CREATING THE AUTOMOBILE</h3>
     <template>
-      <v-icon
-        large
-        class="mx-2 ma-2"
-        color="blue darken-2"
-        @click="back()"
-      >
-      mdi-arrow-left
-    </v-icon>
-   
+      <v-icon large class="mx-2 ma-2" color="blue darken-2" @click="back()">
+        mdi-arrow-left
+      </v-icon>
 
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -22,7 +16,7 @@
           <v-stepper-step
             :editable="
               this.geteditedOrSavedClaimAutomobile.damage_caused_by ==
-              'Thirdparty' ||
+                'Thirdparty' ||
               this.geteditedOrSavedClaimAutomobile.damage_caused_by ==
                 'Outsourcer'
             "
@@ -30,9 +24,9 @@
             :class="{
               'd-none': !(
                 this.geteditedOrSavedClaimAutomobile.damage_caused_by ==
-                'Thirdparty' ||
-              this.geteditedOrSavedClaimAutomobile.damage_caused_by ==
-                'Outsourcer'
+                  'Thirdparty' ||
+                this.geteditedOrSavedClaimAutomobile.damage_caused_by ==
+                  'Outsourcer'
               ),
             }"
             step="2"
@@ -53,7 +47,7 @@
           <v-stepper-content step="1">
             <Automobile />
           </v-stepper-content>
-         
+
           <v-stepper-content step="2">
             <v-card class="mb-12" color="#f0f0f0cc" height="auto">
               <template>
@@ -90,7 +84,7 @@
           <v-btn color="ma-2 teal white--text" @click="editedOrSavedClaim()">
             save
           </v-btn>
-          <v-btn color="ma-2 red white--text"> cancel </v-btn>
+          <v-btn color="ma-2 red white--text" @click="cancel()"> cancel </v-btn>
         </div>
       </v-stepper>
     </template>
@@ -135,7 +129,7 @@ export default {
       "getnatureOfDamages",
       "getdepartements",
       "geteditedOrSavedClaimAutomobile",
-      "geteditedOrSavedclaim"
+      "geteditedOrSavedclaim",
     ]),
   },
   watch: {
@@ -159,18 +153,20 @@ export default {
         this.geteditedOrSavedclaim.id
       )
         .then(() => {
-         // this.setModuleShowToFalseAction();
+          // this.setModuleShowToFalseAction();
           //console.log("save", "save");
         })
         .catch(() => {
-         // this.setModuleShowToFalseAction();
+          // this.setModuleShowToFalseAction();
         });
       //this.ClaimOrIncident();
     },
     ...mapActions([
       "set_ClaimOrIncident_claim_SetterAction",
       "editedOrSavedAutomobileClaimAction",
-      "set_Claim_id_automobileclaim_SetterAction"
+      "set_Claim_id_automobileclaim_SetterAction",
+      "setModuleShowToTrueAction",
+      "setModuleShowToFalseAction",
     ]),
 
     ClaimOrIncident() {
@@ -184,17 +180,22 @@ export default {
       ).then(() => {});
     },
     editedOrSavedClaim() {
+      this.setModuleShowToTrueAction();
       this.editedOrSavedAutomobileClaimAction(
         this.geteditedOrSavedClaimAutomobile
-      ).then(() => {
-        console.log("save", "save");
-      });
+      )
+        .then(() => {
+          this.setModuleShowToFalseAction();
+          console.log("save", "save");
+        })
+        .catch(() => {
+          this.setModuleShowToFalseAction();
+        });
     },
     stepper_backward() {
       if (
         this.geteditedOrSavedClaimAutomobile.damage_caused_by == "Thirdparty" ||
-              this.geteditedOrSavedClaimAutomobile.damage_caused_by ==
-                'Outsourcer'
+        this.geteditedOrSavedClaimAutomobile.damage_caused_by == "Outsourcer"
       ) {
         if (this.e1 == 2) {
           this.e1 = parseInt(this.e1 + "") - 1;
@@ -212,8 +213,7 @@ export default {
     stepper_forward() {
       if (
         this.geteditedOrSavedClaimAutomobile.damage_caused_by == "Thirdparty" ||
-              this.geteditedOrSavedClaimAutomobile.damage_caused_by ==
-                'Outsourcer'
+        this.geteditedOrSavedClaimAutomobile.damage_caused_by == "Outsourcer"
       ) {
         if (this.e1 == 2) {
           this.e1 = parseInt(this.e1 + "") + 1;
@@ -227,6 +227,9 @@ export default {
           this.e1 = parseInt(this.e1 + "") + 1;
         }
       }
+    },
+    cancel() {
+      this.$router.push({ name: "Automobile" });
     },
     back() {
       this.$router.push({ name: "CreateClaimOrIncident" });

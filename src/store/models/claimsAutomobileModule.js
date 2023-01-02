@@ -135,12 +135,6 @@ const claimsAutomobileModule = {
         equipment.TAT_name_persons.join("|");
       state.editedOrSavedClaimAutomobile.concerned_internal_department =
         equipment.department.join("|");
-
-      state.editedOrSavedClaimAutomobile.liability_letter =
-        equipment.liability_letter;
-
-      state.editedOrSavedClaimAutomobile.insurance_declaration =
-        equipment.insurance_declaration;
     },
     setDATE_AUTOMOBILE_CLAiM(state, dateClaim) {
       state.editedOrSavedClaimAutomobile.incident_reportFile =
@@ -330,6 +324,7 @@ const claimsAutomobileModule = {
   },
   actions: {
     set_liability_letter_to_null_SetterAction({ commit }) {
+      console.log("set_liability_letter_to_null_SetterAction 222");
       commit("setLiabilityLetterToNull");
     },
     set_insurance_declaration_to_null_SetterAction({ commit }) {

@@ -75,6 +75,11 @@ const claimsContainerModule = {
     },
     ADD_CLAiM(state, claim) {
       state.claims.push(claim);
+      state.editedOrSavedClaimContainer.id = claim.id;
+      state.editedOrSavedClaimContainer.liability_letter =
+        claim.liability_letter;
+      state.editedOrSavedClaimContainer.insurance_declaration =
+        claim.insurance_declaration;
     },
     DELETE_CLAiM(state, claim) {
       state.claims = state.claims.filter((c) => c.id != claim.id);
@@ -84,6 +89,11 @@ const claimsContainerModule = {
         if (c.id == claims.id) return claims;
         return c;
       });
+      state.editedOrSavedClaimContainer.id = claims.id;
+      state.editedOrSavedClaimContainer.liability_letter =
+        claims.liability_letter;
+      state.editedOrSavedClaimContainer.insurance_declaration =
+        claims.insurance_declaration;
     },
     setclaim_id_CONTAINER_CLAiM(state, claim_id) {
       state.editedOrSavedClaimContainer.claim_id = claim_id;
@@ -124,7 +134,6 @@ const claimsContainerModule = {
         container.department.join("|");
     },
     setDATE_CONTAINER_CLAiM(state, dateClaim) {
-  
       state.editedOrSavedClaimContainer.incident_reportFile =
         dateClaim.incident_reportFile;
       state.editedOrSavedClaimContainer.incident_report =
@@ -143,8 +152,7 @@ const claimsContainerModule = {
       state.editedOrSavedClaimContainer.reimbursed_amount =
         thirdpartyClaim.reimbursed_amount;
       //
-      state.editedOrSavedClaimContainer.liability_letter =
-        thirdpartyClaim.liability_letter;
+
       state.editedOrSavedClaimContainer.liability_letterFile =
         thirdpartyClaim.liability_letterFile;
     },
@@ -166,16 +174,14 @@ const claimsContainerModule = {
       //
       state.editedOrSavedClaimContainer.Indemnification_date =
         insurance_followup.Indemnification_date;
-      state.editedOrSavedClaimContainer.insurance_declaration =
-        insurance_followup.insurance_declaration;
+
       state.editedOrSavedClaimContainer.insurance_declarationFile =
         insurance_followup.insurance_declarationFile;
     },
 
     setAll_Attr_CONTAINER_CLAiM(state, ContainerClaim) {
       state.editedOrSavedClaimContainer.id = ContainerClaim.id;
-      state.editedOrSavedClaimContainer.claim_id =
-        ContainerClaim.claim_id;
+      state.editedOrSavedClaimContainer.claim_id = ContainerClaim.claim_id;
 
       state.editedOrSavedClaimContainer.containerID =
         ContainerClaim.containerID;
@@ -208,7 +214,7 @@ const claimsContainerModule = {
       state.editedOrSavedClaimContainer.Complementary_indemnification =
         ContainerClaim.Complementary_indemnification;
 
-        state.editedOrSavedClaimContainer.Indemnification_date =
+      state.editedOrSavedClaimContainer.Indemnification_date =
         ContainerClaim.Indemnification_date;
       // object
       state.editedOrSavedClaimContainer.nature_of_damage.id =
@@ -237,7 +243,7 @@ const claimsContainerModule = {
       // estimation
       state.editedOrSavedClaimContainer.estimate = ContainerClaim.estimate;
       // date
- 
+
       state.editedOrSavedClaimContainer.date_of_declaration =
         ContainerClaim.date_of_declaration;
       state.editedOrSavedClaimContainer.date_of_feedback =
@@ -308,15 +314,26 @@ const claimsContainerModule = {
       state.editedOrSavedClaimContainer.estimate = "";
 
       // date
-    
+
       state.editedOrSavedClaimContainer.date_of_declaration = "";
       state.editedOrSavedClaimContainer.date_of_feedback = "";
       state.editedOrSavedClaimContainer.thirdparty_Activity_comments = "";
       state.editedOrSavedClaimContainer.Indemnification_date = "";
-
+    },
+    setLiabilityLetterToNull(state) {
+      state.editedOrSavedClaimContainer.liability_letter = "";
+    },
+    setInsuranceDeclarationToNull(state) {
+      state.editedOrSavedClaimContainer.insurance_declaration = "";
     },
   },
   actions: {
+    set_liability_letter_to_null_SetterAction({ commit }) {
+      commit("setLiabilityLetterToNull");
+    },
+    set_insurance_declaration_to_null_SetterAction({ commit }) {
+      commit("setInsuranceDeclarationToNull");
+    },
     setClaimsAction({ commit }) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("claim/")
@@ -330,9 +347,9 @@ const claimsContainerModule = {
           });
       });
     },
-    setContainersAction({ commit },id) {
+    setContainersAction({ commit }, id) {
       return new Promise((resolve, reject) => {
-        CustomizedAxios.get("containers/"+id)
+        CustomizedAxios.get("containers/" + id)
           .then((response) => {
             commit("SET_CLAiMS", response.data.payload);
             resolve(response);
@@ -360,7 +377,7 @@ const claimsContainerModule = {
 
         claimFormData.append("id", claim.id);
         claimFormData.append("claim_id", NullTest(claim.claim_id));
-        
+
         //
         claimFormData.append("containerID", NullTest(claim.containerID));
         claimFormData.append(
@@ -494,7 +511,10 @@ const claimsContainerModule = {
           NullTest(claim.nature_of_damage.name)
         );
 
-        CustomizedAxios.post("containers/createOrUpdateContainer", claimFormData)
+        CustomizedAxios.post(
+          "containers/createOrUpdateContainer",
+          claimFormData
+        )
           .then((response) => {
             if (claim.id == 0) {
               commit("ADD_CLAiM", response.data.payload);

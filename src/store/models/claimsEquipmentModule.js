@@ -134,12 +134,6 @@ const claimsEquipmentModule = {
         equipment.TAT_name_persons.join("|");
       state.editedOrSavedClaimEquipment.concerned_internal_department =
         equipment.department.join("|");
-
-      state.editedOrSavedClaimEquipment.liability_letter =
-        equipment.liability_letter;
-
-      state.editedOrSavedClaimEquipment.insurance_declaration =
-        equipment.insurance_declaration;
     },
     setDATE_EQUIPMENT_CLAiM(state, dateClaim) {
       state.editedOrSavedClaimEquipment.incident_reportFile =

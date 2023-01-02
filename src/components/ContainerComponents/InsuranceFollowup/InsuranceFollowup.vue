@@ -50,7 +50,7 @@
         <v-file-input
           v-if="!showDownload"
           outlined
-          label="Incident report"
+          label="Insurance declaration"
           v-model="insurance_followup.insurance_declarationFile"
         ></v-file-input>
         <a
@@ -136,7 +136,6 @@ export default {
 
   data() {
     return {
-      showDownload: false,
       declarationDate: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
       )
@@ -193,12 +192,20 @@ export default {
   computed: {
     formTitle() {},
     ...mapGetters(["geteditedOrSavedClaimContainer"]),
+    showDownload() {
+      return this.geteditedOrSavedClaimContainer.insurance_declaration !=
+        null && this.geteditedOrSavedClaimContainer.insurance_declaration != ""
+        ? true
+        : false;
+    },
   },
   watch: {
     insurance_followup: {
       deep: true,
       handler(newValue, oldvalue) {
-        this.set_insurance_followup_container_claim_SetterAction(newValue).then(() => {});
+        this.set_insurance_followup_container_claim_SetterAction(newValue).then(
+          () => {}
+        );
       },
     },
   },
@@ -232,12 +239,6 @@ export default {
           this.geteditedOrSavedClaimContainer.insurance_declaration;
         this.insurance_followup.Indemnification_date =
           this.geteditedOrSavedClaimContainer.Indemnification_date;
-
-        this.showDownload =
-          this.geteditedOrSavedClaimContainer.insurance_declaration != null &&
-          this.geteditedOrSavedClaimContainer.insurance_declaration != ""
-            ? true
-            : false;
       }
     },
     declarationDateChange(input) {
@@ -252,9 +253,12 @@ export default {
       this.insurance_followup.Indemnification_date =
         formatToSimpleFormatDD_MM_YYYY(input);
     },
-    ...mapActions(["set_insurance_followup_container_claim_SetterAction"]),
+    ...mapActions([
+      "set_insurance_followup_container_claim_SetterAction",
+      "set_insurance_declaration_to_null_SetterAction",
+    ]),
     clickOnChange() {
-      this.showDownload = false;
+      this.set_insurance_declaration_to_null_SetterAction();
     },
   },
 };

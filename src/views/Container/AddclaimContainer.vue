@@ -1,15 +1,10 @@
 <template>
   <div style="padding: 5px; padding-top: 1%">
-    <h3 class="text-uppercase" >{{createdOrEdited}} THE CONTAINER</h3>
+    <h3 class="text-uppercase">{{ createdOrEdited }} THE CONTAINER</h3>
     <template>
-      <v-icon
-      large
-      class="mx-2 ma-2"
-      color="blue darken-2"
-      @click="back()"
-      >
+      <v-icon large class="mx-2 ma-2" color="blue darken-2" @click="back()">
         mdi-arrow-left
-     </v-icon>
+      </v-icon>
 
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -21,7 +16,7 @@
           <v-stepper-step
             :editable="
               this.geteditedOrSavedClaimContainer.damage_caused_by ==
-              'Thirdparty' ||
+                'Thirdparty' ||
               this.geteditedOrSavedClaimContainer.damage_caused_by ==
                 'Outsourcer'
             "
@@ -29,9 +24,9 @@
             :class="{
               'd-none': !(
                 this.geteditedOrSavedClaimContainer.damage_caused_by ==
-                'Thirdparty' ||
-              this.geteditedOrSavedClaimContainer.damage_caused_by ==
-                'Outsourcer'
+                  'Thirdparty' ||
+                this.geteditedOrSavedClaimContainer.damage_caused_by ==
+                  'Outsourcer'
               ),
             }"
             step="2"
@@ -76,18 +71,15 @@
           </v-stepper-content>
         </v-stepper-items>
         <div class="d-flex">
-          <v-btn v-if="e1 == 1" class="mx-4"  text>
-            backward
-          </v-btn>
+          <v-btn v-if="e1 == 1" class="mx-4" text> backward </v-btn>
           <v-btn v-else color="gray" class="mx-4" @click="stepper_backward(e1)">
             backward
           </v-btn>
-          <v-btn v-if="e1==4" text >
-                forward
-              </v-btn>
-              <v-btn v-else color="primary" @click="stepper_forward(e1)">
-                forward
-              </v-btn>          <v-spacer></v-spacer>
+          <v-btn v-if="e1 == 4" text> forward </v-btn>
+          <v-btn v-else color="primary" @click="stepper_forward(e1)">
+            forward
+          </v-btn>
+          <v-spacer></v-spacer>
 
           <v-btn color="ma-2 teal white--text" @click="editedOrSavedClaim()">
             save
@@ -122,7 +114,7 @@ export default {
     ClaimOrIncidentValue: "Claim",
     departmentID: "",
     modal: false,
-    createdOrEdited:"Create",
+    createdOrEdited: "Create",
   }),
   mounted() {
     document.title = "Claim";
@@ -137,7 +129,7 @@ export default {
       "getnatureOfDamages",
       "getdepartements",
       "geteditedOrSavedClaimContainer",
-      "geteditedOrSavedclaim"
+      "geteditedOrSavedclaim",
     ]),
   },
   watch: {
@@ -145,8 +137,8 @@ export default {
       handler(newValue, oldvalue) {
         /* this.set_ClaimOrIncident_claim_SetterAction(
           newValue
-        ).then(() => {});   */   
-       },
+        ).then(() => {});   */
+      },
     },
   },
   created() {
@@ -164,19 +156,20 @@ export default {
         this.geteditedOrSavedclaim.id
       )
         .then(() => {
-         // this.setModuleShowToFalseAction();
+          // this.setModuleShowToFalseAction();
           //console.log("save", "save");
         })
         .catch(() => {
-         // this.setModuleShowToFalseAction();
+          // this.setModuleShowToFalseAction();
         });
-     // this.ClaimOrIncident();
-
+      // this.ClaimOrIncident();
     },
     ...mapActions([
       "set_ClaimOrIncident_claim_SetterAction",
       "editedOrSavedContainerClaimAction",
-      "set_Claim_id_containerclaim_SetterAction"
+      "set_Claim_id_containerclaim_SetterAction",
+      "setModuleShowToTrueAction",
+      "setModuleShowToFalseAction",
     ]),
 
     ClaimOrIncident() {
@@ -190,16 +183,23 @@ export default {
       ).then(() => {});
     },
     editedOrSavedClaim() {
-      console.log("this.geteditedOrSavedClaimContainer",this.geteditedOrSavedClaimContainer);
-      this.editedOrSavedContainerClaimAction(this.geteditedOrSavedClaimContainer).then(() => {
-        console.log("save", "save");
-      });
+      this.setModuleShowToTrueAction();
+      this.editedOrSavedContainerClaimAction(
+        this.geteditedOrSavedClaimContainer
+      )
+        .then(() => {
+          this.setModuleShowToFalseAction();
+
+          console.log("save", "save");
+        })
+        .catch(() => {
+          this.setModuleShowToFalseAction();
+        });
     },
     stepper_backward() {
       if (
         this.geteditedOrSavedClaimContainer.damage_caused_by == "Thirdparty" ||
-              this.geteditedOrSavedClaimContainer.damage_caused_by ==
-                'Outsourcer'
+        this.geteditedOrSavedClaimContainer.damage_caused_by == "Outsourcer"
       ) {
         if (this.e1 == 2) {
           this.e1 = parseInt(this.e1 + "") - 1;
@@ -217,8 +217,7 @@ export default {
     stepper_forward() {
       if (
         this.geteditedOrSavedClaimContainer.damage_caused_by == "Thirdparty" ||
-              this.geteditedOrSavedClaimContainer.damage_caused_by ==
-                'Outsourcer'
+        this.geteditedOrSavedClaimContainer.damage_caused_by == "Outsourcer"
       ) {
         if (this.e1 == 2) {
           this.e1 = parseInt(this.e1 + "") + 1;
@@ -233,10 +232,12 @@ export default {
         }
       }
     },
-    back(){
-    this.$router.push({ name: "CreateClaimOrIncident" });
-
-  }
+    cancel() {
+      this.$router.push({ name: "Container" });
+    },
+    back() {
+      this.$router.push({ name: "CreateClaimOrIncident" });
+    },
   },
 };
 </script>

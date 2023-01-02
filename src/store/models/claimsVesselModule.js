@@ -43,7 +43,7 @@ const claimsVesselModule = {
         id: 0,
         name: "",
       },
-     
+
       nature_of_damage: {
         id: 0,
         name: "",
@@ -54,7 +54,7 @@ const claimsVesselModule = {
   },
   mutations: {
     SET_CLAiMS(state, vessels) {
-      for (let index = 0; index < vessels.length; index++) {    
+      for (let index = 0; index < vessels.length; index++) {
         if (vessels[index].nature_of_damage == null) {
           vessels[index].nature_of_damage = { id: 0, name: "" };
         }
@@ -66,15 +66,23 @@ const claimsVesselModule = {
     },
     ADD_CLAiM(state, claim) {
       state.vessels.push(claim);
+      // state.editedOrSavedClaimVessel.id = claim.id;
+
+      state.editedOrSavedClaimVessel.liability_letter = claim.liability_letter;
+      state.editedOrSavedClaimVessel.insurance_declaration =
+        claim.insurance_declaration;
     },
     DELETE_CLAiM(state, claim) {
       state.vessels = state.vessels.filter((c) => c.id != claim.id);
     },
-    EDIT_CLAiM(state, vessels) {
+    EDIT_CLAiM(state, vessel) {
       state.vessels = state.vessels.map((c) => {
-        if (c.id == vessels.id) return vessels;
+        if (c.id == vessel.id) return vessel;
         return c;
       });
+      state.editedOrSavedClaimVessel.liability_letter = vessel.liability_letter;
+      state.editedOrSavedClaimVessel.insurance_declaration =
+        vessel.insurance_declaration;
     },
     setclaim_id_VESSEL_CLAiM(state, claim_id) {
       state.editedOrSavedClaimVessel.claim_id = claim_id;
@@ -106,7 +114,6 @@ const claimsVesselModule = {
         vessel.department.join("|");
     },
     setDATE_VESSEL_CLAiM(state, dateClaim) {
-     
       state.editedOrSavedClaimVessel.incident_reportFile =
         dateClaim.incident_reportFile;
       state.editedOrSavedClaimVessel.incident_report =
@@ -124,8 +131,7 @@ const claimsVesselModule = {
         thirdpartyClaim.Invoice_number;
       state.editedOrSavedClaimVessel.reimbursed_amount =
         thirdpartyClaim.reimbursed_amount;
-      state.editedOrSavedClaimVessel.liability_letter =
-        thirdpartyClaim.liability_letter;
+
       state.editedOrSavedClaimVessel.liability_letterFile =
         thirdpartyClaim.liability_letterFile;
     },
@@ -146,15 +152,13 @@ const claimsVesselModule = {
         insurance_followup.deductible_charge_TAT;
       state.editedOrSavedClaimVessel.Complementary_indemnification =
         insurance_followup.Complementary_indemnification;
-      state.editedOrSavedClaimVessel.insurance_declaration =
-        insurance_followup.insurance_declaration;
+
       state.editedOrSavedClaimVessel.insurance_declarationFile =
         insurance_followup.insurance_declarationFile;
     },
     setAll_Attr_VESSEL_CLAiM(state, VesselClaim) {
       state.editedOrSavedClaimVessel.id = VesselClaim.id;
-      state.editedOrSavedClaimVessel.claim_id =
-        VesselClaim.claim_id;
+      state.editedOrSavedClaimVessel.claim_id = VesselClaim.claim_id;
       state.editedOrSavedClaimVessel.categorie_of_vessel =
         VesselClaim.categorie_of_vessel;
       state.editedOrSavedClaimVessel.Deductible_charge_TAT =
@@ -204,7 +208,7 @@ const claimsVesselModule = {
       // estimation
       state.editedOrSavedClaimVessel.estimate = VesselClaim.estimate;
       // date
- 
+
       state.editedOrSavedClaimVessel.date_of_declaration =
         VesselClaim.date_of_declaration;
       state.editedOrSavedClaimVessel.date_of_feedback =
@@ -275,8 +279,20 @@ const claimsVesselModule = {
       state.editedOrSavedClaimVessel.thirdparty_Activity_comments = "";
       state.editedOrSavedClaimVessel.Indemnification_date = "";
     },
+    setLiabilityLetterToNull(state) {
+      state.editedOrSavedClaimVessel.liability_letter = "";
+    },
+    setInsuranceDeclarationToNull(state) {
+      state.editedOrSavedClaimVessel.insurance_declaration = "";
+    },
   },
   actions: {
+    set_liability_letter_to_null_SetterAction({ commit }) {
+      commit("setLiabilityLetterToNull");
+    },
+    set_insurance_declaration_to_null_SetterAction({ commit }) {
+      commit("setInsuranceDeclarationToNull");
+    },
     setClaimsAction({ commit }) {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("claim/")
@@ -308,7 +324,7 @@ const claimsVesselModule = {
 
         claimFormData.append("id", claim.id);
         claimFormData.append("claim_id", NullTest(claim.claim_id));
-        
+
         claimFormData.append(
           "categorie_of_vessel",
           NullTest(claim.categorie_of_vessel)
@@ -494,7 +510,10 @@ const claimsVesselModule = {
     set_thirdparty_vessel_claim_SetterAction({ commit }, thirdparty) {
       commit("setTHIRDPARTY_VESSEL_CLAiM", thirdparty);
     },
-    set_insurance_followup_vessel_claim_SetterAction({ commit }, insurance_followup) {
+    set_insurance_followup_vessel_claim_SetterAction(
+      { commit },
+      insurance_followup
+    ) {
       commit("setINSURANCE_FOLLOWUP_VESSEL_CLAiM", insurance_followup);
     },
     setAll_Attr_VESSEL_CLAiMAction({ commit }, VesselClaim) {
