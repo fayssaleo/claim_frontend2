@@ -87,7 +87,7 @@
             <v-col sm="2"> </v-col>
           </v-row>
           <div class="d-flex justify-center mt-8">
-            <v-btn color="ma-2  px-12  teal white--text" @click="saveDate()">
+            <v-btn color="ma-2  px-12  primary white--text" @click="saveDate()">
               save
             </v-btn>
           </div>

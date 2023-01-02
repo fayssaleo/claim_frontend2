@@ -3,7 +3,7 @@ import { toLaravelDatetime, NullTest } from "@/helpers/helpers";
 
 const claimsContainerModule = {
   state: {
-    claims: [],
+    containers: [],
     editedOrSavedClaimContainer: {
       id: 0,
       claim_id: 0,
@@ -59,41 +59,41 @@ const claimsContainerModule = {
     },
   },
   mutations: {
-    SET_CLAiMS(state, claims) {
-      state.claims = claims;
-    },
-    SET_CLAiMS(state, claims) {
-      for (let index = 0; index < claims.length; index++) {
-        if (claims[index].shipping_line == null) {
-          claims[index].shipping_line = { id: 0, name: "" };
+    /* SET_CLAiMS(state, containers) {
+      state.containers = containers;
+    }, */
+    SET_CONTAINER(state, containers) {
+      for (let index = 0; index < containers.length; index++) {
+        if (containers[index].shipping_line == null) {
+          containers[index].shipping_line = { id: 0, name: "" };
         }
-        if (claims[index].nature_of_damage == null) {
-          claims[index].nature_of_damage = { id: 0, name: "" };
+        if (containers[index].nature_of_damage == null) {
+          containers[index].nature_of_damage = { id: 0, name: "" };
         }
       }
-      state.claims = claims;
+      state.containers = containers;
     },
-    ADD_CLAiM(state, claim) {
-      state.claims.push(claim);
+    ADD_CONTAINER(state, claim) {
+      state.containers.push(claim);
       state.editedOrSavedClaimContainer.id = claim.id;
       state.editedOrSavedClaimContainer.liability_letter =
         claim.liability_letter;
       state.editedOrSavedClaimContainer.insurance_declaration =
         claim.insurance_declaration;
     },
-    DELETE_CLAiM(state, claim) {
-      state.claims = state.claims.filter((c) => c.id != claim.id);
+    DELETE_CONTAINER(state, claim) {
+      state.containers = state.containers.filter((c) => c.id != claim.id);
     },
-    EDIT_CLAiM(state, claims) {
-      state.claims = state.claims.map((c) => {
-        if (c.id == claims.id) return claims;
+    EDIT_CONTAINER(state, containers) {
+      state.containers = state.containers.map((c) => {
+        if (c.id == containers.id) return containers;
         return c;
       });
-      state.editedOrSavedClaimContainer.id = claims.id;
+      state.editedOrSavedClaimContainer.id = containers.id;
       state.editedOrSavedClaimContainer.liability_letter =
-        claims.liability_letter;
+        containers.liability_letter;
       state.editedOrSavedClaimContainer.insurance_declaration =
-        claims.insurance_declaration;
+        containers.insurance_declaration;
     },
     setclaim_id_CONTAINER_CLAiM(state, claim_id) {
       state.editedOrSavedClaimContainer.claim_id = claim_id;
@@ -351,7 +351,7 @@ const claimsContainerModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("containers/" + id)
           .then((response) => {
-            commit("SET_CLAiMS", response.data.payload);
+            commit("SET_CONTAINER", response.data.payload);
             resolve(response);
           })
           .catch((error) => {
@@ -517,10 +517,10 @@ const claimsContainerModule = {
         )
           .then((response) => {
             if (claim.id == 0) {
-              commit("ADD_CLAiM", response.data.payload);
+              commit("ADD_CONTAINER", response.data.payload);
               state.editedOrSavedClaimContainer.id = response.data.payload.id;
             } else {
-              commit("EDIT_CLAiM", response.data.payload);
+              commit("EDIT_CONTAINER", response.data.payload);
             }
 
             resolve(response.data);
@@ -549,7 +549,7 @@ const claimsContainerModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.post("containers/delete", claim)
           .then((response) => {
-            commit("DELETE_CLAiM", claim);
+            commit("DELETE_CONTAINER", claim);
             resolve(response.data);
           })
           .catch((error) => {
@@ -599,7 +599,7 @@ const claimsContainerModule = {
   },
   getters: {
     getContainerclaims: (state) => {
-      return state.claims;
+      return state.containers;
     },
     geteditedOrSavedClaimContainer: (state) => {
       return state.editedOrSavedClaimContainer;

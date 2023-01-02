@@ -58,7 +58,7 @@ const claimsAutomobileModule = {
     },
   },
   mutations: {
-    SET_CLAiMS(state, automobiles) {
+    SET_AUTMOBILES(state, automobiles) {
       for (let index = 0; index < automobiles.length; index++) {
         if (automobiles[index].brand == null) {
           automobiles[index].brand = { id: 0, name: "" };
@@ -72,7 +72,7 @@ const claimsAutomobileModule = {
       }
       state.automobiles = automobiles;
     },
-    ADD_CLAiM(state, automobile) {
+    ADD_AUTOMOBILE(state, automobile) {
       state.automobiles.push(automobile);
       state.editedOrSavedClaimAutomobile.id = automobile.id;
       state.editedOrSavedClaimAutomobile.liability_letter =
@@ -80,12 +80,12 @@ const claimsAutomobileModule = {
       state.editedOrSavedClaimAutomobile.insurance_declaration =
         automobile.insurance_declaration;
     },
-    DELETE_CLAiM(state, automobile) {
+    DELETE_AUTOMOBILE(state, automobile) {
       state.automobiles = state.automobiles.filter(
         (c) => c.id != automobile.id
       );
     },
-    EDIT_CLAiM(state, automobiles) {
+    EDIT_AUTOMOBILE(state, automobiles) {
       state.automobiles = state.automobiles.map((c) => {
         if (c.id == automobiles.id) return automobiles;
         return c;
@@ -334,7 +334,7 @@ const claimsAutomobileModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("automobile/")
           .then((response) => {
-            commit("SET_CLAiMS", response.data.payload);
+            commit("SET_AUTMOBILES", response.data.payload);
 
             resolve(response);
           })
@@ -347,7 +347,7 @@ const claimsAutomobileModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("automobiles/" + id)
           .then((response) => {
-            commit("SET_CLAiMS", response.data.payload);
+            commit("SET_AUTMOBILES", response.data.payload);
             resolve(response);
           })
           .catch((error) => {
@@ -355,7 +355,6 @@ const claimsAutomobileModule = {
           });
       });
     },
-
     editedOrSavedAutomobileClaimAction({ commit }, automobile) {
       return new Promise((resolve, reject) => {
         var claimFormData = new FormData();
@@ -507,9 +506,9 @@ const claimsAutomobileModule = {
         )
           .then((response) => {
             if (automobile.id == 0) {
-              commit("ADD_CLAiM", response.data.payload);
+              commit("ADD_AUTOMOBILE", response.data.payload);
             } else {
-              commit("EDIT_CLAiM", response.data.payload);
+              commit("EDIT_AUTOMOBILE", response.data.payload);
             }
 
             resolve(response.data);
@@ -525,7 +524,7 @@ const claimsAutomobileModule = {
           name: equipment.name,
         })
           .then((response) => {
-            commit("ADD_CLAiM", response.data.payload);
+            commit("ADD_AUTOMOBILE", response.data.payload);
             resolve(response.data);
           })
           .catch((error) => {
@@ -537,7 +536,7 @@ const claimsAutomobileModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.post("automobiles/delete", automobile)
           .then((response) => {
-            commit("DELETE_CLAiM", automobile);
+            commit("DELETE_AUTOMOBILE", automobile);
             resolve(response.data);
           })
           .catch((error) => {
@@ -549,7 +548,7 @@ const claimsAutomobileModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.post("automobile/update", automobile)
           .then((response) => {
-            commit("EDIT_CLAiM", response.data.payload);
+            commit("EDIT_AUTOMOBILE", response.data.payload);
             resolve(response.data);
           })
           .catch((error) => {

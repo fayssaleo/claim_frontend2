@@ -59,7 +59,7 @@ const claimsEquipmentModule = {
     },
   },
   mutations: {
-    SET_CLAiMS(state, claims) {
+    SET_EQUIPMENTS(state, claims) {
       for (let index = 0; index < claims.length; index++) {
         if (claims[index].brand == null) {
           claims[index].brand = { id: 0, name: "" };
@@ -73,7 +73,7 @@ const claimsEquipmentModule = {
       }
       state.claims = claims;
     },
-    ADD_CLAiM(state, claim) {
+    ADD_EQUIPMENT(state, claim) {
       state.claims.push(claim);
       state.editedOrSavedClaimEquipment.id = claim.id;
       state.editedOrSavedClaimEquipment.liability_letter =
@@ -81,10 +81,10 @@ const claimsEquipmentModule = {
       state.editedOrSavedClaimEquipment.insurance_declaration =
         claim.insurance_declaration;
     },
-    DELETE_CLAiM(state, claim) {
+    DELETE_EQUIPMENT(state, claim) {
       state.claims = state.claims.filter((c) => c.id != claim.id);
     },
-    EDIT_CLAiM(state, claims) {
+    EDIT_EQUIPMENT(state, claims) {
       state.claims = state.claims.map((c) => {
         if (c.id == claims.id) return claims;
         return c;
@@ -330,7 +330,7 @@ const claimsEquipmentModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("claim/")
           .then((response) => {
-            commit("SET_CLAiMS", response.data.payload);
+            commit("SET_EQUIPMENTS", response.data.payload);
 
             resolve(response);
           })
@@ -343,7 +343,7 @@ const claimsEquipmentModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("equipments/" + id)
           .then((response) => {
-            commit("SET_CLAiMS", response.data.payload);
+            commit("SET_EQUIPMENTS", response.data.payload);
             resolve(response);
           })
           .catch((error) => {
@@ -355,7 +355,7 @@ const claimsEquipmentModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("equipments/allIncident")
           .then((response) => {
-            commit("SET_CLAiMS", response.data.payload);
+            commit("SET_EQUIPMENTS", response.data.payload);
             resolve(response);
           })
           .catch((error) => {
@@ -505,9 +505,9 @@ const claimsEquipmentModule = {
         )
           .then((response) => {
             if (claim.id == 0) {
-              commit("ADD_CLAiM", response.data.payload);
+              commit("ADD_EQUIPMENT", response.data.payload);
             } else {
-              commit("EDIT_CLAiM", response.data.payload);
+              commit("EDIT_EQUIPMENT", response.data.payload);
             }
 
             resolve(response.data);
@@ -523,7 +523,7 @@ const claimsEquipmentModule = {
           name: equipment.name,
         })
           .then((response) => {
-            commit("ADD_CLAiM", response.data.payload);
+            commit("ADD_EQUIPMENT", response.data.payload);
             resolve(response.data);
           })
           .catch((error) => {
@@ -535,7 +535,7 @@ const claimsEquipmentModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.post("equipments/delete", claim)
           .then((response) => {
-            commit("DELETE_CLAiM", claim);
+            commit("DELETE_EQUIPMENT", claim);
             resolve(response.data);
           })
           .catch((error) => {
@@ -547,7 +547,7 @@ const claimsEquipmentModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.post("claim/update", claim)
           .then((response) => {
-            commit("EDIT_CLAiM", response.data.payload);
+            commit("EDIT_EQUIPMENT", response.data.payload);
             resolve(response.data);
           })
           .catch((error) => {

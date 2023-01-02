@@ -10,7 +10,12 @@
       <template>
         <div>
           <v-card>
-            <v-toolbar color="green lighten-2" dark flat>
+            <v-toolbar
+              color="primary lighten-2 tabsSliderMenu"
+              dark
+              flat
+              style="height: 56px !important"
+            >
               <template v-slot:extension>
                 <v-tabs v-model="tab" align-with-title>
                   <v-tabs-slider color="white"></v-tabs-slider>

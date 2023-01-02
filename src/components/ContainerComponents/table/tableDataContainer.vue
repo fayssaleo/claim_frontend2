@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 5px; padding-top: 3%;margin:10px">
+  <div style="padding: 5px; padding-top: 3%; margin: 10px">
     <v-data-table
       :headers="headers"
       :items="claims"
@@ -14,7 +14,19 @@
           <td class="cursor">
             {{ item.id }}
           </td>
-          
+          <td class="cursor">
+            <v-chip
+              color="#f54 "
+              v-if="item.nature_of_damage.id == 0"
+              class="white--text cursor"
+            >
+              Not Damaged
+            </v-chip>
+            <v-chip color="#76ba99" v-else class="white--text cursor">
+              Damaged
+            </v-chip>
+          </td>
+
           <td class="cursor">{{ item.damage_caused_by }}</td>
 
           <td class="cursor">
@@ -71,7 +83,6 @@
                 <v-icon left> mdi-plus </v-icon>
                 Add
               </v-btn>
-              
             </template>
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
@@ -115,6 +126,7 @@ export default {
 
     headers: [
       { text: "Id", align: "start", value: "id", sortable: true },
+      { text: "Status", align: "start", value: "id", sortable: true },
       { text: "Damage caused by", value: "damage_caused_by", sortable: true },
       {
         text: "Declared",
@@ -147,7 +159,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New " : "Edit ";
     },
-    ...mapGetters(["getContainerclaims","geteditedOrSavedclaim"]),
+    ...mapGetters(["getContainerclaims", "geteditedOrSavedclaim"]),
   },
   watch: {
     dialog(val) {
@@ -200,7 +212,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.claims.indexOf(item) + 1;
       this.editedItem = Object.assign({}, item);
-      console.log('item', item);
+      console.log("item", item);
       this.setAll_Attr_CONTAINER_CLAiMAction(item).then(() => {
         this.$router.push({ name: "AddclaimContainer" });
       });
@@ -240,7 +252,6 @@ export default {
       this.emptyAll_Attr_CONTAINER_CLAiMAction().then(() => {});
       this.$router.push({ name: "AddclaimContainer" });
     },
-    
   },
 };
 </script>

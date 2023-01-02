@@ -109,7 +109,7 @@ h3 {
   font-weight: 700;
   cursor: pointer;
   user-select: none;
-  text-decoration :none;
+  text-decoration: none;
 }
 .download:active {
   background-color: #7acb7a54;
@@ -142,5 +142,10 @@ h3 {
 .other {
   .v-input__slot {
     background-color: red;
+  }
+}
+.tabsSliderMenu {
+  .v-toolbar__content {
+    height: 0 !important;
   }
 }

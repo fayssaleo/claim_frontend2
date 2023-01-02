@@ -53,7 +53,7 @@ const claimsVesselModule = {
     },
   },
   mutations: {
-    SET_CLAiMS(state, vessels) {
+    SET_VESSEL(state, vessels) {
       for (let index = 0; index < vessels.length; index++) {
         if (vessels[index].nature_of_damage == null) {
           vessels[index].nature_of_damage = { id: 0, name: "" };
@@ -64,7 +64,7 @@ const claimsVesselModule = {
       }
       state.vessels = vessels;
     },
-    ADD_CLAiM(state, claim) {
+    ADD_VESSEL(state, claim) {
       state.vessels.push(claim);
       // state.editedOrSavedClaimVessel.id = claim.id;
 
@@ -72,10 +72,10 @@ const claimsVesselModule = {
       state.editedOrSavedClaimVessel.insurance_declaration =
         claim.insurance_declaration;
     },
-    DELETE_CLAiM(state, claim) {
+    DELETE_VESSEL(state, claim) {
       state.vessels = state.vessels.filter((c) => c.id != claim.id);
     },
-    EDIT_CLAiM(state, vessel) {
+    EDIT_VESSEL(state, vessel) {
       state.vessels = state.vessels.map((c) => {
         if (c.id == vessel.id) return vessel;
         return c;
@@ -310,7 +310,7 @@ const claimsVesselModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.get("vessels/" + id)
           .then((response) => {
-            commit("SET_CLAiMS", response.data.payload);
+            commit("SET_VESSEL", response.data.payload);
             resolve(response);
           })
           .catch((error) => {
@@ -448,9 +448,9 @@ const claimsVesselModule = {
         CustomizedAxios.post("vessels/createOrUpdateVessel", claimFormData)
           .then((response) => {
             if (claim.id == 0) {
-              commit("ADD_CLAiM", response.data.payload);
+              commit("ADD_VESSEL", response.data.payload);
             } else {
-              commit("EDIT_CLAiM", response.data.payload);
+              commit("EDIT_VESSEL", response.data.payload);
             }
 
             resolve(response.data);
@@ -478,7 +478,7 @@ const claimsVesselModule = {
       return new Promise((resolve, reject) => {
         CustomizedAxios.post("vessels/delete", claim)
           .then((response) => {
-            commit("DELETE_CLAiM", claim);
+            commit("DELETE_VESSEL", claim);
             resolve(response.data);
           })
           .catch((error) => {

@@ -14,7 +14,18 @@
           <td class="cursor">
             {{ item.id }}
           </td>
-
+          <td class="cursor">
+            <v-chip
+              color="#f54 "
+              v-if="item.nature_of_damage.id == 0"
+              class="white--text cursor"
+            >
+              Not Damaged
+            </v-chip>
+            <v-chip color="#76ba99" v-else class="white--text cursor">
+              Damaged
+            </v-chip>
+          </td>
           <td class="cursor">{{ item.damage_caused_by }}</td>
 
           <td class="cursor">
@@ -120,6 +131,7 @@ export default {
     isAdd: false,
     headers: [
       { text: "Id", align: "start", value: "id", sortable: true },
+      { text: "Status", align: "start", value: "id", sortable: true },
 
       { text: "Damage caused by", value: "damage_caused_by", sortable: true },
       {
