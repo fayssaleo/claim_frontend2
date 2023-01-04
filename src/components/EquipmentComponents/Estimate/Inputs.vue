@@ -5,6 +5,7 @@
       :label="inputModel.name"
       v-model="inputModel.value"
       outlined
+      type="number"
     ></v-text-field>
     <v-btn @click="removeInputEstimate(inputModel)" class="ml-2 error"
       >delete</v-btn

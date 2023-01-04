@@ -7,7 +7,7 @@ const claimsContainerModule = {
     editedOrSavedClaimContainer: {
       id: 0,
       claim_id: 0,
-      containerID: 0,
+      containerID: "",
       nombre_of_containers: 0,
       categorie_of_container: "",
       containerType: "",

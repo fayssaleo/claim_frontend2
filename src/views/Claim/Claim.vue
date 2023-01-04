@@ -17,12 +17,14 @@
           <td
             class="cursor"
             :style="[
-              item.status == 'Treated'
-                ? { color: '#FF5722' }
-                : { color: '#4CAF50' },
+              item.status
+                ? item.status == 'Treated'
+                  ? { color: '#FF5722' }
+                  : { color: '#4CAF50' }
+                : { color: 'black' },
             ]"
           >
-            {{ item.status }}
+            {{ item.status ? item.status : "On progress" }}
           </td>
           <td class="cursor">{{ item.ClaimOrIncident }}</td>
           <td class="cursor">{{ item.incident_date }}</td>

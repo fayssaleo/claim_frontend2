@@ -9,6 +9,7 @@
                 v-model="thirdparty.amount"
                 label="Amount :"
                 outlined
+                type="number"
               ></v-text-field>
             </v-col>
             <v-col class="d-flex" cols="12" sm="4">
@@ -56,6 +57,7 @@
                 v-model="thirdparty.reinvoiced"
                 label="reinvoiced  :"
                 outlined
+                type="number"
               ></v-text-field>
             </v-col>
             <v-col class="d-flex" cols="12" sm="4">
@@ -63,6 +65,7 @@
                 v-model="thirdparty.Invoice_number"
                 label="Invoice number :"
                 outlined
+                type="number"
               ></v-text-field>
             </v-col>
             <v-col class="d-flex" cols="12" sm="4">
@@ -70,6 +73,7 @@
                 v-model="thirdparty.reimbursed_amount"
                 label="Reimbursed amount :"
                 outlined
+                type="number"
               ></v-text-field>
             </v-col>
             <v-col class="d-flex" cols="12">

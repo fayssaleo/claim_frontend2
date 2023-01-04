@@ -8,7 +8,6 @@ const claimsEquipmentModule = {
       id: 0,
       claim_id: 0,
       department_id: 0,
-      categorie_of_equipment: "",
       concerned_internal_department: "",
       department: 0,
       equipement_registration: "",

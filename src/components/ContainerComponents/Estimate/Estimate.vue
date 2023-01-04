@@ -276,7 +276,6 @@ export default {
       },
       { text: "Estimate amount", value: "estimate_amount", sortable: true },
       { text: "Currency", value: "estimate.currency_estimate", sortable: true },
-      { text: "Estimate date", value: "estimate.created_at", sortable: true },
 
       { text: "Actions", value: "actions", sortable: false },
     ],
@@ -360,7 +359,11 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "New Department" : "Edit Department";
     },
-    ...mapGetters(["getestimates", "geteditedOrSavedClaimContainer","getcustomedFields"]),
+    ...mapGetters([
+      "getestimates",
+      "geteditedOrSavedClaimContainer",
+      "getcustomedFields",
+    ]),
   },
   watch: {
     dialog(val) {
@@ -416,11 +419,15 @@ export default {
   },
   methods: {
     initialize() {
-      this.setestimatesContainerAction(
-        this.geteditedOrSavedClaimContainer.id
-      ).then(() => {
-        this.estimates = [...this.getestimates];
-      });
+      this.setModuleShowToTrueAction();
+      this.setestimatesContainerAction(this.geteditedOrSavedClaimContainer.id)
+        .then(() => {
+          this.estimates = [...this.getestimates];
+          this.setModuleShowToFalseAction();
+        })
+        .catch(() => {
+          this.setModuleShowToFalseAction();
+        });
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
     },
     ...mapActions([
@@ -430,8 +437,9 @@ export default {
       "addestimateContainerAction",
       "addFileAction",
       "deleteFileAction",
-      "setCustomedFieldByEstimateAction"
-
+      "setCustomedFieldByEstimateAction",
+      "setModuleShowToTrueAction",
+      "setModuleShowToFalseAction",
     ]),
     TotalAmount() {
       let numOr0 = (n) => (isNaN(n) ? 0 : n);
@@ -482,20 +490,26 @@ export default {
       this.editedItem.customedFields =
         this.estimateUpdate.estimate.customedFields;
       console.log("estimate file test", this.editedItem);
-      this.addestimateContainerAction(this.editedItem).then((resolve) => {
-        this.editedItem.id = resolve.estimate.id;
-        this.estimateUpdate = resolve;
-        this.estimateUpdate.estimate.customedFields = [];
+      this.setModuleShowToFalseAction();
+      this.addestimateContainerAction(this.editedItem)
+        .then((resolve) => {
+          this.editedItem.id = resolve.estimate.id;
+          this.estimateUpdate = resolve;
+          this.estimateUpdate.estimate.customedFields = [];
 
-        this.estimates = [...this.getestimates];
-        this.editedItem.equipment_purchase_costs = "";
-        this.editedItem.installation_and_facilities_costs = "";
-        this.editedItem.rransportation_costs = "";
-        this.editedItem.container_id = null;
-        this.editedItem.currency_estimate = "";
-        this.editedItem.id = 0;
-        this.editedItem.file = "";
-      });
+          this.estimates = [...this.getestimates];
+          this.editedItem.equipment_purchase_costs = "";
+          this.editedItem.installation_and_facilities_costs = "";
+          this.editedItem.rransportation_costs = "";
+          this.editedItem.container_id = null;
+          this.editedItem.currency_estimate = "";
+          this.editedItem.id = 0;
+          this.editedItem.file = "";
+          this.setModuleShowToFalseAction();
+        })
+        .catch(() => {
+          this.setModuleShowToFalseAction();
+        });
       this.close();
     },
     updateEstimate() {
@@ -523,27 +537,32 @@ export default {
         deleteInputs: this.deleteInputs,
       };
       //console.log('modelUpdate', modelUpdate);
+      this.setModuleShowToTrueAction();
+      this.editestimateContainerAction(modelUpdate)
+        .then((resolve) => {
+          setTimeout(() => {
+            this.estimates = [...this.getestimates];
+          }, 1000);
+          this.editedItem.equipment_purchase_costs = "";
+          this.editedItem.installation_and_facilities_costs = "";
+          this.editedItem.rransportation_costs = "";
+          this.editedItem.container_id = null;
+          this.editedItem.currency_estimate = "";
+          this.editedItem.id = 0;
+          this.editedItem.customedFields = [];
+          this.estimateUpdate.estimate.customedFields = [];
+          this.editedItem.file = "";
 
-      this.editestimateContainerAction(modelUpdate).then((resolve) => {
-        setTimeout(() => {
-          this.estimates = [...this.getestimates];
-        }, 1000);
-        this.editedItem.equipment_purchase_costs = "";
-        this.editedItem.installation_and_facilities_costs = "";
-        this.editedItem.rransportation_costs = "";
-        this.editedItem.container_id = null;
-        this.editedItem.currency_estimate = "";
-        this.editedItem.id = 0;
-        this.editedItem.customedFields = [];
-        this.estimateUpdate.estimate.customedFields = [];
-        this.editedItem.file = "";
-
-        this.estimates = this.estimates.map((c) => {
-          if (c.estimate.id == resolve.estimate.id) return resolve;
-          return c;
+          this.estimates = this.estimates.map((c) => {
+            if (c.estimate.id == resolve.estimate.id) return resolve;
+            return c;
+          });
+          //this.estimates = [...this.getestimates];
+          this.setModuleShowToFalseAction();
+        })
+        .catch(() => {
+          this.setModuleShowToFalseAction();
         });
-        //this.estimates = [...this.getestimates];
-      });
       this.dialog = false;
 
       this.isAdd = true;
@@ -559,15 +578,17 @@ export default {
 
       console.log("item update customed_field", item);
       this.estimateUpdate = item;
+      this.setModuleShowToTrueAction();
+      this.setCustomedFieldByEstimateAction(item.estimate.id)
+        .then(() => {
+          this.estimateUpdate.estimate.customedFields = this.getcustomedFields;
 
-
-
-      this.setCustomedFieldByEstimateAction(item.estimate.id).then(() => {
-        this.estimateUpdate.estimate.customedFields=this.getcustomedFields;
-
-        this.editedItem.customedFields = this.getcustomedFields;
-        });      
-
+          this.editedItem.customedFields = this.getcustomedFields;
+          this.setModuleShowToFalseAction();
+        })
+        .catch(() => {
+          this.setModuleShowToFalseAction();
+        });
 
       //
       this.editedItem.equipment_purchase_costs =
@@ -599,9 +620,15 @@ export default {
     },
     deleteItemConfirm() {
       console.log("estimateDelete", this.estimateDelete);
-      this.deleteestimateAction(this.estimateDelete).then(() => {
-        this.estimates = [...this.getestimates];
-      });
+      this.setModuleShowToTrueAction();
+      this.deleteestimateAction(this.estimateDelete)
+        .then(() => {
+          this.estimates = [...this.getestimates];
+          this.setModuleShowToFalseAction();
+        })
+        .catch(() => {
+          this.setModuleShowToFalseAction();
+        });
       // this.LoadingPage = true;
 
       setTimeout(() => {
@@ -680,14 +707,16 @@ export default {
       var formData = new FormData();
       formData.append("estimate_id", parseFloat(this.editedItem.id));
       formData.append("file", this.file);
-
+      this.setModuleShowToTrueAction();
       this.addFileAction(formData)
         .then((resolve) => {
           console.info("file done");
+          this.setModuleShowToFalseAction();
         })
         .catch(() => {
           //  swal("Error", "", "error");
           console.info("file err");
+          this.setModuleShowToFalseAction();
         });
 
       this.dialogimage = false;
@@ -719,7 +748,14 @@ export default {
         },
         estimate_amount: this.totalAmount,
       };
-      this.editestimateContainerAction(modelDelete).then(() => {});
+      this.setModuleShowToTrueAction();
+      this.editestimateContainerAction(modelDelete)
+        .then(() => {
+          this.setModuleShowToFalseAction();
+        })
+        .catch(() => {
+          this.setModuleShowToFalseAction();
+        });
     },
   },
 };

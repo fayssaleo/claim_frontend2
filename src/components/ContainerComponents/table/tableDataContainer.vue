@@ -14,6 +14,17 @@
           <td class="cursor">
             {{ item.id }}
           </td>
+          <td
+            class="cursor"
+            v-if="item.containerID != '' && item.containerID != null"
+          >
+            {{ item.containerID }}
+          </td>
+          <td class="cursor" v-else>
+            <v-chip color="#528dc9" class="white--text cursor">
+              Not defined
+            </v-chip>
+          </td>
           <td class="cursor">
             <v-chip
               color="#f54 "
@@ -27,7 +38,17 @@
             </v-chip>
           </td>
 
-          <td class="cursor">{{ item.damage_caused_by }}</td>
+          <td
+            class="cursor"
+            v-if="item.damage_caused_by != '' && item.damage_caused_by != null"
+          >
+            {{ item.damage_caused_by }}
+          </td>
+          <td class="cursor" v-else>
+            <v-chip color="#528dc9" class="white--text cursor">
+              Not defined
+            </v-chip>
+          </td>
 
           <td class="cursor">
             <v-chip
@@ -41,7 +62,18 @@
               Declared
             </v-chip>
           </td>
-
+          <td class="cursor" v-if="item.estimationAmount != '0 ()'">
+            {{ item.estimationAmount }}
+          </td>
+          <td class="cursor" v-else>
+            <v-chip
+              color="#528dc9"
+              v-if="item.date_of_declaration == null"
+              class="white--text cursor"
+            >
+              Not yet
+            </v-chip>
+          </td>
           <td>
             <v-btn
               color="primary"
@@ -125,12 +157,18 @@ export default {
     loading: false,
 
     headers: [
-      { text: "Id", align: "start", value: "id", sortable: true },
+      { text: "ID", align: "start", value: "id", sortable: true },
+      { text: "Container ID", align: "start", value: "id", sortable: true },
       { text: "Status", align: "start", value: "id", sortable: true },
       { text: "Damage caused by", value: "damage_caused_by", sortable: true },
       {
         text: "Declared",
         value: "date_of_declaration",
+        sortable: true,
+      },
+      {
+        text: "Estimated Amout (Permanent)",
+        value: "estimationAmount",
         sortable: true,
       },
       { text: "Actions", value: "actions", sortable: false },

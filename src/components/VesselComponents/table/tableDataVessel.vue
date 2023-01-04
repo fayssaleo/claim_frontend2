@@ -14,6 +14,19 @@
           <td class="cursor">
             {{ item.id }}
           </td>
+          <td
+            class="cursor"
+            v-if="
+              item.shipping_line.name != '' && item.shipping_line.name != null
+            "
+          >
+            {{ item.shipping_line.name }}
+          </td>
+          <td class="cursor" v-else>
+            <v-chip color="#528dc9" class="white--text cursor">
+              Not defined
+            </v-chip>
+          </td>
           <td class="cursor">
             <v-chip
               color="#f54 "
@@ -26,7 +39,17 @@
               Damaged
             </v-chip>
           </td>
-          <td class="cursor">{{ item.damage_caused_by }}</td>
+          <td
+            class="cursor"
+            v-if="item.damage_caused_by != '' && item.damage_caused_by != null"
+          >
+            {{ item.damage_caused_by }}
+          </td>
+          <td class="cursor" v-else>
+            <v-chip color="#528dc9" class="white--text cursor">
+              Not defined
+            </v-chip>
+          </td>
 
           <td class="cursor">
             <v-chip
@@ -38,6 +61,19 @@
             </v-chip>
             <v-chip color="#76ba99" v-else class="white--text cursor">
               Declared
+            </v-chip>
+          </td>
+
+          <td class="cursor" v-if="item.estimationAmount != '0 ()'">
+            {{ item.estimationAmount }}
+          </td>
+          <td class="cursor" v-else>
+            <v-chip
+              color="#528dc9"
+              v-if="item.date_of_declaration == null"
+              class="white--text cursor"
+            >
+              Not yet
             </v-chip>
           </td>
 
@@ -124,12 +160,18 @@ export default {
     loading: false,
 
     headers: [
-      { text: "Claim Serial", align: "start", value: "id", sortable: true },
+      { text: "ID", align: "start", value: "id", sortable: true },
+      { text: "Shipping line", align: "start", value: "type", sortable: true },
       { text: "Status", align: "start", value: "id", sortable: true },
       { text: "Damage caused by", value: "damage_caused_by", sortable: true },
       {
         text: "Declared",
         value: "date_of_declaration",
+        sortable: true,
+      },
+      {
+        text: "Estimated Amout (Permanent)",
+        value: "estimationAmount",
         sortable: true,
       },
       { text: "Actions", value: "actions", sortable: false },
