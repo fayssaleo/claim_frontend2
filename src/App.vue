@@ -5,7 +5,6 @@
     <Login v-else />
   </v-app>
 </template>
-
 <script>
 import { mapActions, mapGetters } from "vuex";
 import LoadingPage from "./components/LoadingPage.vue";
